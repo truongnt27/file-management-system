@@ -1,0 +1,16 @@
+{
+  "userInfo": {
+    "userId": "String",
+    "fullname": "String",
+    "address": "String",
+    "dob": "Date",
+    "contact": "String",
+    "history": "Array"
+  },
+  "keyInfo": {
+    "userPublicKey": "String",
+    "createdDate": "Date",
+    "sysPublicKey": "String",
+    "sysPrivateKey": "String"
+  }
+}

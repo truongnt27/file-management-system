@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <%- include('head') %>
+  <body>
+    <header class="w3-container w3-teal">
+      <h1>Login</h1>
+    </header>
+
+    <div class="w3-container w3-half w3-margin-top">
+      <div class="w3-container w3-card-4">
+        <p>
+          <label>Name</label>
+          <input
+            id="userId"
+            class="w3-input"
+            type="text"
+            style="width:90%"
+            required
+          />
+        </p>
+        <p>
+          <label>Password</label>
+          <input
+            id="password"
+            class="w3-input"
+            type="password"
+            style="width:90%"
+            required
+          />
+        </p>
+
+        <p>
+          <input
+            class="w3-radio"
+            type="radio"
+            name="type"
+            value="patient"
+            checked
+          />
+          <label>Patient</label>
+        </p>
+
+        <p>
+          <input class="w3-radio" type="radio" name="type" value="doctor" />
+          <label>Doctor</label>
+        </p>
+
+        <p>
+          <button id="loginBtn" class="w3-button w3-section w3-teal w3-ripple">
+            Log in
+          </button>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  $("#loginBtn").click(function() {
+    $.ajax({
+      url: "/user/login",
+      method: "POST",
+      data: {
+        userId: $("#userId").val(),
+        password: $("#password").val(),
+        type: $("input[name='type']:checked").val()
+      },
+      success: function(msg) {
+        if (msg == "Success") {
+          window.location.href = "http://localhost:3000/dashboard";
+        } else {
+          window.alert(msg);
+        }
+      }
+    });
+  });
+</script>

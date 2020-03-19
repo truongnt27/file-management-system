@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <%- include('head') %>
+  <body class="w3-light-grey">
+    <!-- Top container -->
+    <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+      <button
+        class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey"
+        onclick="w3_open();"
+      >
+        <i class="fa fa-bars"></i> Menu
+      </button>
+      <span class="w3-bar-item w3-right">Logo</span>
+    </div>
+
+    <!-- Sidebar/menu -->
+    <%- include('sidebar'); %>
+
+    <!-- Overlay effect when opening sidebar on small screens -->
+    <div
+      class="w3-overlay w3-hide-large w3-animate-opacity"
+      onclick="w3_close()"
+      style="cursor:pointer"
+      title="close side menu"
+      id="myOverlay"
+    ></div>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left:300px;margin-top:43px;">
+      <!-- Header -->
+      <header class="w3-container" style="padding-top:22px">
+        <h5>
+          <b>Key detail</b>
+        </h5>
+      </header>
+      <hr />
+      <div class="w3-container">
+        <h5>Key Info</h5>
+        <p><b>Key ID: </b><div id="keyId"><%= key._id %></div></p>
+        <p><b>Key Alias: </b><div><%= key.alias %></div></p>
+        <div>
+          <b>Key Description: </b
+          ><input
+            type="text"
+            class="w3-input"
+            id="keyDescription"
+            value="<%= key.description %>"
+          />
+        </div>
+      </div>
+      <br />
+      <div class="w3-container">
+        <h5>Key Usage</h5>
+        <div class="w3-container" style="padding-left: 0; padding-bottom: 5px">
+          <button class="w3-btn w3-teal" value="add" id="addBtn">Add</button>
+          <button class="w3-btn w3-teal" value="remove" id="removeBtn">
+            Remove
+          </button>
+        </div>
+        <table
+          id="userPermissionTb"
+          class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white"
+        >
+          <tr>
+            <th>
+              <input type="checkbox" id="checkboxAll" class="w3-check" />
+            </th>
+            <th>Name</th>
+            <th>Type</th>
+          </tr>
+          <% users.forEach(function(user){ %> <% if(user.userId != currentUser)
+          { %>
+          <tr>
+            <td>
+              <input
+                type="checkbox"
+                name="userPermision"
+                class="w3-check"
+                id="<%= user.userId%>"
+              />
+            </td>
+            <td><%= user.fullname%></td>
+            <td><%= user.type%></td>
+          </tr>
+          <% } %> <% }); %>
+        </table>
+      </div>
+      <br />
+      <div class="w3-container">
+        <h5>Key rotation</h5>
+        <input 
+        type="checkbox" 
+        <% if (key.rotation == "true") { %>
+          checked
+        <% } %> 
+        class="w3-check" id="rotation" />
+        <span>Rotate this key every year after its created date.</span>
+      </div>
+      <hr />
+      <button id="saveChangesBtn" class="w3-btn w3-teal w3-right">
+        Save changes
+      </button>
+      <div id="addUserModal" class="w3-modal">
+        <div class="w3-modal-content">
+          <header class="w3-container w3-teal">
+            <span
+              onclick="document.getElementById('addUserModal').style.display='none'"
+              class="w3-button w3-display-topright"
+              >&times;</span
+            >
+            <h2>Add users</h2>
+          </header>
+          <div class="w3-container">
+            <table
+              id="addUserTb"
+              class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white"
+            >
+              <tr>
+                <th>
+                  <input type="checkbox" class="w3-check" />
+                </th>
+                <th>Name</th>
+                <th>Type</th>
+              </tr>
+              <% userList.forEach(function(user){ %> <% if(user.userId !=
+              currentUser) { %>
+              <tr>
+                <td>
+                  <input
+                    type="checkbox"
+                    name="addUser"
+                    class="w3-check"
+                    id="<%= user.userId %>"
+                  />
+                </td>
+                <td><%= user.fullname%></td>
+                <td><%= user.type%></td>
+              </tr>
+              <% } %> <% }); %>
+            </table>
+
+            <button
+              id="addUserBtn"
+              onclick="addUser()"
+              class="w3-btn w3-teal w3-right"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <hr />
+      <!-- Footer -->
+      <footer class="w3-container w3-padding-16 w3-light-grey">
+        <h4>FOOTER</h4>
+        <p>
+          Powered by
+          <a href="https://www.w3schools.com/w3css/default.asp" target="_blank"
+            >w3.css</a
+          >
+        </p>
+      </footer>
+
+      <!-- End page content -->
+    </div>
+
+    <script>
+      // Get the Sidebar
+      var mySidebar = document.getElementById("mySidebar");
+
+      // Get the DIV with overlay effect
+      var overlayBg = document.getElementById("myOverlay");
+
+      // Toggle between showing and hiding the sidebar, and add overlay effect
+      function w3_open() {
+        if (mySidebar.style.display === "block") {
+          mySidebar.style.display = "none";
+          overlayBg.style.display = "none";
+        } else {
+          mySidebar.style.display = "block";
+          overlayBg.style.display = "block";
+        }
+      }
+
+      // Close the sidebar with the close button
+      function w3_close() {
+        mySidebar.style.display = "none";
+        overlayBg.style.display = "none";
+      }
+    </script>
+  </body>
+</html>
+
+<script>
+  $("#removeBtn").click(function(e) {
+    $.each($("input[name='userPermision']:checked"), function() {
+      $(this)
+        .closest("tr")
+        .remove();
+    });
+    e.preventDefault();
+  });
+
+  var addUser = function() {
+    var addUserPermision = [];
+    var currentUser = [];
+
+    $("#userPermissionTb input[name='userPermision']").each(function() {
+      var row = $(this).closest("tr")[0];
+      currentUser.push(row);
+    });
+
+    $("#addUserTb input[name='addUser']:checked").each(function() {
+      $(this).prop("checked", false);
+      $(this).attr("name", "userPermision");
+      var row = $(this).closest("tr")[0];
+      addUserPermision.push(row);
+    });
+
+    for (var user of addUserPermision) {
+      $("#userPermissionTb tr:last").after(user);
+    }
+    $("#addUserModal").hide();
+  };
+
+  $("#checkboxAll").click(function() {
+    $("input:checkbox[name='userPermision']").prop("checked", this.checked);
+  });
+
+  $("#addBtn").on("click", function() {
+    $("#addUserModal").show();
+  });
+
+  $("#saveChangesBtn").on("click", function() {
+    var userPermision = [];
+    $.each($("input[name='userPermision']"), function() {
+      userPermision.push($(this).attr("id"));
+    });
+
+    $.ajax({
+      url: "/dashboard/viewDetailKey/updateKey",
+      method: "POST",
+      data: {
+        keyId: $("#keyId").text(),
+        description: $("#keyDescription").val(),
+        userPermision: userPermision,
+        rotation: $("#rotation").is(":checked") ? "true" : "false"
+      },
+      success: function(msg) {
+        alert(msg);
+      }
+    });
+  });
+</script>

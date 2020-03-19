@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <%- include('head') %>
+  <body class="w3-light-grey">
+    <!-- Top container -->
+    <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+      <button
+        class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey"
+        onclick="w3_open();"
+      >
+        <i class="fa fa-bars"></i> Menu
+      </button>
+      <span class="w3-bar-item w3-right">Logo</span>
+    </div>
+
+    <!-- Sidebar/menu -->
+    <%- include('sidebar'); %>
+
+    <!-- Overlay effect when opening sidebar on small screens -->
+    <div
+      class="w3-overlay w3-hide-large w3-animate-opacity"
+      onclick="w3_close()"
+      style="cursor:pointer"
+      title="close side menu"
+      id="myOverlay"
+    ></div>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left:300px;margin-top:43px;">
+      <!-- Header -->
+      <header class="w3-container" style="padding-top:22px">
+        <h5>
+          <b><i class="fa fa-dashboard"></i> My Dashboard</b>
+        </h5>
+      </header>
+      <hr />
+
+      <div class="w3-container">
+        <h5>Key</h5>
+        <div class="w3-container" style="padding-left: 0; padding-bottom: 5px">
+          <button class="w3-btn w3-teal">
+            <a href="/createKey" style="text-decoration: none"
+              >Create a new key</a
+            >
+          </button>
+          <div class="w3-dropdown-click">
+            <button id="actionBtn" class="w3-btn w3-teal">
+              Action
+            </button>
+            <div
+              id="actionDropDown"
+              class="w3-dropdown-content w3-bar-block w3-border "
+            >
+              <button id="keyEnable" class="w3-bar-item w3-button w3-teal">
+                Enable
+              </button>
+              <button id="keyDisable" class="w3-bar-item w3-button w3-teal">
+                Disable
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <table
+          class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white"
+        >
+          <tr>
+            <th><input type="checkbox" class="w3-check" id="checkboxAll" /></th>
+            <th>Alias</th>
+            <th>Key ID</th>
+            <th>Status</th>
+            <th>Created Date</th>
+          </tr>
+          <% keys.forEach(function(key){ %>
+          <tr>
+            <td>
+              <input
+                type="checkbox"
+                name="keyStatus"
+                class="w3-check"
+                id="<%= key._id %>"
+              />
+            </td>
+            <td><%= key.alias %></td>
+            <td><%= key._id %></td>
+            <td><%= key.status %></td>
+            <td><%= key.createdDate %></td>
+          </tr>
+          <% }); %>
+        </table>
+
+        <br />
+      </div>
+      <hr />
+
+      <hr />
+
+      <!-- Footer -->
+      <footer class="w3-container w3-padding-16 w3-light-grey">
+        <h4>FOOTER</h4>
+        <p>
+          Powered by
+          <a href="https://www.w3schools.com/w3css/default.asp" target="_blank"
+            >w3.css</a
+          >
+        </p>
+      </footer>
+
+      <!-- End page content -->
+    </div>
+
+    <script>
+      // Get the Sidebar
+      var mySidebar = document.getElementById("mySidebar");
+
+      // Get the DIV with overlay effect
+      var overlayBg = document.getElementById("myOverlay");
+
+      // Toggle between showing and hiding the sidebar, and add overlay effect
+      function w3_open() {
+        if (mySidebar.style.display === "block") {
+          mySidebar.style.display = "none";
+          overlayBg.style.display = "none";
+        } else {
+          mySidebar.style.display = "block";
+          overlayBg.style.display = "block";
+        }
+      }
+
+      // Close the sidebar with the close button
+      function w3_close() {
+        mySidebar.style.display = "none";
+        overlayBg.style.display = "none";
+      }
+    </script>
+  </body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script>
+  $("#actionBtn").on("click", function(e) {
+    e.stopPropagation();
+    $("#actionDropDown").show();
+  });
+  $(document).click(function() {
+    $("#actionDropDown").hide();
+  });
+
+  $("#checkboxAll").click(function() {
+    $("input:checkbox.w3-check").prop("checked", this.checked);
+  });
+
+  /*Key actions*/
+
+  $("#keyEnable").click(function() {
+    var keys = [];
+    $.each($("input[name='keyStatus']:checked"), function() {
+      keys.push($(this).attr("id"));
+    });
+
+    console.log(keys);
+
+    $.ajax({
+      url: "/dashboard/changeKeyStatus",
+      method: "POST",
+      data: {
+        status: "enable",
+        keys: keys
+      },
+      success: function(data) {
+        window.alert(data);
+        location.reload();
+      }
+    });
+  });
+  $("#keyDisable").click(function() {
+    var keys = [];
+    $.each($("input[name='keyStatus']:checked"), function() {
+      keys.push($(this).attr("id"));
+    });
+
+    $.ajax({
+      url: "/dashboard/changeKeyStatus",
+      method: "POST",
+      data: {
+        status: "disable",
+        keys: keys
+      },
+      success: function(data) {
+        window.alert(data);
+        location.reload();
+      }
+    });
+  });
+  /* View detail key*/
+  $("tr").on("dblclick", function() {
+    var alias = $(this)
+      .find("td:nth-child(2)")
+      .text();
+    window.location.href = `/dashboard/viewDetailKey/${alias}`;
+  });
+</script>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <%- include('head') %>
+  <body class="w3-light-grey">
+    <!-- Top container -->
+    <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+      <button
+        class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey"
+        onclick="w3_open();"
+      >
+        <i class="fa fa-bars"></i> Menu
+      </button>
+      <span class="w3-bar-item w3-right">Logo</span>
+    </div>
+
+    <%- include('sidebar') %>
+
+    <!-- Overlay effect when opening sidebar on small screens -->
+    <div
+      class="w3-overlay w3-hide-large w3-animate-opacity"
+      onclick="w3_close()"
+      style="cursor:pointer"
+      title="close side menu"
+      id="myOverlay"
+    ></div>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left:300px;margin-top:43px;">
+      <!-- Header -->
+      <header class="w3-container" style="padding-top:22px">
+        <h5>
+          <b>Record management</b>
+        </h5>
+      </header>
+      <hr />
+      <div class="w3-container">
+        <div class="w3-container " style="padding-left: 0; padding-bottom: 5px">
+          <button
+            id="uploadFile"
+            class="w3-btn w3-teal"
+            onclick="document.getElementById('upFileModal').style.display='block'"
+          >
+            <a style="text-decoration: none">Upload file</a>
+          </button>
+          <div id="upFileModal" class="w3-modal">
+            <div class="w3-modal-content w3-card-4">
+              <header class="w3-container w3-teal">
+                <span
+                  onclick="document.getElementById('upFileModal').style.display='none'"
+                  class="w3-button w3-display-topright"
+                >
+                  &times;
+                </span>
+                <h2>Upload file</h2>
+              </header>
+              <div class="w3-container">
+                <form
+                  action="/manageRecord/uploadFile"
+                  method="POST"
+                  enctype="multipart/form-data"
+                >
+                  <label>Choose a file:</label>
+                  <p>
+                    <input type="file" name="fileUpload"/>
+                  </p>                 
+                  <Label>Choose a key:</Label>
+                  <p>
+                    <select name="key">
+                      <% keys.forEach(function(key){ %>
+                      <option value=""></option>
+                      <option value="<%= key.alias %>"><%= key.alias %></option>
+                      <% }); %>
+                    </select>
+                  </p>
+                  <div id="detail">
+                    <p ><b>Account ID:</b> <div id="userId"></div></p>
+                    <p ><b>Key ID:</b> <div id="keyId"></div></p>
+                    <p ><b>Key Description:</b> <div id="keyDescription"></div></p>
+                  </div>
+                  <p>
+                    <input
+                      type="submit"
+                      class="w3-button w3-teal"
+                      value="Upload"
+                    />
+                  </p>
+                </form>
+              </div>
+              <footer class="w3-container w3-teal"></footer>
+            </div>
+          </div>
+        </div>
+        <table
+          class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white"
+        >
+          <tr>
+            <th>
+              <input type="checkbox" name="" class="w3-check" id="" />
+            </th>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Last modified</th>
+          </tr>   
+          <% files.forEach(function(file){ %>
+            <tr>
+              <td>
+                <input type="checkbox" name="" class="w3-check" id="" />
+              </td>
+              <td><%= file.file %></td>
+              <td><%= file.size %></td>
+              <td><%= file.lastModified %></td>              
+            </tr>
+          <% }); %>
+        </table>
+      </div>
+      <hr />
+
+      <hr />
+
+      <!-- Footer -->
+      <footer class="w3-container w3-padding-16 w3-light-grey">
+        <h4>FOOTER</h4>
+        <p>
+          Powered by
+          <a href="https://www.w3schools.com/w3css/default.asp" target="_blank"
+            >w3.css</a
+          >
+        </p>
+      </footer>
+
+      <!-- End page content -->
+    </div>
+
+    <script>
+      // Get the Sidebar
+      var mySidebar = document.getElementById("mySidebar");
+
+      // Get the DIV with overlay effect
+      var overlayBg = document.getElementById("myOverlay");
+
+      // Toggle between showing and hiding the sidebar, and add overlay effect
+      function w3_open() {
+        if (mySidebar.style.display === "block") {
+          mySidebar.style.display = "none";
+          overlayBg.style.display = "none";
+        } else {
+          mySidebar.style.display = "block";
+          overlayBg.style.display = "block";
+        }
+      }
+
+      // Close the sidebar with the close button
+      function w3_close() {
+        mySidebar.style.display = "none";
+        overlayBg.style.display = "none";
+      }
+    </script>
+  </body>
+</html>
+<script>
+  function formatDate(){
+    var lastModified = $("#lastModified").text();
+    var date = new Date(lastModified)
+    return date;
+  }
+</script>
+<script>
+  $("#uploadFile").on("click", function() {
+    $("#file-input").trigger("click");
+  });
+  $("select").on("change", function() {
+    const alias = this.value;
+    console.log(alias);
+
+    $.ajax({
+      url: "/manageRecord/getDetailKey",
+      method: "POST",
+      data: {
+        alias: alias
+      },
+      success: function(data) {
+        $("#keyId").text(data.key._id);
+        $("#keyDescription").text(data.key.description);
+        $("#userId").text(data.userId);
+      }
+    });
+  });
+</script>
