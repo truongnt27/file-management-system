@@ -43,8 +43,6 @@ const KeyInfo = (props) => {
   }
   const handleChangeSelect = (option) => {
     onSelect && onSelect(option.value);
-    console.log(option);
-
   }
   return (
     <div
@@ -77,15 +75,14 @@ const KeyInfo = (props) => {
         <Grid item>
           <Select
             className={classes.select}
-            name="rotatePeriod"
+            name="rotation"
             onChange={handleChangeSelect}
             options={ROTATE_PERIOD}
             placeholder="Select rotate period"
-            value={ROTATE_PERIOD.filter(obj => obj.value === keyInfo.rotatePeriod)}
+            value={ROTATE_PERIOD.filter(obj => obj.value === keyInfo.rotation)}
           />
         </Grid>
       </Grid>
-
     </div>
   )
 }

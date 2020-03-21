@@ -79,7 +79,7 @@ export default function VerticalLinearStepper() {
   const handleSelectRotate = (value) => {
     setKeyInfo(prev => ({
       ...prev,
-      rotatePeriod: value
+      rotation: value
     }))
   }
   const handleSelectUsers = (selectedUserIdxs) => {
