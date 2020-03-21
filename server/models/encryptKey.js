@@ -11,5 +11,5 @@ var schema = new Schema({
     createdDate: { type: Date, required: true },
     userPermision: { type: Array, required: true }
 });
-aaa
+
 module.exports = mongoose.model("EncryptKey", schema);
