@@ -3,9 +3,6 @@ const router = express.Router();
 
 const userController = require('../controllers/users.controller');
 
-/* GET users listing. */
-
-
 router
   .get('/', userController.get)
   .get('/:userId', userController.getById)
