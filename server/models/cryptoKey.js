@@ -6,4 +6,4 @@ const schema = new Schema({
     plaintext: { type: String, required: true },
 });
 
-module.exports = mongoose.model("KeyStore", schema);
+module.exports = mongoose.model("CryptoKey", schema);

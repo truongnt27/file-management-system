@@ -12,7 +12,7 @@ module.exports = {
     })
   },
 
-  update: (req, res) => {
+  update: async (req, res) => {
     const user = req.body.user;
     const id = user.userId;
     if (isEmpty(id)) {
@@ -38,7 +38,7 @@ module.exports = {
     }
   },
 
-  store: (req, res) => {
+  store: async (req, res) => {
     const user = req.body.user;
     if (!user) {
       return res.status(400).json({
@@ -56,7 +56,7 @@ module.exports = {
     })
   },
 
-  delete: (req, res) => {
+  delete: async (req, res) => {
     const id = req.params.userId;
     if (isEmpty(id)) {
       return res.status(400).json({
