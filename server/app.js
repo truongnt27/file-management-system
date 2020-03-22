@@ -8,9 +8,10 @@ var session = require("express-session");
 
 mongoose.connect("mongodb://localhost:27017/keymanagementsys");
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/user");
-var apiRouter = require("./routes/api");
+var authRouter = require("./routes/authen.router");
+var usersRouter = require("./routes/users.router");
+var keysRouter = require("./routes/keys.router");
+var cryptoRouter = require("./routes/crypto.router");
 
 var app = express();
 
@@ -20,9 +21,6 @@ app.use(express.urlencoded());
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -38,9 +36,10 @@ app.use(session(
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/user", usersRouter);
-app.use("/api", apiRouter);
+app.use("/api/users", usersRouter);
+// app.use("/api/auth", authRouter);
+// app.use("/api/keys", keysRouter);
+// app.use("/api/crypto", cryptoRouter);
 
 
 // catch 404 and forward to error handler
