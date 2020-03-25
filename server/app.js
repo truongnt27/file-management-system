@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var session = require("express-session");
+const passport = require("passport");
 
 mongoose.connect("mongodb://localhost:27017/keymanagementsys");
 
@@ -21,7 +22,6 @@ app.use(express.urlencoded());
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
-
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -34,10 +34,13 @@ app.use(session(
   }
 ));
 
+require('./config/passport.js');
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/users", usersRouter);
-// app.use("/api/auth", authRouter);
+app.use("/api/auth", authRouter);
 // app.use("/api/keys", keysRouter);
 // app.use("/api/crypto", cryptoRouter);
 
@@ -55,7 +58,10 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.json({
+    status: "FAILED",
+    message: "Something's wrong"
+  });
 });
 
 module.exports = app;
