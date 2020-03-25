@@ -9,8 +9,8 @@ var userSchema = new Schema({
   contact: { type: String, required: false },
   address: { type: String, required: false },
   dob: { type: Date, required: false },
-  keyList: { type: Array, required: true },
-  files: { type: Array, required: true }
+  keyList: { type: Array, required: false },
+  files: { type: Array, required: false }
 });
 
 module.exports = mongoose.model("UserStore", userSchema);
