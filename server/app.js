@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-var mongoose = require("mongoose");
-var session = require("express-session");
-const passport = require("passport");
-=======
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
@@ -15,8 +5,9 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const passport = require("passport");
 const bodyParser = require("body-parser");
->>>>>>> 5a0051d21bd8416ff1bf6451ab4932862a9d1ea3
+const cors = require('cors');
 
 mongoose.connect("mongodb://localhost:27017/keymanagementsys");
 
@@ -26,7 +17,9 @@ const keysRouter = require("./routes/keys.router");
 const cryptoRouter = require("./routes/crypto.router");
 
 const app = express();
-
+app.use(cors({
+  methods: "GET,PUT,POST,DELETE"
+}));
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded());
 
@@ -53,7 +46,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/users", usersRouter);
 
 app.use("/api/keys", keysRouter);
-app.use("/api/keys", keysRouter);
+app.use("/api/auth", authRouter);
 // app.use("/api/crypto", cryptoRouter);
 
 

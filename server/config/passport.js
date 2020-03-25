@@ -15,12 +15,12 @@ passport.deserializeUser(function (id, done) {
 });
 
 passport.use('local.signin', new LocalStrategy({
-  usernameField: 'userId',
+  usernameField: 'email',
   passwordField: 'password',
   passReqToCallback: true
-}, function (req, userId, password, done) {
+}, function (req, email, password, done) {
 
-  UserStore.findOne({ userId }, function (err, user) {
+  UserStore.findOne({ email }, function (err, user) {
 
     if (err) {
       return done(err);
@@ -36,13 +36,12 @@ passport.use('local.signin', new LocalStrategy({
 }));
 
 passport.use('local.signup', new LocalStrategy({
-  usernameField: 'userId',
+  usernameField: 'email',
   passwordField: 'password',
-
   passReqToCallback: true
-}, function (req, userId, password, done) {
+}, function (req, email, password, done) {
 
-  UserStore.findOne({ 'userId': userId }, function (err, user) {
+  UserStore.findOne({ email }, function (err, user) {
     if (err) {
       return done(err);
     }
@@ -51,7 +50,7 @@ passport.use('local.signup', new LocalStrategy({
     }
 
     const newUser = new UserStore({
-      userId: userId,
+      email: email,
       password: password,
       type: "user",
     });
