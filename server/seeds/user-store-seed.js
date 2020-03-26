@@ -5,7 +5,7 @@ mongoose.connect("mongodb://localhost:27017/keymanagementsys");
 
 var users = [
   new User({
-    userId: "dev1",
+    email: "dev1@company.com",
     password: "123456",
     fullname: "Nguyễn Văn A",
     dob: "December 17, 1995",
@@ -16,7 +16,7 @@ var users = [
     files: []
   }),
   new User({
-    userId: "dev2",
+    email: "dev2@company.com",
     password: "123456",
     fullname: "Đinh Văn Nguyên",
     dob: "December 17, 1995",
@@ -27,7 +27,7 @@ var users = [
     files: []
   }),
   new User({
-    userId: "manager1",
+    email: "manager1@company.com",
     password: "123456",
     fullname: "Nguyễn Thắng Trung",
     dob: "December 17, 1995",
@@ -38,7 +38,7 @@ var users = [
     type: "manager",
   }),
   new User({
-    userId: "admin",
+    email: "admin@company.com",
     password: "123465",
     fullname: "Nguyễn Thắng Trường",
     dob: "December 17, 1995",
@@ -49,7 +49,7 @@ var users = [
     files: [],
   }),
   new User({
-    userId: "manager2",
+    email: "manager2@company.com",
     password: "123456",
     fullname: "Trần Văn An",
     dob: "December 17, 1995",
@@ -60,7 +60,7 @@ var users = [
     files: []
   }),
   new User({
-    userId: "manager3",
+    email: "manager3",
     password: "123456",
     fullname: "Nguyễn Đức Toàn",
     dob: "December 17, 1973",
@@ -71,7 +71,7 @@ var users = [
     files: [],
   }),
   new User({
-    userId: "manager4",
+    email: "manager4@company.com",
     password: "123456",
     fullname: "Nguyễn Văn Dũng",
     dob: "December 17, 1973",
@@ -82,7 +82,7 @@ var users = [
     type: "manager",
   }),
   new User({
-    userId: "manager5",
+    email: "manager5@company.com",
     password: "123456",
     fullname: "Nguyễn Văn Bình",
     dob: "December 17, 1995",
