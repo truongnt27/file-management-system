@@ -1,0 +1,10 @@
+{
+  "facebook": {
+    "FACEBOOK_APP_ID": "1115363272195357",
+    "FACEBOOK_APP_SECRET": "b796d0b529fc1fd0e50d36da9d6ba2ac"
+  },
+  "google": {
+    "GOOGLE_CLIENT_ID": "1059460434373-ecabipeoun9l5s44qliuo3h9eujl3rhl.apps.googleusercontent.com",
+    "GOOGLE_CLIENT_SECRET": "t-AApMjAoqgrXZkGRhg7nSL3"
+  }
+}

@@ -6,7 +6,9 @@ import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
 import {
   NotFound as NotFoundView,
-  Logs as LogsView
+  Logs as LogsView,
+  SignIn as SignInView,
+  SignUp as SignUpView
 } from './views';
 
 const Routes = () => {
@@ -17,6 +19,17 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/logs"
+      />
+      <RouteWithLayout
+        component={SignInView}
+        exact
+        layout={MinimalLayout}
+        path="/sign-in"
+      />
+      <RouteWithLayout
+        component={SignUpView}
+        exact
+        layout={MinimalLayout}
       />
       <RouteWithLayout
         component={NotFoundView}

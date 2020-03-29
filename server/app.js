@@ -1,29 +1,31 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-var mongoose = require("mongoose");
-var session = require("express-session");
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("passport");
+const bodyParser = require("body-parser");
+const cors = require('cors');
 
 mongoose.connect("mongodb://localhost:27017/keymanagementsys");
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/user");
-var apiRouter = require("./routes/api");
+const authRouter = require("./routes/authen.router");
+const usersRouter = require("./routes/users.router");
+const keysRouter = require("./routes/keys.router");
+const cryptoRouter = require("./routes/crypto.router");
 
-var app = express();
-
+const app = express();
+app.use(cors({
+  methods: "GET,PUT,POST,DELETE"
+}));
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded());
 
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
-
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
-
+app.use(bodyParser.json());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -36,11 +38,18 @@ app.use(session(
   }
 ));
 
+require('./config/passport.js');
+require('./config/passport-facebook.js');
+require('./config/passport-google.js');
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/user", usersRouter);
-app.use("/api", apiRouter);
+app.use("/api/users", usersRouter);
+
+app.use("/api/keys", keysRouter);
+app.use("/api/auth", authRouter);
+// app.use("/api/crypto", cryptoRouter);
 
 
 // catch 404 and forward to error handler
@@ -56,7 +65,10 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.json({
+    status: "FAILED",
+    message: "Something's wrong"
+  });
 });
 
 module.exports = app;
