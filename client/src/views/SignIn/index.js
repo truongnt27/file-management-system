@@ -14,10 +14,13 @@ import {
   FormControlLabel,
   Container,
   Box,
-  Card
+  Card,
+  Divider
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
+import { Facebook as FacebookIcon, Google as GoogleIcon } from 'icons';
 
 import axios from 'axios';
 
@@ -33,12 +36,30 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     backgroundColor: theme.palette.error.light,
   },
+  socialButtons: {
+    marginTop: theme.spacing(3)
+  },
+  googleBtn: {
+    backgroundColor: '#db3236',
+    color: '#ffffff',
+
+    '&:hover': {
+      backgroundColor: '#c52d30',
+      color: '#ffffff'
+    }
+  },
+  socialIcon: {
+    marginRight: theme.spacing(8)
+  },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+  },
+  sugestion: {
+    marginTop: theme.spacing(2)
   },
 }));
 
@@ -101,13 +122,13 @@ function SignIn(props) {
 
   const handleSignIn = async (event) => {
     event.preventDefault();
-    try {
-      const data = await axios.post('http://localhost:3002/api/auth/signin', formState.values)
-      console.log(data);
+    // try {
+    //   const data = await axios.get('http://localhost:3002/api/auth/facebook')
+    //   console.log('2222222');
 
-    } catch (error) {
+    // } catch (error) {
 
-    }
+    // }
 
   };
 
@@ -130,6 +151,47 @@ function SignIn(props) {
           variant="h5"
         >
           Sign in
+        </Typography>
+        <Grid
+          className={classes.socialButtons}
+          container
+          direction="column"
+          spacing={2}
+        >
+          <Grid item>
+            <Button
+              color="primary"
+              fullWidth
+              href="#"
+              variant="contained"
+            >
+              <FacebookIcon
+                className={classes.socialIcon}
+              />
+                Login with Facebook
+            </Button>
+          </Grid>
+          <Grid item >
+            <Button
+              className={classes.googleBtn}
+              fullWidth
+              href="http://localhost:3002/api/auth/google"
+              variant="contained"
+            >
+              <GoogleIcon
+                className={classes.socialIcon}
+              />
+                Login with Google
+            </Button>
+          </Grid>
+        </Grid>
+        <Typography
+          align="center"
+          className={classes.sugestion}
+          color="textSecondary"
+          variant="body1"
+        >
+          OR
         </Typography>
         <form
           className={classes.form}
@@ -220,7 +282,7 @@ function SignIn(props) {
           {'Copyright © '}
           <Link
             color="inherit"
-            href="https://material-ui.com/"
+            href="#"
           >
             Your Website
           </Link>{' '}
