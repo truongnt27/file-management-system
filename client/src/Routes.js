@@ -6,6 +6,7 @@ import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
 import {
   NotFound as NotFoundView,
+  Logs as LogsView,
   SignIn as SignInView,
   SignUp as SignUpView
 } from './views';
@@ -13,6 +14,12 @@ import {
 const Routes = () => {
   return (
     <Switch>
+      <RouteWithLayout
+        component={LogsView}
+        exact
+        layout={MainLayout}
+        path="/logs"
+      />
       <RouteWithLayout
         component={SignInView}
         exact
@@ -23,7 +30,6 @@ const Routes = () => {
         component={SignUpView}
         exact
         layout={MinimalLayout}
-        path="/sign-up"
       />
       <RouteWithLayout
         component={NotFoundView}
