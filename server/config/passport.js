@@ -21,6 +21,7 @@ passport.use('local.signin', new LocalStrategy({
 }, function (req, email, password, done) {
 
   UserStore.findOne({ email }, function (err, user) {
+    console.log(user);
 
     if (err) {
       return done(err);

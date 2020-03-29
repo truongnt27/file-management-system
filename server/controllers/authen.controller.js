@@ -5,7 +5,7 @@ module.exports = {
     return passport.authenticate('local.signin', (err, user, info) => {
 
       if (!user || err) {
-        res.status(400).json({
+        return res.status(400).json({
           status: "FAILED",
           message: "Invalid username or password"
         })
@@ -24,7 +24,7 @@ module.exports = {
     return passport.authenticate('local.signup', (err, user, info) => {
 
       if (!user || err) {
-        res.status(400).json({
+        return res.status(400).json({
           status: "FAILED",
           message: "Invalid username or password"
         })
@@ -38,7 +38,18 @@ module.exports = {
       });
     })(req, res, next)
   },
-  facebook: {
 
-  }
+  // facebook: (req, res, next) => {
+  //   return res.status(200).json({
+  //     status: "SUCCESS",
+  //   });
+  // },
+
+  google: (req, res, next) => {
+    console.log(req.user);
+
+    return res.status(200).json({
+      status: "SUCCESS",
+    });
+  },
 }

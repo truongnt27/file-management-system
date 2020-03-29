@@ -39,6 +39,8 @@ app.use(session(
 ));
 
 require('./config/passport.js');
+require('./config/passport-facebook.js');
+require('./config/passport-google.js');
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
