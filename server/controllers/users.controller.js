@@ -7,7 +7,7 @@ module.exports = {
     res.status(200).json({
       status: "SUCCESS",
       data: {
-        users: users
+        users
       }
     })
   },

@@ -1,10 +1,11 @@
-import React from 'react'
-import MuiTable from 'mui-datatables'
+import React from 'react';
+import PropTypes from 'prop-types';
+import MuiTable from 'mui-datatables';
 
 //mui table options
 const cols = [
   {
-    name: 'username',
+    name: 'fullname',
     label: 'Name',
     options: {
       filter: false
@@ -18,8 +19,8 @@ const cols = [
     }
   },
   {
-    name: 'role',
-    label: 'Role'
+    name: 'type',
+    label: 'Type'
   },
 
 ];
@@ -27,13 +28,14 @@ const cols = [
 
 const KeySharing = (props) => {
 
-  const { onChange, allUsers } = props;
+  const { onChange, allUsers, selectedUsers } = props;
 
   const options = {
     filterType: 'checkbox',
     download: false,
     print: false,
     delete: false,
+    rowsSelected: selectedUsers,
     onRowsSelect: (currentRowsSelected, allRowsSelected) => {
       onChange(allRowsSelected.map(row => row.index));
     },
@@ -51,4 +53,8 @@ const KeySharing = (props) => {
   )
 }
 
+KeySharing.propTypes = {
+  allUsers: PropTypes.array,
+  onChange: PropTypes.func.isRequired
+}
 export default KeySharing;

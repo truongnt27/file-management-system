@@ -24,13 +24,13 @@ const useStyles = makeStyles(theme => ({
     height: theme.spacing(3),
     width: theme.spacing(3)
   },
-  pending: {
+  PENDING: {
     backgroundColor: theme.palette.info.main
   },
-  disable: {
+  DISABLE: {
     backgroundColor: theme.palette.error.main
   },
-  enable: {
+  ENABLE: {
     backgroundColor: theme.palette.success.main
   }
 }));

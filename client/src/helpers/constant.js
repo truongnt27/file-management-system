@@ -1,7 +1,7 @@
 export const STATUS_COLOR = {
-  ENABLE: 'enable',
-  DISABLE: 'disable',
-  PENDING: 'pending'
+  ENABLE: 'ENABLE',
+  DISABLE: 'DISABLE',
+  PENDING: 'PENDING'
 }
 
 export const API_STATUS_CODE = {

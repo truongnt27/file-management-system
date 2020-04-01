@@ -42,9 +42,6 @@ module.exports = {
 
   store: async (req, res) => {
     const key = req.body.key;
-    console.log(key);
-    console.log(req.body);
-
     if (!key) {
       return res.status(400).json({
         status: "FAILED",
@@ -54,11 +51,16 @@ module.exports = {
     try {
       const cryptoKey = new CryptoKey(genCryptoKey());
       const savedkey = await cryptoKey.save();
+      const status = "ENABLE";
+      const creationDate = Date.now();
 
       const keyStore = KeyStore({
         ...key,
-        keyId: savedkey._id
+        status,
+        creationDate,
+        cryptoKeyId: savedkey._id
       });
+
       const resultKey = await keyStore.save();
 
       return res.status(200).json({
@@ -68,6 +70,7 @@ module.exports = {
         }
       })
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         status: "FAILED",
         message: "Something's wrong"

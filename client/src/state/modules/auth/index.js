@@ -2,14 +2,13 @@
 import authReducer from './reducer';
 import * as Actions from './actions';
 import authSaga from './saga';
-
-const namespace = 'auth';
-const isAuthenticated = state => (state[namespace].status === Actions.Status.AUTH_SUCCESS) ? true : false;
+import * as Selectors from './selector'
+import { namespace } from './actions'
 
 export {
   namespace,
   authReducer,
   Actions,
   authSaga,
-  isAuthenticated
+  Selectors
 }

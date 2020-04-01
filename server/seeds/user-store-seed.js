@@ -60,7 +60,7 @@ var users = [
     files: []
   }),
   new User({
-    email: "manager3",
+    email: "manager3@company.com",
     password: "123456",
     fullname: "Nguyễn Đức Toàn",
     dob: "December 17, 1973",

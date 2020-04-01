@@ -45,15 +45,15 @@ export default function KeyUsage(props) {
                 component="th"
                 scope="row"
               >
-                {user.username}
+                {user.fullname}
               </TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell>{user.role}</TableCell>
+              <TableCell>{user.type}</TableCell>
               <TableCell>
                 <PermissionSelector
                   onChange={handleOnChange}
-                  selectedPermission={get(keyInfo, ['permissions', user.id], [])}
-                  userId={user.id}
+                  selectedPermission={get(keyInfo, ['permissions', user._id], [])}
+                  userId={user._id}
                 />
               </TableCell>
             </TableRow>

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+
 import { makeStyles } from '@material-ui/styles';
-
 import { KeysToolbar, KeysTable } from './components';
-import mockData from './data';
+import { Selectors, Actions } from 'state/modules/app/keys';
 
+// style
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -13,10 +15,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// component
 const KeyList = () => {
   const classes = useStyles();
+  const keysStore = useSelector(Selectors.keysStore);
+  const dispatch = useDispatch();
 
-  const [keys] = useState(mockData);
+  useEffect(() => {
+    (keysStore.status !== 'LOADED') && dispatch({ type: Actions.FETCH_KEYS })
+  }, [keysStore.status])
+
+  const keys = Object.values(keysStore.byId);
 
   return (
     <div className={classes.root}>

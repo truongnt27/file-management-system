@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
 
 import { SearchInput } from 'components';
-
+import { Link } from 'react-router-dom'
 const useStyles = makeStyles(theme => ({
   root: {},
   row: {
@@ -25,6 +25,9 @@ const useStyles = makeStyles(theme => ({
   },
   searchInput: {
     marginRight: theme.spacing(1)
+  },
+  createKey: {
+    color: '#FFFFFF'
   }
 }));
 
@@ -46,7 +49,12 @@ const KeysToolbar = props => {
           color="primary"
           variant="contained"
         >
-          Add key
+          <Link
+            className={classes.createKey}
+            to="/keys/create"
+          >
+            Create key
+          </Link>
         </Button>
       </div>
       <div className={classes.row}>

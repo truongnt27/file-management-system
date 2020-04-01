@@ -60,7 +60,7 @@ const Sidebar = props => {
       icon: <VpnKeyIcon />
     },
     {
-      title: 'Logs',
+      title: 'Activity logs',
       href: '/logs',
       icon: <HistoryIcon />
     },

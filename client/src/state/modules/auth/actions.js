@@ -1,3 +1,4 @@
+export const namespace = 'auth';
 export const Status = {
   INIT: 'INIT',
   AUTH_PROCESSING: 'PROCESSING',
@@ -5,9 +6,9 @@ export const Status = {
   AUTH_FAILED: 'FAILED',
 }
 
-export const AUTH_USER = 'auth user';
-export const AUTH_USER_SUCCESS = 'auth user success';
-export const AUTH_USER_FAILED = 'auth user failed';
+export const AUTH_USER = `${namespace}/AUTH_USER`;
+export const AUTH_USER_SUCCESS = `${namespace}/AUTH_USER_SUCCESS`;
+export const AUTH_USER_FAILED = `${namespace}/AUTH_USER_FAILED`;
 
 export const authSuccess = (user) => ({
   type: AUTH_USER_SUCCESS,

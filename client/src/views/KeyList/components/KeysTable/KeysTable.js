@@ -114,9 +114,9 @@ const KeysTable = props => {
                     />
                   </TableCell>
                   <TableCell>Alias</TableCell>
-                  <TableCell>Key Id</TableCell>
+                  <TableCell>Description</TableCell>
                   <TableCell>Status</TableCell>
-                  <TableCell>Created Date</TableCell>
+                  <TableCell>Creation Date</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -136,7 +136,7 @@ const KeysTable = props => {
                       />
                     </TableCell>
                     <TableCell>{key.alias}</TableCell>
-                    <TableCell>{key.id}</TableCell>
+                    <TableCell>{key.description || ''}</TableCell>
                     <TableCell>
                       <div className={classes.statusContainer}>
                         <StatusBullet
@@ -148,7 +148,7 @@ const KeysTable = props => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {moment(key.createdAt).format('DD/MM/YYYY')}
+                      {moment(key.creationDate).format('DD/MM/YYYY hh:mm:ss')}
                     </TableCell>
                   </TableRow>
                 ))}

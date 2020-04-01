@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 
-import { KeyInfo, KeySharing, KeyUsage } from './components'
+import { KeyInfo, KeySharing, KeyUsage } from './components';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { usersSelector, FETCH_USER } from 'state/modules/app/users/actions';
+import { createKeySaga } from 'state/modules/app/keys/actions'
 
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
+    padding: theme.spacing(3)
   },
   button: {
     marginTop: theme.spacing(1),
@@ -29,31 +33,19 @@ function getSteps() {
   return ['Fill key information', 'Define key sharing', 'Define key usage'];
 }
 
-const data = [
-  {
-    id: '1232',
-    username: 'truongnt',
-    email: 'truongnt@abc.com',
-    role: 'manager'
-  },
-  {
-    id: '1234',
-    username: 'minhdt',
-    email: 'minhdt@abc.com',
-    role: 'member'
-  },
-  {
-    id: '1235',
-    username: 'datdt',
-    email: 'datdt@abc.com',
-    role: 'manager'
-  }
-]
+export default function CreateKey() {
 
-export default function VerticalLinearStepper() {
+  const dispatch = useDispatch();
+  const usersStore = useSelector(usersSelector);
+
+  useEffect(() => {
+    usersStore.status !== 'LOADED' && dispatch({ type: FETCH_USER })
+
+  }, [usersStore.status])
+
 
   const classes = useStyles();
-  const allUsers = data;
+  const allUsers = Object.values(usersStore.byId);
 
   const [activeStep, setActiveStep] = useState(0);
   const [selectedUsers, setselectedUsers] = useState([]);
@@ -61,7 +53,7 @@ export default function VerticalLinearStepper() {
   const [keyInfo, setKeyInfo] = useState({
     alias: '',
     description: '',
-    rotatePeriod: '',
+    rotation: '',
     permissions: {}
   })
 
@@ -83,8 +75,7 @@ export default function VerticalLinearStepper() {
     }))
   }
   const handleSelectUsers = (selectedUserIdxs) => {
-    const selectedUsers = selectedUserIdxs.map(idx => allUsers[idx]);
-    setselectedUsers(selectedUsers);
+    setselectedUsers(selectedUserIdxs);
   }
   const handleKeyUsage = (selectedPermissions, userId) => {
     setKeyInfo(prev => ({
@@ -112,6 +103,7 @@ export default function VerticalLinearStepper() {
           <KeySharing
             allUsers={allUsers}
             onChange={handleSelectUsers}
+            selectedUsers={selectedUsers}
           />
         );
       case 2:
@@ -119,7 +111,7 @@ export default function VerticalLinearStepper() {
           <KeyUsage
             keyInfo={keyInfo}
             onChange={handleKeyUsage}
-            selectedUsers={selectedUsers}
+            selectedUsers={selectedUsers.map(idx => allUsers[idx])}
           />
         );
       default:
@@ -140,7 +132,8 @@ export default function VerticalLinearStepper() {
   // };
 
   const handleFinish = () => {
-
+    setActiveStep(0);
+    dispatch(createKeySaga(keyInfo));
   }
   return (
     <div className={classes.root}>
@@ -152,7 +145,7 @@ export default function VerticalLinearStepper() {
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
             <StepContent>
-              <Typography>{getStepContent(index)}</Typography>
+              {getStepContent(index)}
               <div className={classes.actionsContainer}>
                 <div>
                   <Button

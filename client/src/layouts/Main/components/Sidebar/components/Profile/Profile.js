@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar, Typography } from '@material-ui/core';
 
+import { useSelector } from 'react-redux';
+import { Selectors } from 'state/modules/auth';
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -21,16 +23,28 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
+function genAvatorImg(name) {
+  const avatarColors = ['#1C1C84', '#283258', '#1A6A8E', '#4AB1B5'];
+  const initial = name.match(/\b\w/g);
+  console.log(initial);
+
+  const displayName = `${initial[0]}${initial.length > 1 ? initial[initial.length - 1] : ''}`.toUpperCase();
+  const backgroundColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
+
+  return {
+    displayName,
+    backgroundColor
+  }
+}
+
 const Profile = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+  const user = useSelector(Selectors.currentUser);
 
-  const user = {
-    name: 'Shen Zhi',
-    avatar: '/images/avatars/avatar_11.png',
-    bio: 'Brain Director'
-  };
+  const { displayName, backgroundColor } = useMemo(() => genAvatorImg(user.fullname), [user.fullname]);
 
   return (
     <div
@@ -41,16 +55,19 @@ const Profile = props => {
         alt="Person"
         className={classes.avatar}
         component={RouterLink}
-        src={user.avatar}
+        src={user.avatarPicture}
+        style={{ backgroundColor }}
         to="/settings"
-      />
+      >
+        {displayName}
+      </Avatar>
       <Typography
         className={classes.name}
         variant="h4"
       >
-        {user.name}
+        {user.fullname}
       </Typography>
-      <Typography variant="body2">{user.bio}</Typography>
+      <Typography variant="body2">{user.email}</Typography>
     </div>
   );
 };
