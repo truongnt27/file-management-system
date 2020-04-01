@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Router } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/styles';
 
 import { Provider } from 'react-redux';

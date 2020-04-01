@@ -10,6 +10,8 @@ passport.use('google', new GoogleStrategy({
   profileFields: ['displayName', 'email']
 },
   async function (accessToken, refreshToken, profile, done) {
+    console.log("accessToken", accessToken);
+
     try {
       const { id } = profile;
       const { name, picture, email } = profile._json;

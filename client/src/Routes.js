@@ -19,12 +19,14 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/logs"
+        requireAuth
       />
       <RouteWithLayout
         component={KeyListView}
         exact
         layout={MainLayout}
-        path="/keys/:keyId"
+        path="/keys"
+        requireAuth
       />
       <RouteWithLayout
         component={SignInView}

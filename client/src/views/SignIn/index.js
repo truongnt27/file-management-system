@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
+
+import { useDispatch } from 'react-redux';
+import { Actions } from 'state/modules/auth'
+
 import {
   Grid,
   Button,
@@ -15,14 +19,14 @@ import {
   Container,
   Box,
   Card,
-  Divider
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import { Facebook as FacebookIcon, Google as GoogleIcon } from 'icons';
-
 import axios from 'axios';
+
+import { GoogleLogin } from 'react-google-login';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -78,9 +82,9 @@ const schema = {
   }
 };
 
-function SignIn(props) {
+function SignIn() {
   const classes = useStyles();
-  const { history } = props;
+  const dispatch = useDispatch();
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -119,21 +123,49 @@ function SignIn(props) {
     }));
   };
 
-  const handleSignIn = async (event) => {
+  const handleSignInSocial = async (event, provider) => {
     event.preventDefault();
-    // try {
-    //   const data = await axios.get('http://localhost:3002/api/auth/facebook')
-    //   console.log('2222222');
+    //dispatch(Actions.authUser(provider, {}))
+    try {
+      // const options = {
+      //   method: 'GET',
+      //   headers: { 'Access-Control-Allow-Origin': '*' },
+      //   url: 'https://accounts.google.com/o/oauth2/v2/auth?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fapi%2Fauth%2Fgoogle%2Fcallback&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.login%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&client_id=1059460434373-ecabipeoun9l5s44qliuo3h9eujl3rhl.apps.googleusercontent.com'
+      // 'https://accounts.google.com/o/oauth2/v2/auth?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fapi%2Fauth%2Fgoogle%2Fcallback&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.login%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&client_id=1059460434373-ecabipeoun9l5s44qliuo3h9eujl3rhl.apps.googleusercontent.com'
+      // }
 
-    // } catch (error) {
+      // const res = await axios('http://localhost:3002/api/auth/google');
+      // console.log(res);
 
-    // }
+
+    } catch (error) {
+      console.log(error);
+
+    }
+  };
+
+  const handleSignIn = (event) => {
+    event.preventDefault();
+    dispatch(Actions.authUser('local', formState.values))
 
   };
 
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
+  const responseGoogle = async (response) => {
+    //const res = await fetch('http://')
+    console.log(response.tokenObj);
+
+    const res = await fetch('http://localhost:3002/api/auth/google/callback', {
+      headers: {
+        'Authorization': ` Bearer ${response.tokenObj.access_token}`
+      }
+    });
+    const data = await res.json();
+    console.log('data', data);
+
+  }
 
   return (
     <Container
@@ -161,7 +193,6 @@ function SignIn(props) {
             <Button
               color="primary"
               fullWidth
-              href="#"
               variant="contained"
             >
               <FacebookIcon
@@ -171,9 +202,20 @@ function SignIn(props) {
             </Button>
           </Grid>
           <Grid item >
+            {/* <GoogleLogin
+              accessType="offline"
+              autoLoad={false}
+              buttonText="Login with facebook"
+              clientId="1059460434373-ecabipeoun9l5s44qliuo3h9eujl3rhl.apps.googleusercontent.com"
+              cookiePolicy={'single_host_origin'}
+              onFailure={responseGoogle}
+              onSuccess={responseGoogle}
+            /> */}
             <Button
               className={classes.googleBtn}
               fullWidth
+              //onClick={(e) => handleSignInSocial(e, 'google')}
+              //onClick={handleSignIn}
               href="http://localhost:3002/api/auth/google"
               variant="contained"
             >

@@ -18,6 +18,7 @@ const cryptoRouter = require("./routes/crypto.router");
 
 const app = express();
 app.use(cors({
+  origin: 'http://localhost:3000',
   methods: "GET,PUT,POST,DELETE"
 }));
 // Parse URL-encoded bodies (as sent by HTML forms)

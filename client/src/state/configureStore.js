@@ -7,7 +7,6 @@ import mySaga from './sagas';
 
 export const history = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware();
-// sagaMiddleware.run(mySaga);
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -22,6 +21,6 @@ export default function configureStore(preloadedState) {
       ),
     ),
   )
-
+  sagaMiddleware.run(mySaga);
   return store;
 }
