@@ -6,11 +6,11 @@ const authenController = require('../controllers/authen.controller');
 
 router
   .post(
-    '/signin',
+    '/sign-in',
     authenController.signin
   )
   .post(
-    '/signup',
+    '/sign-up',
     authenController.signup
   )
   // .get(

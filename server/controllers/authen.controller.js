@@ -14,7 +14,7 @@ module.exports = {
       return res.status(200).json({
         status: "SUCCESS",
         data: {
-          id: user.userId
+          user
         }
       });
     })(req, res, next)
@@ -46,10 +46,12 @@ module.exports = {
   // },
 
   google: (req, res, next) => {
-    console.log(req.user);
-
-    return res.status(200).json({
-      status: "SUCCESS",
-    });
+    return res.redirect('http://localhost:3000/?email=' + req.user.email);
+    // return res.status(200).json({
+    //   status: "SUCCESS",
+    //   data: {
+    //     user: req.user
+    //   }
+    // }).re;
   },
 }
