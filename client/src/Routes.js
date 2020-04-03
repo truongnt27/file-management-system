@@ -9,12 +9,20 @@ import {
   SignIn as SignInView,
   SignUp as SignUpView,
   KeyList as KeyListView,
+  Account as AccountView
 } from './views';
 
 import { CreateKey as CreateKeyView } from './views/KeyList/components'
 const Routes = () => {
   return (
     <Switch>
+      <RouteWithLayout
+        component={AccountView}
+        exact
+        layout={MainLayout}
+        path="/account"
+        requireAuth        
+      />
       <RouteWithLayout
         component={LogsView}
         exact

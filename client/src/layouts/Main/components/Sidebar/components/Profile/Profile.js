@@ -24,10 +24,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function genAvatorImg(name) {
+function genAvatorImg(name = 'user') {
   const avatarColors = ['#1C1C84', '#283258', '#1A6A8E', '#4AB1B5'];
-  const initial = name.match(/\b\w/g);
-  console.log(initial);
+  const initial = name.match(/\b\w/g);  
 
   const displayName = `${initial[0]}${initial.length > 1 ? initial[initial.length - 1] : ''}`.toUpperCase();
   const backgroundColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
@@ -57,7 +56,7 @@ const Profile = props => {
         component={RouterLink}
         src={user.avatarPicture}
         style={{ backgroundColor }}
-        to="/settings"
+        to="/account"
       >
         {displayName}
       </Avatar>
