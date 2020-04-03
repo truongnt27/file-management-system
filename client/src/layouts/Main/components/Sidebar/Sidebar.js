@@ -73,12 +73,7 @@ const Sidebar = props => {
       title: 'Settings',
       href: '/settings',
       icon: <SettingsIcon />
-    },
-    {
-      title: 'Sign out',
-      href: '/signout',
-      icon: <AccountBoxIcon />
-    },
+    },    
   ];
 
   return (

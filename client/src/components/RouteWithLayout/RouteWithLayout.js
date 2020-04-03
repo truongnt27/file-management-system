@@ -6,8 +6,8 @@ import { useSelector } from 'react-redux'
 
 const RouteWithLayout = props => {
   const { layout: Layout, component: Component, requireAuth, ...rest } = props;
-  const isLoggined = useSelector(isAuthenticated);
-  console.log(isLoggined);
+  const isLoggined = true;
+  
 
   if (requireAuth) {
     return (
