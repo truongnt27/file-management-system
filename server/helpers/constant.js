@@ -10,5 +10,10 @@ module.exports = {
     DISABLE: 'DISABLE',
     ENABLE: 'ENABLE',
     DELETE: 'DELETE'
+  },
+  KEYS_STATUS: {
+    ENABLE: 'ENABLE',
+    DISABLE: 'DISABLE',
+    PENDING: 'PENDING'
   }
 }

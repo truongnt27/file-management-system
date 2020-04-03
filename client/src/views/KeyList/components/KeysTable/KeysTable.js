@@ -1,32 +1,213 @@
-import React, { useState } from 'react';
+/* eslint-disable react/no-multi-comp */
+import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import moment from 'moment';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import { makeStyles } from '@material-ui/styles';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 
 import {
-  Card,
-  CardActions,
-  CardContent,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
   TableHead,
+  TablePagination,
+  Button,
+  IconButton,
+  Checkbox,
+  Paper,
   TableRow,
-  TablePagination
+  Typography,
+  Toolbar,
+  Tooltip,
+  TableSortLabel
 } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import FilterListIcon from '@material-ui/icons/FilterList';
 
-import { StatusBullet } from 'components'
+import { StatusBullet } from 'components';
+import moment from 'moment';
+
+function desc(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+function stableSort(array, cmp) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = cmp(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map(el => el[0]);
+}
+
+function getSorting(order, orderBy) {
+  return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
+}
+
+const headRows = [
+  { id: 'alias', label: 'Alias ' },
+  { id: 'description', label: 'Description' },
+  { id: 'status', label: 'Status' },
+  { id: 'creationDate', label: 'Creation date' },
+
+];
+
+function EnhancedTableHead(props) {
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const createSortHandler = property => event => {
+    onRequestSort(event, property);
+  };
+
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell padding="checkbox">
+          <Checkbox
+            checked={numSelected === rowCount}
+            color="primary"
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            inputProps={{ 'aria-label': 'Select all desserts' }}
+            onChange={onSelectAllClick}
+          />
+        </TableCell>
+        {headRows.map(row => (
+          <TableCell
+            align="left"
+            key={row.id}
+            padding="default"
+            sortDirection={orderBy === row.id ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === row.id}
+              direction={order}
+              onClick={createSortHandler(row.id)}
+            >
+              {row.label}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+}
+
+EnhancedTableHead.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.string.isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
+};
+
+const useToolbarStyles = makeStyles(theme => ({
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+  },
+  highlight:
+    theme.palette.type === 'light'
+      ? {
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+      }
+      : {
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark,
+      },
+  spacer: {
+    flex: '1 1 100%',
+  },
+  actions: {
+    color: theme.palette.text.secondary,
+  },
+  title: {
+    flex: '0 0 auto',
+  },
+}));
+
+const EnhancedTableToolbar = props => {
+  const classes = useToolbarStyles();
+  const { numSelected } = props;
+
+  return (
+    <Toolbar
+      className={clsx(classes.root, {
+        [classes.highlight]: numSelected > 0,
+      })}
+    >
+      <div className={classes.title}>
+        {numSelected > 0 ? (
+          <Typography
+            color="inherit"
+            variant="subtitle1"
+          >
+            {numSelected} selected
+          </Typography>
+        ) :
+          (
+            <Typography
+              id="tableTitle"
+              variant="h6"
+            >
+              All keys
+            </Typography>
+          )}
+      </div>
+      <div className={classes.spacer} />
+      <div className={classes.actions}>
+        {numSelected > 0 ? (
+          <div style={{ display: 'flex' }}>
+            <Tooltip title="Delete">
+              <IconButton aria-label="Delete">
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+            <Button
+              color="primary"
+              size="small"
+              variant="contained"
+            >
+              Export
+            </Button>
+          </div>
+        ) :
+          (
+            <Tooltip title="Filter list">
+              <IconButton aria-label="Filter list">
+                <FilterListIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+      </div>
+    </Toolbar>
+  );
+};
+
+EnhancedTableToolbar.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+};
 
 const useStyles = makeStyles(theme => ({
-  root: {},
-  content: {
-    padding: 0
+  root: {
+    width: '100%',
+    marginTop: theme.spacing(3),
   },
-  inner: {
-    minWidth: 1050
+  paper: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
+  },
+  table: {
+    minWidth: 750,
+  },
+  tableWrapper: {
+    overflowX: 'auto',
   },
   statusContainer: {
     display: 'flex',
@@ -35,146 +216,158 @@ const useStyles = makeStyles(theme => ({
   status: {
     marginRight: theme.spacing(1)
   },
-  actions: {
-    justifyContent: 'flex-end'
-  }
 }));
 
-const KeysTable = props => {
-  const { className, keys, ...rest } = props;
-
+export default function KeysTable(props) {
   const classes = useStyles();
 
-  const [selectedKeys, setSelectedKeys] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
+  const { keys: rows } = props;
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('calories');
+  const [selected, setSelected] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const handleSelectAll = event => {
-    const { keys } = props;
+  function handleRequestSort(event, property) {
+    const isDesc = orderBy === property && order === 'desc';
+    setOrder(isDesc ? 'asc' : 'desc');
+    setOrderBy(property);
+  }
 
-    let selectedKeys;
-
+  function handleSelectAllClick(event) {
     if (event.target.checked) {
-      selectedKeys = keys.map(key => key.id);
-    } else {
-      selectedKeys = [];
+      const newSelecteds = rows.map(n => n._id);
+      setSelected(newSelecteds);
+      return;
     }
+    setSelected([]);
+  }
 
-    setSelectedKeys(selectedKeys);
-  };
-
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedKeys.indexOf(id);
-    let newSelectedKeys = [];
+  function handleClick(event, _id) {
+    const selectedIndex = selected.indexOf(_id);
+    let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelectedKeys = newSelectedKeys.concat(selectedKeys, id);
+      newSelected = newSelected.concat(selected, _id);
     } else if (selectedIndex === 0) {
-      newSelectedKeys = newSelectedKeys.concat(selectedKeys.slice(1));
-    } else if (selectedIndex === selectedKeys.length - 1) {
-      newSelectedKeys = newSelectedKeys.concat(selectedKeys.slice(0, -1));
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelectedKeys = newSelectedKeys.concat(
-        selectedKeys.slice(0, selectedIndex),
-        selectedKeys.slice(selectedIndex + 1)
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
       );
     }
 
-    setSelectedKeys(newSelectedKeys);
-  };
+    setSelected(newSelected);
+  }
 
-  const handlePageChange = (event, page) => {
-    setPage(page);
-  };
+  function handleChangePage(event, newPage) {
+    setPage(newPage);
+  }
 
-  const handleRowsPerPageChange = event => {
-    setRowsPerPage(event.target.value);
-  };
+  function handleChangeRowsPerPage(event) {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  }
+
+  const isSelected = _id => selected.indexOf(_id) !== -1;
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedKeys.length === keys.length}
-                      color="primary"
-                      indeterminate={
-                        selectedKeys.length > 0 &&
-                        selectedKeys.length < keys.length
-                      }
-                      onChange={handleSelectAll}
-                    />
-                  </TableCell>
-                  <TableCell>Alias</TableCell>
-                  <TableCell>Description</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Creation Date</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {keys.slice(0, rowsPerPage).map(key => (
-                  <TableRow
-                    className={classes.tableRow}
-                    hover
-                    key={key.id}
-                    selected={selectedKeys.indexOf(key.id) !== -1}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedKeys.indexOf(key.id) !== -1}
-                        color="primary"
-                        onChange={event => handleSelectOne(event, key.id)}
-                        value="true"
-                      />
-                    </TableCell>
-                    <TableCell>{key.alias}</TableCell>
-                    <TableCell>{key.description || ''}</TableCell>
-                    <TableCell>
-                      <div className={classes.statusContainer}>
-                        <StatusBullet
-                          className={classes.status}
-                          size="sm"
-                          type={key.status}
+    <div className={classes.root}>
+      <Paper className={classes.paper}>
+        <EnhancedTableToolbar numSelected={selected.length} />
+        <div className={classes.tableWrapper}>
+          <Table
+            aria-labelledby="tableTitle"
+            className={classes.table}
+            size="medium"
+          >
+            <EnhancedTableHead
+              numSelected={selected.length}
+              onRequestSort={handleRequestSort}
+              onSelectAllClick={handleSelectAllClick}
+              order={order}
+              orderBy={orderBy}
+              rowCount={rows.length}
+            />
+            <TableBody>
+              {stableSort(rows, getSorting(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  const isItemSelected = isSelected(row._id);
+                  const labelId = `checkbox-${index}`;
+                  console.log(row);
+                  return (
+                    <TableRow
+                      aria-checked={isItemSelected}
+                      hover
+                      key={row._id}
+                      onClick={event => handleClick(event, row._id)}
+                      role="checkbox"
+                      selected={isItemSelected}
+                      tabIndex={-1}
+                    >
+                      <TableCell
+                        align="left"
+                        padding="checkbox"
+                      >
+                        <Checkbox
+                          checked={isItemSelected}
+                          color="primary"
+                          inputProps={{ 'aria-labelledby': labelId }}
                         />
-                        {key.status}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {moment(key.creationDate).format('DD/MM/YYYY hh:mm:ss')}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </PerfectScrollbar>
-      </CardContent>
-      <CardActions className={classes.actions}>
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        padding="none"
+                        scope="row"
+                      >
+                        {row.alias}
+                      </TableCell>
+                      <TableCell align="left">{row.description}</TableCell>
+                      <TableCell align="left">
+                        <div className={classes.statusContainer}>
+                          <StatusBullet
+                            className={classes.status}
+                            size="sm"
+                            type={row.status}
+                          />
+                          {row.status}
+                        </div>
+                      </TableCell>
+                      <TableCell align="left">
+                        {moment(row.creationDate).format('DD/MM/YYYY hh:mm:ss')}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+
+            </TableBody>
+          </Table>
+        </div>
         <TablePagination
+          backIconButtonProps={{
+            'aria-label': 'Previous Page',
+          }}
           component="div"
-          count={keys.length}
-          onChangePage={handlePageChange}
-          onChangeRowsPerPage={handleRowsPerPageChange}
+          count={rows.length}
+          nextIconButtonProps={{
+            'aria-label': 'Next Page',
+          }}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
           page={page}
           rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 20, 50]}
         />
-      </CardActions>
-    </Card>
+      </Paper>
+    </div>
   );
-};
-
+}
 KeysTable.propTypes = {
   className: PropTypes.string,
   keys: PropTypes.array.isRequired
 };
-
-export default KeysTable;
