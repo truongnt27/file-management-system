@@ -10,6 +10,7 @@ import {
   TableCell,
   TableHead,
   TablePagination,
+  Button,
   IconButton,
   Checkbox,
   Paper,
@@ -51,11 +52,9 @@ function getSorting(order, orderBy) {
 }
 
 const headRows = [
-  { id: 'alias', label: 'Alias ' },
-  { id: 'description', label: 'Description' },
-  { id: 'status', label: 'Status' },
-  { id: 'creationDate', label: 'Creation date' },
-
+  { id: 'name', label: 'Name' },
+  { id: 'owner', label: 'Owner' },
+  { id: 'lastActivity', label: 'Last activity' }
 ];
 
 function EnhancedTableHead(props) {
@@ -228,10 +227,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function KeysTable(props) {
+export default function FilesTable(props) {
   const classes = useStyles();
 
-  const { keys: rows } = props;
+  const { files: rows } = props;
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -335,9 +334,9 @@ export default function KeysTable(props) {
                         padding="none"
                         scope="row"
                       >
-                        {row.alias}
+                        {row.name}
                       </TableCell>
-                      <TableCell align="left">{row.description || '_'}</TableCell>
+                      <TableCell align="left">{row.owner}</TableCell>
                       <TableCell align="left">
                         <div className={classes.statusContainer}>
                           <StatusBullet
@@ -377,7 +376,7 @@ export default function KeysTable(props) {
     </div>
   );
 }
-KeysTable.propTypes = {
+FilesTable.propTypes = {
   className: PropTypes.string,
-  keys: PropTypes.array.isRequired
+  files: PropTypes.array.isRequired
 };

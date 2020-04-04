@@ -51,7 +51,7 @@ const Sidebar = props => {
     },
     {
       title: 'Your data',
-      href: '/data',
+      href: '/files',
       icon: <FolderOpenIcon />
     },
     {
@@ -73,7 +73,7 @@ const Sidebar = props => {
       title: 'Settings',
       href: '/settings',
       icon: <SettingsIcon />
-    },    
+    },
   ];
 
   return (
