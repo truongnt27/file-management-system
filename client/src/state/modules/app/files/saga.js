@@ -8,10 +8,11 @@ function* uploadFile(action) {
   const { file } = action.payload;
   const currentUser = yield select(Selectors.currentUser);
   const userId = currentUser._id;
-  const res = yield uploadFileApi({ ...file, userId });
+
+  const res = yield uploadFileApi(file, userId);
 
   if (res.status === API_STATUS_CODE.SUCCESS) {
-    yield put(ActionTypes.createKey(res.data.key))
+    //yield put(ActionTypes.uploadFile(res.data.file))
   }
 }
 
@@ -20,7 +21,9 @@ function* fetchFiles() {
   const res = yield getFilesApi();
 
   if (res.status === API_STATUS_CODE.SUCCESS) {
-    yield put(ActionTypes.setKeys(res.data.keys))
+    console.log('get data success');
+
+    yield put(ActionTypes.setFiles(res.data.files))
   }
 }
 

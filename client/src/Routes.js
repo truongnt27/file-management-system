@@ -13,7 +13,9 @@ import {
   FilesManagement as FilesManagementView
 } from './views';
 
-import { CreateKey as CreateKeyView } from './views/KeyList/components'
+import { CreateKey as CreateKeyView } from './views/KeyList/components';
+import { FileUpload as FilesUploadView } from './views/FilesManagement/components';
+
 const Routes = () => {
   return (
     <Switch>
@@ -29,6 +31,13 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/files"
+        requireAuth
+      />
+      <RouteWithLayout
+        component={FilesUploadView}
+        exact
+        layout={MainLayout}
+        path="/files/upload"
         requireAuth
       />
       <RouteWithLayout

@@ -8,7 +8,7 @@ function* createKey(action) {
   const { key } = action.payload;
   const currentUser = yield select(Selectors.currentUser);
   const userId = currentUser._id;
-  const res = yield createKeyApi({ ...key, userId });
+  const res = yield createKeyApi({ ...key, owner: userId });
 
   if (res.status === API_STATUS_CODE.SUCCESS) {
     yield put(ActionTypes.createKey(res.data.key))

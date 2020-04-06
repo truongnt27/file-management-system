@@ -347,9 +347,9 @@ export default function FilesTable(props) {
                           {row.status}
                         </div>
                       </TableCell>
-                      <TableCell align="left">
+                      {/* <TableCell align="left">
                         {moment(row.creationDate).format('DD/MM/YYYY hh:mm:ss')}
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   );
                 })}

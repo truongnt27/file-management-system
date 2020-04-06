@@ -39,7 +39,7 @@ var users = [
   }),
   new User({
     email: "admin@company.com",
-    password: "123465",
+    password: "123456",
     fullname: "Nguyễn Thắng Trường",
     dob: "December 17, 1995",
     contact: "0962123456",

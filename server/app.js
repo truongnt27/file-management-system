@@ -14,6 +14,7 @@ mongoose.connect("mongodb://localhost:27017/keymanagementsys");
 const authRouter = require("./routes/authen.router");
 const usersRouter = require("./routes/users.router");
 const keysRouter = require("./routes/keys.router");
+const filesRouter = require("./routes/files.router");
 const cryptoRouter = require("./routes/crypto.router");
 
 const app = express();
@@ -50,6 +51,7 @@ app.use("/api/users", usersRouter);
 
 app.use("/api/keys", keysRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/files", filesRouter);
 // app.use("/api/crypto", cryptoRouter);
 
 

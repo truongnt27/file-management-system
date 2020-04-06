@@ -77,6 +77,8 @@ class GroupManagementBadge extends Component {
 
   drawFilledGroupButton = () => {
     const { names, classes, id } = this.props;
+    console.log(names);
+
     const groupContent = names.length === 1 ?
       `${names[0]}` :
       <Fragment>

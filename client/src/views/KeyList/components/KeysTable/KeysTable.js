@@ -54,7 +54,7 @@ const headRows = [
   { id: 'alias', label: 'Alias ' },
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
-  { id: 'creationDate', label: 'Creation date' },
+  { id: 'creationDate', label: 'Creation date (dd/mm/yyyy hh:mm:ss)' },
 
 ];
 
@@ -308,7 +308,6 @@ export default function KeysTable(props) {
                 .map((row, index) => {
                   const isItemSelected = isSelected(row._id);
                   const labelId = `checkbox-${index}`;
-                  console.log(row);
                   return (
                     <TableRow
                       aria-checked={isItemSelected}

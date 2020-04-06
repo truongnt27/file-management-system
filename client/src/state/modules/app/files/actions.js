@@ -16,7 +16,7 @@ export const ADD_FILE = `${namespace}/ADD_FILE`;
 
 export const SET_FILES = `${namespace}/SET_FILES`;
 
-export const uploadFile = (file = {}) => ({
+export const uploadFile = (file: File) => ({
   type: UPLOAD_FILE_SAGA,
   payload: {
     file
@@ -24,7 +24,7 @@ export const uploadFile = (file = {}) => ({
 })
 
 export const setFiles = (files = []) => ({
-  type: ADD_FILE,
+  type: SET_FILES,
   payload: {
     files
   }

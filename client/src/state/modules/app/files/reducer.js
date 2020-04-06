@@ -28,7 +28,7 @@ export default function filesReducer(state = initialState, action) {
       let filesObj = {};
 
       files.forEach((file) => {
-        files[file._id] = { ...file };
+        filesObj[file._id] = { ...file };
       })
 
       return {

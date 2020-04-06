@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
     cryptoKeyId: { type: Schema.Types.ObjectId, ref: 'CryptoKey', required: true },
-    userId: { type: Schema.Types.ObjectId, ref: 'UserStore', required: true },
+    owner: { type: Schema.Types.ObjectId, ref: 'UserStore', required: true },
     status: { type: String, required: true },
     rotation: { type: String, required: true },
     alias: { type: String, required: true },
