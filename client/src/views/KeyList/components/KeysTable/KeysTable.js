@@ -1,7 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
+import PropTypes, { func } from 'prop-types';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -28,7 +28,7 @@ import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
 import moment from 'moment';
 
-import { deleteKeySaga } from 'state/modules/app/keys/actions';
+import { deleteKeySaga, updateKeySaga } from 'state/modules/app/keys/actions';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -138,7 +138,13 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected, onEditKey, onDeleteKey } = props;
+  const {
+    numSelected,
+    onEditKey,
+    onDeleteKey,
+    onMarkAvaiKey,
+    onMarkUnavaiKey
+  } = props;
 
   const handleClickEdit = (e) => {
     e.preventDefault();
@@ -148,6 +154,16 @@ const EnhancedTableToolbar = props => {
   const handleClickDelete = (e) => {
     e.preventDefault();
     onDeleteKey && onDeleteKey(e);
+  }
+
+  const handleClickMarkAvai = (e) => {
+    e.preventDefault();
+    onMarkAvaiKey && onMarkAvaiKey(e);
+  }
+
+  const handleClickMarkUnavai = (e) => {
+    e.preventDefault();
+    onMarkUnavaiKey && onMarkUnavaiKey(e);
   }
 
   return (
@@ -183,12 +199,18 @@ const EnhancedTableToolbar = props => {
               (
                 <>
                   <Tooltip title="Mark availale">
-                    <IconButton aria-label="Mark availale">
+                    <IconButton
+                      aria-label="Mark availale"
+                      onClick={handleClickMarkUnavai}
+                    >
                       <ToggleOn />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Mark unavailale">
-                    <IconButton aria-label="Mark unavailale">
+                    <IconButton
+                      aria-label="Mark unavailale"
+                      onClick={handleClickMarkAvai}
+                    >
                       <ToggleOff />
                     </IconButton>
                   </Tooltip>
@@ -232,6 +254,10 @@ const EnhancedTableToolbar = props => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  onDeleteKey: func.isRequired,
+  onEditKey: func.isRequired,
+  onMarkAvaiKey: func.isRequired,
+  onMarkUnavaiKey: func.isRequired,
 };
 
 const useStyles = makeStyles(theme => ({
@@ -332,6 +358,22 @@ export default function KeysTable(props) {
     dispatch(deleteKeySaga(selected));
   }
 
+  function MarkAvaiKey() {
+    const updatedKey = {
+      _id: selected,
+      status: 'DISABLE'
+    }
+    dispatch(updateKeySaga(updatedKey));
+  }
+
+  function MarkUnavaiKey() {
+    const updatedKey = {
+      _id: selected,
+      status: 'ENABLE'
+    }
+    dispatch(updateKeySaga(updatedKey));
+  }
+
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
   return (
@@ -341,6 +383,8 @@ export default function KeysTable(props) {
           numSelected={selected.length}
           onDeleteKey={handleDeleteKey}
           onEditKey={handleEditKey}
+          onMarkAvaiKey={MarkAvaiKey}
+          onMarkUnavaiKey={MarkUnavaiKey}
         />
         <div className={classes.tableWrapper}>
           <Table

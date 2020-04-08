@@ -17,17 +17,16 @@ module.exports = {
 
   update: async (req, res) => {
     const { key } = req.body;
-    const _id = key._id;
-    console.log(key);
+    const { keyId } = req.params;
 
-    if (isEmpty(_id)) {
+    if (isEmpty([keyId, key])) {
       return res.status(400).json({
         status: "FAILED",
         message: "Missing key info"
       })
     }
     try {
-      const resultKey = await KeyStore.findOneAndUpdate({ _id }, key, { new: true });
+      const resultKey = await KeyStore.findOneAndUpdate({ _id: keyId }, key, { new: true });
       return res.status(200).json({
         status: "SUCCESS",
         data: {
