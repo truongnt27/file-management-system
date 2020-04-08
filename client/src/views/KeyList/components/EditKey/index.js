@@ -43,8 +43,9 @@ export default function EditKey(props) {
 
   const allUsers = Object.values(usersStore.byId);
   console.log('status', usersStore.status);
-  const keyId = props.match.params;
+  const { keyId } = props.match.params;
   const edittingKey = useSelector(state => Selectors.getKeyById(state, keyId));
+
   const { alias, description, rotation, permissions } = edittingKey;
   const selectedUserArr = Object.keys(permissions);
   const selectedUserIdx = selectedUserArr.map(userId => usersStore.allIds.indexOf(userId));

@@ -24,7 +24,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Edit as EditIcon, Visibility as ViewIcon } from '@material-ui/icons';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-import { StatusBullet, DeleteConfirmDialog } from 'components';
+import { StatusBullet, DeleteConfirmDialog, FileViewer } from 'components';
 import moment from 'moment';
 
 function desc(a, b, orderBy) {
@@ -54,7 +54,8 @@ function getSorting(order, orderBy) {
 const headRows = [
   { id: 'name', label: 'Name' },
   { id: 'owner', label: 'Owner' },
-  { id: 'lastActivity', label: 'Last activity' }
+  { id: 'status', label: 'status' },
+  { id: 'size', label: 'size' },
 ];
 
 function EnhancedTableHead(props) {
@@ -133,8 +134,11 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
-
+  const { numSelected, onViewDetail } = props;
+  const handleViewClick = (e) => {
+    e.preventDefault();
+    onViewDetail && onViewDetail();
+  }
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -168,7 +172,10 @@ const EnhancedTableToolbar = props => {
               (
                 <>
                   <Tooltip title="View detail">
-                    <IconButton aria-label="View detail">
+                    <IconButton
+                      aria-label="View detail"
+                      onClick={handleViewClick}
+                    >
                       <ViewIcon />
                     </IconButton>
                   </Tooltip>
@@ -236,6 +243,7 @@ export default function FilesTable(props) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [openFileDetail, setOpenFileDetail] = React.useState(false);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -281,12 +289,24 @@ export default function FilesTable(props) {
     setPage(0);
   }
 
+  function hanleOpenFileDetail() {
+    setOpenFileDetail(true);
+  }
+
+  function handleCloseFileDetail() {
+    setOpenFileDetail(false);
+  }
+
+
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          onViewDetail={hanleOpenFileDetail}
+        />
         <div className={classes.tableWrapper}>
           <Table
             aria-labelledby="tableTitle"
@@ -307,7 +327,7 @@ export default function FilesTable(props) {
                 .map((row, index) => {
                   const isItemSelected = isSelected(row._id);
                   const labelId = `checkbox-${index}`;
-                  console.log(row);
+
                   return (
                     <TableRow
                       aria-checked={isItemSelected}
@@ -347,9 +367,9 @@ export default function FilesTable(props) {
                           {row.status}
                         </div>
                       </TableCell>
-                      {/* <TableCell align="left">
-                        {moment(row.creationDate).format('DD/MM/YYYY hh:mm:ss')}
-                      </TableCell> */}
+                      <TableCell align="left">
+                        {Math.floor(row.size / 1024)} KB
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -374,6 +394,11 @@ export default function FilesTable(props) {
         />
       </Paper>
       <DeleteConfirmDialog />
+      <FileViewer
+        fileId={selected}
+        onClose={handleCloseFileDetail}
+        open={openFileDetail}
+      />
     </div>
   );
 }

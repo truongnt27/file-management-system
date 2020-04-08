@@ -9,7 +9,7 @@ const schema = new Schema({
     alias: { type: String, required: true },
     description: { type: String, required: false },
     creationDate: { type: Date, required: true },
-    permissions: { type: Object, required: true }
+    permissions: { type: Object, required: true },
 });
 
 module.exports = mongoose.model("KeyStore", schema);

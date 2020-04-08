@@ -1,5 +1,6 @@
 const KeyStore = require('../models/keyStore');
 const CryptoKey = require('../models/cryptoKey');
+const FileStore = require('../models/fileStore');
 const Log = require('../models/eventLog');
 const { isEmpty } = require('lodash');
 const genCryptoKey = require('../keys/keyGen');
@@ -25,8 +26,12 @@ module.exports = {
         message: "Missing key info"
       })
     }
+
     try {
       const resultKey = await KeyStore.findOneAndUpdate({ _id: keyId }, key, { new: true });
+      if (key.status) {
+        await FileStore.updateMany({ keyId }, { status: key.status });
+      }
       return res.status(200).json({
         status: "SUCCESS",
         data: {

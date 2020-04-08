@@ -7,6 +7,8 @@ import { Avatar, Typography } from '@material-ui/core';
 
 import { useSelector } from 'react-redux';
 import { Selectors } from 'state/modules/auth';
+import genAvataImg from 'helpers/genAvataImg';
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -24,26 +26,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function genAvatorImg(name = 'user') {
-  const avatarColors = ['#1C1C84', '#283258', '#1A6A8E', '#4AB1B5'];
-  const initial = name.match(/\b\w/g);  
-
-  const displayName = `${initial[0]}${initial.length > 1 ? initial[initial.length - 1] : ''}`.toUpperCase();
-  const backgroundColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
-
-  return {
-    displayName,
-    backgroundColor
-  }
-}
-
 const Profile = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
   const user = useSelector(Selectors.currentUser);
 
-  const { displayName, backgroundColor } = useMemo(() => genAvatorImg(user.fullname), [user.fullname]);
+  const { displayName, backgroundColor } = useMemo(() => genAvataImg(user.fullname), [user.fullname]);
 
   return (
     <div

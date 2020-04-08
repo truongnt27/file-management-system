@@ -30,7 +30,7 @@ function KeysTableViewer(props) {
       </TableHead>
       <TableBody>
         {
-          !isEmpty([selectedKey, selectedUsers]) ? selectedUsers.map(user => (
+          !(isEmpty(selectedKey) || isEmpty(selectedUsers)) ? selectedUsers.map(user => (
             <TableRow key={user._id}>
               <TableCell
                 component="th"
