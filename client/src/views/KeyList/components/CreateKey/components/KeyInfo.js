@@ -33,9 +33,6 @@ const KeyInfo = (props) => {
 
   const classes = useStyles();
   const { onChange, onSelect, keyInfo } = props;
-  console.log(keyInfo.rotatePeriod);
-
-
 
   // handle func
   const handleChangeInput = (e) => {

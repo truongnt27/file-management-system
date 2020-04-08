@@ -16,9 +16,11 @@ import { PhotoCamera } from '@material-ui/icons';
 import Selector from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Selectors } from 'state/modules/app/keys'
+import { Selectors, Actions } from 'state/modules/app/keys'
 import { uploadFile } from 'state/modules/app/files/actions';
-import { usersSelector, FETCH_USER } from 'state/modules/app/users/actions';
+import { usersSelector, FETCH_USERS } from 'state/modules/app/users/actions';
+
+import { get, isEmpty } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -50,19 +52,27 @@ const FileUpload = () => {
   const [selectedKey, setSelectedKey] = useState(defaultKeyId);
 
   const keysArr = Object.values(keys).reduce((acc, key) => {
-    acc.push({ value: key._id, label: key.alias })
+    if (key.status === 'ENABLE') {
+      acc.push({ value: key._id, label: key.alias });
+    }
     return acc;
   }, [])
+
   const usersStore = useSelector(usersSelector);
 
   useEffect(
     () => {
-      usersStore.status !== 'LOADED' && dispatch({ type: FETCH_USER });
-    }, [usersStore.status])
-  const permissions = Object.keys(keys[selectedKey].permissions) || [];
-  const selectedUsers = usersStore.byId === {} ? [] : permissions.map(userId => usersStore.byId[userId]);
-  const ownerId = keys[selectedKey].owner || '';
-  const ownerData = usersStore.byId[ownerId];
+      usersStore.status !== 'LOADED' && dispatch({ type: FETCH_USERS });
+      keysStore.status !== 'LOADED' && dispatch({ type: Actions.FETCH_KEYS });
+    }, [usersStore.status, keysStore.status])
+
+  const permissions = Object.keys(get(keys, [selectedKey, 'permissions'], []));
+
+  const selectedUsers = !isEmpty(usersStore.byId) ? permissions.map(userId => usersStore.byId[userId]) : [];
+  console.log(selectedUsers);
+
+  const ownerId = get(keys, [selectedKey, 'owner'], '');
+  const ownerData = get(usersStore, ['byId', ownerId], {});
 
   const handleChange = (e) => {
     setFile(e.target.files[0])

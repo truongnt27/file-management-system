@@ -7,7 +7,7 @@ router
   .get('/', keyController.get)
   .get('/:keyAlias', keyController.getByAlias)
   .post('/', keyController.store)
-  .put('/:keyAlias', keyController.update)
-  .delete('/:keyAlias', keyController.delete)
+  .put('/:keyId', keyController.update)
+  .delete('/:keyId', keyController.delete)
 
 module.exports = router;

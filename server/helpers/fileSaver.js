@@ -3,8 +3,8 @@ var fs = require('fs');
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    const userId = req.body.userId || null;
-    const dir = `./public/uploads/${userId}`;
+    const owner = req.body.owner || null;
+    const dir = `./public/uploads/${owner}`;
     console.log(dir);
 
     if (!fs.existsSync(dir)) {

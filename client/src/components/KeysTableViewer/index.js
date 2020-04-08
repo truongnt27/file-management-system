@@ -10,6 +10,7 @@ import {
 
 import GroupManagementBadge from 'components/GroupManagment/GroupManagementBadge';
 
+import { isEmpty } from 'lodash';
 
 function KeysTableViewer(props) {
   const { selectedKey, selectedUsers } = props;
@@ -28,29 +29,40 @@ function KeysTableViewer(props) {
         </TableRow>
       </TableHead>
       <TableBody>
-        {selectedUsers && selectedUsers.map(user => (
-          <TableRow key={user._id}>
-            <TableCell
-              component="th"
-              scope="row"
-            >
-              {user.fullname}
-            </TableCell>
-            <TableCell>{user.email}</TableCell>
-            <TableCell>{user.type}</TableCell>
-            <TableCell>
-              {
-                selectedKey.permissions[user._id].map(name => {
-                  return (
-                    <GroupManagementBadge
-                      names={[name]}
-                    />
-                  )
-                })
-              }
-            </TableCell>
-          </TableRow>
-        ))}
+        {
+          !isEmpty([selectedKey, selectedUsers]) ? selectedUsers.map(user => (
+            <TableRow key={user._id}>
+              <TableCell
+                component="th"
+                scope="row"
+              >
+                {user.fullname}
+              </TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>{user.type}</TableCell>
+              <TableCell>
+                {
+                  selectedKey.permissions[user._id].map(name => {
+                    return (
+                      <GroupManagementBadge
+                        names={[name]}
+                      />
+                    )
+                  })
+                }
+              </TableCell>
+            </TableRow>
+          )) :
+            <TableRow >
+              <TableCell
+                component="th"
+                scope="row"
+              />
+              <TableCell />
+              <TableCell />
+              <TableCell />
+            </TableRow>
+        }
       </TableBody>
     </Table>
   )

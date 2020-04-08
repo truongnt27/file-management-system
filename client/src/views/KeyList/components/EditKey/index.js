@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { object } from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -6,11 +7,13 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 
-import { KeyInfo, KeySharing, KeyUsage } from './components';
+import { KeyInfo, KeySharing, KeyUsage } from '../CreateKey/components';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { usersSelector, FETCH_USERS } from 'state/modules/app/users/actions';
-import { createKeySaga } from 'state/modules/app/keys/actions';
+import { updateKeySaga } from 'state/modules/app/keys/actions';
+
+import { Selectors } from 'state/modules/app/keys';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,32 +36,39 @@ function getSteps() {
   return ['Fill key information', 'Define key sharing', 'Define key usage'];
 }
 
-export default function CreateKey() {
-
-  const dispatch = useDispatch();
-  const usersStore = useSelector(usersSelector);
-
-  useEffect(() => {
-    usersStore.status !== 'LOADED' && dispatch({ type: FETCH_USERS })
-
-  }, [usersStore.status])
-
-
+export default function EditKey(props) {
   const classes = useStyles();
+  const usersStore = useSelector(usersSelector);
+  const dispatch = useDispatch();
+
   const allUsers = Object.values(usersStore.byId);
+  console.log('status', usersStore.status);
+  const keyId = props.match.params;
+  const edittingKey = useSelector(state => Selectors.getKeyById(state, keyId));
+  const { alias, description, rotation, permissions } = edittingKey;
+  const selectedUserArr = Object.keys(permissions);
+  const selectedUserIdx = selectedUserArr.map(userId => usersStore.allIds.indexOf(userId));
+  console.log('selectedUserIdx', selectedUserIdx);
 
   const [activeStep, setActiveStep] = useState(0);
-  const [selectedUsers, setselectedUsers] = useState([]);
-  console.log(selectedUsers);
+  const [selectedUsers, setselectedUsers] = useState(selectedUserIdx);
+  console.log('selectedUsers', selectedUsers);
 
   const [keyInfo, setKeyInfo] = useState({
-    alias: '',
-    description: '',
-    rotation: '',
-    permissions: {}
+    alias,
+    description,
+    rotation,
+    permissions
   })
 
   const steps = getSteps();
+
+  useEffect(() => {
+    usersStore.status !== 'LOADED' && dispatch({ type: FETCH_USERS });
+    console.log('run effect');
+
+    setselectedUsers(selectedUserIdx);
+  }, [usersStore.status])
 
   // handld functions
   const handleKeyInfo = (e) => {
@@ -87,7 +97,6 @@ export default function CreateKey() {
       }
     }))
   }
-  console.log(keyInfo);
 
   const getStepContent = (step) => {
     switch (step) {
@@ -128,13 +137,9 @@ export default function CreateKey() {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
-  // const handleReset = () => {
-  //   setActiveStep(0);
-  // };
-
   const handleFinish = () => {
     setActiveStep(0);
-    dispatch(createKeySaga(keyInfo));
+    dispatch(updateKeySaga({ ...edittingKey, ...keyInfo }));
   }
   return (
     <div className={classes.root}>
@@ -162,7 +167,7 @@ export default function CreateKey() {
                     onClick={handleNext}
                     variant="contained"
                   >
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'Update' : 'Next'}
                   </Button>
                 </div>
               </div>
@@ -173,4 +178,7 @@ export default function CreateKey() {
       {activeStep === steps.length && handleFinish()}
     </div>
   );
+}
+EditKey.propTypes = {
+  match: object.isRequired
 }

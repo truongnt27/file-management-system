@@ -20,11 +20,15 @@ import {
   TableSortLabel
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { Edit as EditIcon, Visibility as ViewIcon } from '@material-ui/icons';
+import { Edit as EditIcon, Visibility as ViewIcon, ToggleOff, ToggleOn } from '@material-ui/icons';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import { StatusBullet, DeleteConfirmDialog } from 'components';
 
-import { StatusBullet } from 'components';
+import { useDispatch } from 'react-redux';
+import { push } from 'connected-react-router';
 import moment from 'moment';
+
+import { deleteKeySaga } from 'state/modules/app/keys/actions';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -54,7 +58,7 @@ const headRows = [
   { id: 'alias', label: 'Alias ' },
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
-  { id: 'creationDate', label: 'Creation date (dd/mm/yyyy hh:mm:ss)' },
+  { id: 'creationDate', label: 'Creation date(dd/mm/yyyy hh:mm:ss)' },
 
 ];
 
@@ -134,7 +138,17 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { numSelected, onEditKey, onDeleteKey } = props;
+
+  const handleClickEdit = (e) => {
+    e.preventDefault();
+    onEditKey && onEditKey(e);
+  }
+
+  const handleClickDelete = (e) => {
+    e.preventDefault();
+    onDeleteKey && onDeleteKey(e);
+  }
 
   return (
     <Toolbar
@@ -168,13 +182,26 @@ const EnhancedTableToolbar = props => {
               numSelected === 1 &&
               (
                 <>
+                  <Tooltip title="Mark availale">
+                    <IconButton aria-label="Mark availale">
+                      <ToggleOn />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Mark unavailale">
+                    <IconButton aria-label="Mark unavailale">
+                      <ToggleOff />
+                    </IconButton>
+                  </Tooltip>
                   <Tooltip title="View detail">
                     <IconButton aria-label="View detail">
                       <ViewIcon />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Edit">
-                    <IconButton aria-label="Edit">
+                    <IconButton
+                      aria-label="Edit"
+                      onClick={handleClickEdit}
+                    >
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
@@ -182,7 +209,10 @@ const EnhancedTableToolbar = props => {
               )
             }
             <Tooltip title="Delete">
-              <IconButton aria-label="Delete">
+              <IconButton
+                aria-label="Delete"
+                onClick={handleClickDelete}
+              >
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
@@ -237,6 +267,9 @@ export default function KeysTable(props) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [openDelConfirm, setOpenDelConfirm] = React.useState(false);
+
+  const dispatch = useDispatch();
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -282,12 +315,33 @@ export default function KeysTable(props) {
     setPage(0);
   }
 
+  function handleEditKey() {
+    dispatch(push(`/keys/${selected}/edit`));
+  }
+
+  function handleDeleteKey() {
+    setOpenDelConfirm(true);
+  }
+
+  function handleCloseDelConfirm() {
+    setOpenDelConfirm(false);
+  }
+
+  function DeleteKey() {
+    setOpenDelConfirm(false);
+    dispatch(deleteKeySaga(selected));
+  }
+
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          onDeleteKey={handleDeleteKey}
+          onEditKey={handleEditKey}
+        />
         <div className={classes.tableWrapper}>
           <Table
             aria-labelledby="tableTitle"
@@ -373,6 +427,11 @@ export default function KeysTable(props) {
           rowsPerPageOptions={[10, 20, 50]}
         />
       </Paper>
+      <DeleteConfirmDialog
+        onClose={handleCloseDelConfirm}
+        onDelete={DeleteKey}
+        open={openDelConfirm}
+      />
     </div>
   );
 }

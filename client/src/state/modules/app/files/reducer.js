@@ -1,4 +1,4 @@
-import { Status, SET_FILES, ADD_FILE } from './actions';
+import { Status, SET_FILES, SET_FILE } from './actions';
 
 const initialState = {
   status: Status.INIT,
@@ -10,7 +10,7 @@ const initialState = {
 export default function filesReducer(state = initialState, action) {
 
   switch (action.type) {
-    case ADD_FILE: {
+    case SET_FILE: {
       const { file } = action.payload;
       return {
         ...state,

@@ -1,11 +1,12 @@
 const KeyStore = require('../models/keyStore');
 const CryptoKey = require('../models/cryptoKey');
+const Log = require('../models/eventLog');
 const { isEmpty } = require('lodash');
 const genCryptoKey = require('../keys/keyGen');
 
 module.exports = {
   get: async (req, res) => {
-    const keys = await KeyStore.find()
+    const keys = await KeyStore.find().lean();
     res.status(200).json({
       status: "SUCCESS",
       data: {
@@ -15,16 +16,18 @@ module.exports = {
   },
 
   update: async (req, res) => {
-    const key = req.body.key;
-    const alias = key.alias;
-    if (isEmpty(alias)) {
+    const { key } = req.body;
+    const _id = key._id;
+    console.log(key);
+
+    if (isEmpty(_id)) {
       return res.status(400).json({
         status: "FAILED",
         message: "Missing key info"
       })
     }
     try {
-      const resultKey = await KeyStore.findOneAndUpdate({ alias }, key);
+      const resultKey = await KeyStore.findOneAndUpdate({ _id }, key, { new: true });
       return res.status(200).json({
         status: "SUCCESS",
         data: {
@@ -79,8 +82,10 @@ module.exports = {
   },
 
   delete: async (req, res) => {
-    const alias = req.params.keyAlias;
-    if (isEmpty(alias)) {
+    const { keyId } = req.params;
+    console.log(keyId);
+
+    if (isEmpty(keyId)) {
       return res.status(400).json({
         status: "FAILED",
         message: "Missing key info"
@@ -88,12 +93,13 @@ module.exports = {
     }
 
     try {
-      await KeyStore.deleteOne({ alias });
+
+      await KeyStore.deleteOne({ _id: keyId });
 
       return res.status(200).json({
         status: "SUCCESS",
         data: {
-          keyAlias: alias
+          keyId
         }
       })
 

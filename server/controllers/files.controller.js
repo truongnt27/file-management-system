@@ -22,7 +22,7 @@ module.exports = {
 
   store: async (req, res, next) => {
     try {
-      const { keyId, userId } = req.body || null;
+      const { keyId, owner } = req.body || null;
       const file = req.file || null;
 
       if (isEmpty(keyId) || isEmpty(file)) {
@@ -33,7 +33,7 @@ module.exports = {
       }
       const fileStore = new FileStore({
         name: file.originalname,
-        owner: userId,
+        owner,
         keyId,
         size: file.size
       })

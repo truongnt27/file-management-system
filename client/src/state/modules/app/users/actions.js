@@ -6,7 +6,7 @@ export const Status = {
   LOADING: 'LOADING'
 }
 
-export const FETCH_USER = `${namespace}/FETCH_USER`;
+export const FETCH_USERS = `${namespace}/FETCH_USERS`;
 export const FETCH_USER_SUCCESS = `${namespace}/FETCH_USER_SUCCESS`;
 export const FETCH_USER_FAILED = `${namespace}/FETCH_USER_FAILED`;
 
@@ -28,3 +28,4 @@ export const delUsers = (user = []) => ({
 })
 
 export const usersSelector = state => state[namespace];
+export const getUserById = state => id => state[namespace].byId[id];

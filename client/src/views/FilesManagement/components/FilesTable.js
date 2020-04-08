@@ -24,7 +24,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Edit as EditIcon, Visibility as ViewIcon } from '@material-ui/icons';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-import { StatusBullet } from 'components';
+import { StatusBullet, DeleteConfirmDialog } from 'components';
 import moment from 'moment';
 
 function desc(a, b, orderBy) {
@@ -373,6 +373,7 @@ export default function FilesTable(props) {
           rowsPerPageOptions={[10, 20, 50]}
         />
       </Paper>
+      <DeleteConfirmDialog />
     </div>
   );
 }

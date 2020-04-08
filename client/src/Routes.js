@@ -14,6 +14,7 @@ import {
 } from './views';
 
 import { CreateKey as CreateKeyView } from './views/KeyList/components';
+import { EditKey as EditKeyView } from './views/KeyList/components';
 import { FileUpload as FilesUploadView } from './views/FilesManagement/components';
 
 const Routes = () => {
@@ -52,6 +53,13 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/keys"
+        requireAuth
+      />
+      <RouteWithLayout
+        component={EditKeyView}
+        exact
+        layout={MainLayout}
+        path="/keys/:keyId/edit"
         requireAuth
       />
       <RouteWithLayout

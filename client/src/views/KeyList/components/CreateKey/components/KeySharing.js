@@ -55,6 +55,7 @@ const KeySharing = (props) => {
 
 KeySharing.propTypes = {
   allUsers: PropTypes.array,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  selectedUsers: PropTypes.array,
 }
 export default KeySharing;

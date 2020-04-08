@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import { get } from 'lodash'
 import PermissionSelector from './PermissionSelector';
 
+import { isEmpty } from 'lodash'
 const useStyles = makeStyles({
   table: {
     minWidth: 650
@@ -24,6 +25,7 @@ export default function KeyUsage(props) {
 
     onChange && onChange(selectedPermissions, userId)
   }
+
   return (
     <Paper>
       <Table
@@ -39,25 +41,26 @@ export default function KeyUsage(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {selectedUsers.map(user => (
-            <TableRow key={user.username}>
-              <TableCell
-                component="th"
-                scope="row"
-              >
-                {user.fullname}
-              </TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.type}</TableCell>
-              <TableCell>
-                <PermissionSelector
-                  onChange={handleOnChange}
-                  selectedPermission={get(keyInfo, ['permissions', user._id], [])}
-                  userId={user._id}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
+          {
+            !isEmpty(selectedUsers) && selectedUsers.map(user => (
+              <TableRow key={user.username}>
+                <TableCell
+                  component="th"
+                  scope="row"
+                >
+                  {user.fullname}
+                </TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.type}</TableCell>
+                <TableCell>
+                  <PermissionSelector
+                    onChange={handleOnChange}
+                    selectedPermission={get(keyInfo, ['permissions', user._id], [])}
+                    userId={user._id}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Paper>

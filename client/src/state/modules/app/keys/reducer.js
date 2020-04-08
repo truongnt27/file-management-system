@@ -1,4 +1,4 @@
-import { Status, CREATE_KEY, SET_KEYS } from './actions';
+import { Status, CREATE_KEY, DELETE_KEY, SET_KEYS } from './actions';
 
 const initialState = {
   status: Status.INIT,
@@ -20,6 +20,16 @@ export default function keysReducer(state = initialState, action) {
           }
         },
         allIds: [...state.allIds, key._id]
+      }
+    }
+    case DELETE_KEY: {
+      const { keyId } = action.payload;
+      const updatedById = { ...state.byId };
+      delete updatedById[keyId];
+      return {
+        ...state,
+        byId: updatedById,
+        allIds: state.allIds.filter(id => id !== keyId)
       }
     }
     case SET_KEYS: {
