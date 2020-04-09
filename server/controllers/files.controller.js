@@ -23,6 +23,8 @@ module.exports = {
   store: async (req, res, next) => {
     try {
       const { keyId, owner } = req.body || null;
+      console.log(keyId, owner);
+
       const file = req.file || null;
 
       if (isEmpty(keyId) || isEmpty(file)) {
@@ -31,6 +33,8 @@ module.exports = {
           message: "Missing files info"
         })
       }
+      console.log(req.file);
+
       const fileStore = new FileStore({
         name: file.originalname,
         owner,

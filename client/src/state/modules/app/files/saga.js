@@ -6,11 +6,11 @@ import { Selectors } from 'state/modules/auth';
 import { push } from 'connected-react-router';
 
 function* uploadFile(action) {
-  const { file } = action.payload;
+  const { file, keyId } = action.payload;
   const currentUser = yield select(Selectors.currentUser);
   const userId = currentUser._id;
 
-  const res = yield uploadFileApi(file, userId);
+  const res = yield uploadFileApi(file, keyId, userId);
 
   if (res.status === API_STATUS_CODE.SUCCESS) {
     yield put(Actions.setFile(res.data.file));

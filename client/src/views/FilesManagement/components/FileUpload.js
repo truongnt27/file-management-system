@@ -83,7 +83,7 @@ const FileUpload = () => {
   }
 
   const handleUpload = () => {
-    dispatch(uploadFile(file));
+    dispatch(uploadFile(file, selectedKey));
   }
 
   return (

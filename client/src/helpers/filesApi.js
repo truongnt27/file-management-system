@@ -1,14 +1,12 @@
 import axios from 'axios';
 
-export const uploadFileApi = async (file, userId) => {
+export const uploadFileApi = async (file, keyId, userId) => {
   try {
-    console.log('22222222222');
-    console.log(file);
 
-    let formData = new FormData();
-    formData.append('file', file);
-    formData.append('keyId', '5e773f2c5c07390f6ca90687');
+    const formData = new FormData();
+    formData.append('keyId', keyId);
     formData.append('owner', userId);
+    formData.append('file', file);
 
     const result = await axios.post('http://localhost:3002/api/files', formData, {
       headers: {
