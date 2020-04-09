@@ -1,18 +1,16 @@
 var encryptor = require("file-encryptor");
-var EncryptKey = require("../models/encryptKey");
+var CryptoKey = require("../models/cryptoKey");
 var KeyStore = require("../models/keyStore");
 
-module.exports = function decryptFile(fileName, keyAlias) {
-    EncryptKey.findOne({ alias: keyAlias }, function (err, encryptKey) {
-        if (err) return err;
-        KeyStore.findById(encryptKey.keyId, function (err, keyStore) {
-            if (err) return err;
-            // Decrypt file.        
-            var key = keyStore.plaintext
-            encryptor.decryptFile(`./public/tmp_uploads/encrypted_${fileName}`, `./public/tmp_uploads/output_file.txt`, key, { algorithm: 'aes256' }, function (err) {
-                // Decryption complete.
-                if (err) return err;
-            });
+module.exports = async function decryptFile(dir, keyId) {
+    try {
+        const keyStore = await KeyStore.findOne({ _id: keyId });
+        const cryptoKey = await CryptoKey.findOne({ _id: keyStore.cryptoKeyId });
+        const key = cryptoKey.plaintext;
+        encryptor.decryptFile(`./public/uploads/${dir}`, `./public/uploads/${dir}`, key, { algorithm: 'aes256' }, function (err) {
+            return true;
         });
-    });
+    } catch (err) {
+        return err;
+    }
 }

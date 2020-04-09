@@ -1,5 +1,6 @@
 const FileStore = require('../models/fileStore');
 const KeyStore = require('../models/keyStore');
+const encrypt = require('../crypto/encryptFile');
 
 const { isEmpty } = require('lodash');
 
@@ -24,7 +25,6 @@ module.exports = {
     try {
       const { keyId, owner } = req.body || null;
       console.log(keyId, owner);
-
       const file = req.file || null;
 
       if (isEmpty(keyId) || isEmpty(file)) {
@@ -41,8 +41,9 @@ module.exports = {
         keyId,
         size: file.size
       })
-      const result = await fileStore.save();
 
+      const result = await fileStore.save();
+      encrypt(`${owner}/${req.file.originalname}`, keyId);
       res.status(200).json({
         status: 'SUCCESS',
         message: 'File saved',
