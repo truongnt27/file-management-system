@@ -21,7 +21,9 @@ import {
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
-import mockData from './data';
+import { Selectors, Actions } from 'state/modules/app/logs';
+
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,18 +47,18 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const statusColors = {
-  delivered: 'success',
-  pending: 'info',
-  refunded: 'danger'
-};
-
 const Logs = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const logsStore = useSelector(Selectors.logsStore);
 
-  const [events] = useState(mockData);
+  useEffect(() => {
+    logsStore.status !== 'LOADED' && dispatch(Actions.FETCH_LOGS);
+  }, [logsStore.status])
+
+  const logs = Object.values(logsStore.byId);
 
   return (
     <div
@@ -90,23 +92,23 @@ const Logs = props => {
                         </TableSortLabel>
                       </Tooltip>
                     </TableCell>
-                    <TableCell>Event type</TableCell>
+                    <TableCell>Type</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {events.map(event => (
+                  {logs.map(log => (
                     <TableRow
                       hover
-                      key={event.id}
+                      key={log._id}
                     >
-                      <TableCell>{event.agent.name}</TableCell>
-                      <TableCell>{event.keyId}</TableCell>
+                      <TableCell>{log.agent.name}</TableCell>
+                      <TableCell>{log.keyId}</TableCell>
                       <TableCell>
-                        {moment(event.createdAt).format('DD/MM/YYYY hh:mm:ss')}
+                        {moment(log.createdAt).format('DD/MM/YYYY hh:mm:ss')}
                       </TableCell>
                       <TableCell>
                         <div className={classes.statusContainer}>
-                          {event.type}
+                          {log.type}
                         </div>
                       </TableCell>
                     </TableRow>
@@ -120,7 +122,7 @@ const Logs = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            count={events.length}
+            count={logs.length}
             rowsPerPageOptions={[50, 100, 200]}
           />
         </CardActions>
