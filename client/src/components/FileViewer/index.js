@@ -146,7 +146,6 @@ function FileViewer(props) {
           {
             selectedUsers.map(user => {
               const { displayName, backgroundColor } = genAvataImg(user.fullname);
-              console.log(backgroundColor)
               return (
                 <Chip
                   avatar={(

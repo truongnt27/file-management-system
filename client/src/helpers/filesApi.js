@@ -20,6 +20,18 @@ export const uploadFileApi = async (file, keyId, userId) => {
   }
 }
 
+export const downloadFileApi = async (fileId) => {
+  try {
+    const result = await axios.get(`http://localhost:3002/api/files/${fileId}/download`);
+    return result.data;
+  } catch (error) {
+    return ({
+      error: true,
+      ...error
+    })
+  }
+}
+
 export const getFilesApi = async () => {
   try {
     const result = await axios.get('http://localhost:3002/api/files');

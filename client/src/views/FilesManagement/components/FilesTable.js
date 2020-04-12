@@ -10,7 +10,6 @@ import {
   TableCell,
   TableHead,
   TablePagination,
-  Button,
   IconButton,
   Checkbox,
   Paper,
@@ -21,12 +20,14 @@ import {
   TableSortLabel
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { Edit as EditIcon, Visibility as ViewIcon } from '@material-ui/icons';
+import { GetApp, Visibility as ViewIcon } from '@material-ui/icons';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
 import { StatusBullet, DeleteConfirmDialog, FileViewer } from 'components';
 import moment from 'moment';
 
+import { useDispatch } from 'react-redux';
+import { Actions } from 'state/modules/app/files'
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -134,11 +135,18 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected, onViewDetail } = props;
+  const { numSelected, onViewDetail, onDownload } = props;
+
   const handleViewClick = (e) => {
     e.preventDefault();
     onViewDetail && onViewDetail();
   }
+
+  const handleDownloadClick = (e) => {
+    e.preventDefault();
+    onDownload && onDownload();
+  }
+
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -179,9 +187,12 @@ const EnhancedTableToolbar = props => {
                       <ViewIcon />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Edit">
-                    <IconButton aria-label="Edit">
-                      <EditIcon />
+                  <Tooltip title="Download">
+                    <IconButton
+                      aria-label="Download"
+                      onClick={handleDownloadClick}
+                    >
+                      <GetApp />
                     </IconButton>
                   </Tooltip>
                 </>
@@ -208,6 +219,8 @@ const EnhancedTableToolbar = props => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  onDownload: PropTypes.func.isRequired,
+  onViewDetail: PropTypes.func.isRequired,
 };
 
 const useStyles = makeStyles(theme => ({
@@ -236,6 +249,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function FilesTable(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const { files: rows } = props;
   const [order, setOrder] = React.useState('asc');
@@ -297,7 +311,9 @@ export default function FilesTable(props) {
     setOpenFileDetail(false);
   }
 
-
+  function downloadFile() {
+    selected && dispatch(Actions.downloadFile(selected));
+  }
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
   return (
@@ -305,6 +321,7 @@ export default function FilesTable(props) {
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
+          onDownload={downloadFile}
           onViewDetail={hanleOpenFileDetail}
         />
         <div className={classes.tableWrapper}>

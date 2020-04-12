@@ -1,6 +1,7 @@
 const FileStore = require('../models/fileStore');
 const KeyStore = require('../models/keyStore');
-const encrypt = require('../crypto/encryptFile');
+const encryptFile = require('../crypto/encryptFile');
+const decryptFile = require('../crypto/decryptFile');
 
 const { isEmpty } = require('lodash');
 
@@ -8,7 +9,6 @@ module.exports = {
   get: async (req, res, next) => {
     try {
       const files = await FileStore.find();
-
       res.status(200).json({
         status: "SUCCESS",
         data: {
@@ -21,10 +21,24 @@ module.exports = {
     }
   },
 
+  download: async (req, res, next) => {
+    try {
+      const { fileId } = req.params;
+      const file = await FileStore.findOne({ _id: fileId });
+      const { owner, name, keyId } = file;
+      const dir = `${owner}/${name}`;
+      //decryptFile(dir, keyId);
+
+      res.download(`./public/uploads/${dir}`);
+    }
+    catch (err) {
+      next(err)
+    }
+  },
+
   store: async (req, res, next) => {
     try {
       const { keyId, owner } = req.body || null;
-      console.log(keyId, owner);
       const file = req.file || null;
 
       if (isEmpty(keyId) || isEmpty(file)) {
@@ -33,7 +47,6 @@ module.exports = {
           message: "Missing files info"
         })
       }
-      console.log(req.file);
 
       const fileStore = new FileStore({
         name: file.originalname,
@@ -43,7 +56,7 @@ module.exports = {
       })
 
       const result = await fileStore.save();
-      encrypt(`${owner}/${req.file.originalname}`, keyId);
+      encryptFile(`${owner}/${req.file.originalname}`, keyId);
       res.status(200).json({
         status: 'SUCCESS',
         message: 'File saved',

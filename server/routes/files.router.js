@@ -6,6 +6,7 @@ const upload = require('../helpers/fileSaver');
 
 router
   .get('/', filesController.get)
+  .get('/:fileId/download', filesController.download)
   .post(
     '/',
     upload.single('file'),
