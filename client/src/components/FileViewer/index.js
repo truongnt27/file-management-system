@@ -6,7 +6,8 @@ import {
   makeStyles,
   Grid,
   Chip,
-  Avatar
+  Avatar,
+  Tooltip
 } from '@material-ui/core'
 
 import { Person, PersonAdd, VpnKey } from '@material-ui/icons'
@@ -20,12 +21,17 @@ import genAvataImg from 'helpers/genAvataImg';
 
 const useStyle = makeStyles(theme => ({
   root: {
-    margin: 0,
-
+    margin: 0
   },
   container: {
     padding: theme.spacing(2),
-    width: '450px'
+    minWidth: '450px'
+  },
+  icons: {
+    verticalAlign: 'middle'
+  },
+  chips: {
+    marginRight: theme.spacing(1)
   }
 }))
 
@@ -88,7 +94,7 @@ function FileViewer(props) {
           >
             <strong>Owner:</strong> {ownerData.fullname}
           </Typography>
-          <Person />
+          <Person className={classes.icons} />
         </Grid>
         <Grid
           item
@@ -107,7 +113,7 @@ function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Link:</strong> 'https://material-ui.com/components/icons/#icons'
+            <strong>Link:</strong> <a >{`http://localhost:300/file/${file._id}`}</a>
           </Typography>
         </Grid>
         <Grid
@@ -129,7 +135,10 @@ function FileViewer(props) {
           >
             <strong>Protected by:</strong> {keyData.alias}
           </Typography>
-          <VpnKey />
+          <VpnKey
+            className={classes.icons}
+            style={{ color: 'green' }}
+          />
         </Grid>
         <Grid
           item
@@ -139,26 +148,31 @@ function FileViewer(props) {
             variant="body1"
           >
             <strong>Shared with:</strong>
-            <PersonAdd />
+            <PersonAdd className={classes.icons} />
           </Typography>
         </Grid>
         <Grid item>
           {
             selectedUsers.map(user => {
-              const { displayName, backgroundColor } = genAvataImg(user.fullname);
+              const { displayName } = genAvataImg(user.fullname);
               return (
-                <Chip
-                  avatar={(
-                    <Avatar
-                      src={user.profileImage}
-                    >
-                      {displayName}
-                    </Avatar>)}
+                <Tooltip
+                  title={user.email}
+                >
+                  <Chip
+                    avatar={(
+                      <Avatar
+                        src={user.profileImage}
+                      >
+                        {displayName}
+                      </Avatar>)}
 
-                  color="primary"
-                  label={user.fullname}
-                  variant="outlined"
-                />
+                    className={classes.chips}
+                    color="primary"
+                    label={user.fullname}
+                    variant="outlined"
+                  />
+                </Tooltip>
               )
             })
           }

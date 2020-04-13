@@ -55,8 +55,8 @@ function getSorting(order, orderBy) {
 const headRows = [
   { id: 'name', label: 'Name' },
   { id: 'owner', label: 'Owner' },
-  { id: 'status', label: 'status' },
-  { id: 'size', label: 'size' },
+  { id: 'status', label: 'Status' },
+  { id: 'size', label: 'Size' },
 ];
 
 function EnhancedTableHead(props) {
