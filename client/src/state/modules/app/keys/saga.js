@@ -1,6 +1,6 @@
 import { all, put, select, takeEvery } from 'redux-saga/effects';
 import * as ActionTypes from './actions';
-import { API_STATUS_CODE } from 'helpers/constant';
+import { API_STATUS_CODE, TOAST_TYPE } from 'helpers/constant';
 import {
   createKeyApi,
   updateKeyApi,
@@ -11,6 +11,7 @@ import {
 import { Selectors } from 'state/modules/auth';
 
 import { push } from 'connected-react-router';
+import { showToast } from '../../notification';
 
 function* createKey(action) {
   const { key } = action.payload;
@@ -28,8 +29,16 @@ function* updateKey(action) {
   const { key } = action.payload;
   const res = yield updateKeyApi(key);
 
+  if (res.error) {
+    const toast = {
+      message: 'Something went wrong !',
+      type: TOAST_TYPE.FAILED
+    }
+    yield put(showToast(toast));
+  }
+
   if (res.status === API_STATUS_CODE.SUCCESS) {
-    yield put(ActionTypes.createKey(res.data.key))
+    yield put(ActionTypes.createKey(res.data.key));
     yield put(push('/keys'));
   }
 }
@@ -49,7 +58,13 @@ function* deleteKey(action) {
 function* fetchKeys() {
   const currentUser = yield select(Selectors.currentUser);
   const res = yield getKeysApi();
-
+  if (res.error) {
+    const toast = {
+      message: 'Something went wrong !',
+      type: TOAST_TYPE.FAILED
+    }
+    yield put(showToast(toast));
+  }
   if (res.status === API_STATUS_CODE.SUCCESS) {
     yield put(ActionTypes.setKeys(res.data.keys))
   }

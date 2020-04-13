@@ -14,3 +14,9 @@ export const AUTH_PROVIDER = {
   FACEBOOK: 'facebook',
   LOCAL: 'local'
 }
+
+export const TOAST_TYPE = {
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  WARNING: 'WARNING'
+}

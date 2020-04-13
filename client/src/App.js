@@ -11,6 +11,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import './assets/scss/index.scss';
 
 import Routes from './Routes';
+import ToastNotification from 'components/ToastNotification';
 
 const store = configureStore();
 
@@ -22,6 +23,7 @@ export default class App extends Component {
           <ConnectedRouter history={history} >
             <Routes />
           </ConnectedRouter>
+          <ToastNotification />
         </Provider>
       </ThemeProvider>
     );
