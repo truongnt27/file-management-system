@@ -12,6 +12,7 @@ import './assets/scss/index.scss';
 
 import Routes from './Routes';
 import ToastNotification from 'components/ToastNotification';
+import AppLoading from 'components/Loading/AppLoading';
 
 const store = configureStore();
 
@@ -24,6 +25,7 @@ export default class App extends Component {
             <Routes />
           </ConnectedRouter>
           <ToastNotification />
+          <AppLoading />
         </Provider>
       </ThemeProvider>
     );
