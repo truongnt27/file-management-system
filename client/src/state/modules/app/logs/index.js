@@ -7,6 +7,7 @@ import logsReducer from './reducer';
 export {
   namespace,
   logsSaga,
+  logsReducer,
   Actions,
   Selectors
 }

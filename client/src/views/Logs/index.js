@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -55,7 +55,7 @@ const Logs = props => {
   const logsStore = useSelector(Selectors.logsStore);
 
   useEffect(() => {
-    logsStore.status !== 'LOADED' && dispatch(Actions.FETCH_LOGS);
+    logsStore.status !== 'LOADED' && dispatch({ type: Actions.FETCH_LOGS });
   }, [logsStore.status])
 
   const logs = Object.values(logsStore.byId);
@@ -77,8 +77,6 @@ const Logs = props => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Actor</TableCell>
-                    <TableCell>Key</TableCell>
                     <TableCell sortDirection="desc">
                       <Tooltip
                         enterDelay={300}
@@ -88,11 +86,12 @@ const Logs = props => {
                           active
                           direction="desc"
                         >
-                          Date time
+                          Time
                         </TableSortLabel>
                       </Tooltip>
                     </TableCell>
-                    <TableCell>Type</TableCell>
+                    <TableCell>UserId</TableCell>
+                    <TableCell>Description</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -101,16 +100,11 @@ const Logs = props => {
                       hover
                       key={log._id}
                     >
-                      <TableCell>{log.agent.name}</TableCell>
-                      <TableCell>{log.keyId}</TableCell>
                       <TableCell>
-                        {moment(log.createdAt).format('DD/MM/YYYY hh:mm:ss')}
+                        {moment(log.time).format('DD/MM/YYYY hh:mm:ss')}
                       </TableCell>
-                      <TableCell>
-                        <div className={classes.statusContainer}>
-                          {log.type}
-                        </div>
-                      </TableCell>
+                      <TableCell>{log.userId}</TableCell>
+                      <TableCell>{log.description}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

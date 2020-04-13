@@ -2,13 +2,12 @@ const KeyStore = require('../models/keyStore');
 const CryptoKey = require('../models/cryptoKey');
 const FileStore = require('../models/fileStore');
 const Log = require('../models/eventLog');
+const { EVENT_TYPE } = require('../helpers/constant');
 const { isEmpty } = require('lodash');
 const genCryptoKey = require('../keys/keyGen');
 
 module.exports = {
   get: async (req, res) => {
-    console.log('req.user', req.session.passport);
-
     const keys = await KeyStore.find().lean();
     res.status(200).json({
       status: "SUCCESS",
@@ -34,6 +33,16 @@ module.exports = {
       if (key.status) {
         await FileStore.updateMany({ keyId }, { status: key.status });
       }
+
+      const log = new Log({
+        time: Date.now(),
+
+        userId: '',
+        description: `${EVENT_TYPE.UPDATE_KEY} ${resultKey.alias}`
+      });
+
+      log.save();
+
       return res.status(200).json({
         status: "SUCCESS",
         data: {
@@ -72,6 +81,13 @@ module.exports = {
 
       const resultKey = await keyStore.save();
 
+      const log = new Log({
+        time: Date.now(),
+        userId: '',
+        description: `${EVENT_TYPE.CREATE_KEY} ${key.alias}`
+      });
+      log.save();
+
       return res.status(200).json({
         status: "SUCCESS",
         data: {
@@ -101,6 +117,14 @@ module.exports = {
     try {
 
       await KeyStore.deleteOne({ _id: keyId });
+
+      const log = new Log({
+        time: Date.now(),
+        userId: key.owner,
+        description: `${EVENT_TYPE.DEL_KEY} ${key.alias}`
+      });
+
+      log.save();
 
       return res.status(200).json({
         status: "SUCCESS",

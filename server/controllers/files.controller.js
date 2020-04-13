@@ -1,7 +1,10 @@
 const FileStore = require('../models/fileStore');
 const KeyStore = require('../models/keyStore');
+const Log = require('../models/eventLog');
 const encryptFile = require('../crypto/encryptFile');
 const decryptFile = require('../crypto/decryptFile');
+
+const { EVENT_TYPE } = require('../helpers/constant');
 
 const { isEmpty } = require('lodash');
 
@@ -9,7 +12,7 @@ module.exports = {
   get: async (req, res, next) => {
     try {
       const files = await FileStore.find();
-      res.status(200).json({
+      return res.status(200).json({
         status: "SUCCESS",
         data: {
           files
@@ -28,6 +31,14 @@ module.exports = {
       const { owner, name, keyId } = file;
       const dir = `${owner}/${name}`;
       //decryptFile(dir, keyId);
+
+      const log = new Log({
+        time: Date.now(),
+        userId: '',
+        description: `${EVENT_TYPE.DOWNLOAD_FILE} ${name}`
+      });
+
+      log.save();
 
       res.download(`./public/uploads/${dir}`);
     }
@@ -56,6 +67,15 @@ module.exports = {
       })
 
       const result = await fileStore.save();
+
+      const log = new Log({
+        time: Date.now(),
+        userId: '',
+        description: `${EVENT_TYPE.UPLOAD_FILE} ${file.originalname}`
+      });
+
+      log.save();
+
       encryptFile(`${owner}/${req.file.originalname}`, keyId);
       res.status(200).json({
         status: 'SUCCESS',
