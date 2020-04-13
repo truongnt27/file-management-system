@@ -17,6 +17,7 @@ export const UPDATE_KEY_SAGA = `${namespace}/UPDATE_KEY_SAGA`;
 export const DELETE_KEY_SAGA = `${namespace}/DELETE_KEY_SAGA`;
 
 export const SET_KEYS = `${namespace}/SET_KEYS`;
+export const SET_LOADING_KEYS = `${namespace}/SET_LOADING_KEYS`;
 
 export const updateKeySaga = (key = {}) => ({
   type: UPDATE_KEY_SAGA,

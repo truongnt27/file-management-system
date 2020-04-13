@@ -23,7 +23,7 @@ const KeyList = () => {
 
   useEffect(() => {
     (keysStore.status !== 'LOADED') && dispatch({ type: Actions.FETCH_KEYS })
-  }, [keysStore.status])
+  }, [keysStore.status]);
 
   const keys = Object.values(keysStore.byId);
 
@@ -31,7 +31,10 @@ const KeyList = () => {
     <div className={classes.root}>
       <KeysToolbar />
       <div className={classes.content}>
-        <KeysTable keys={keys} />
+        <KeysTable
+          keys={keys}
+          loading={keysStore.status === 'LOADING'}
+        />
       </div>
     </div>
   );

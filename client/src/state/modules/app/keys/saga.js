@@ -57,7 +57,10 @@ function* deleteKey(action) {
 
 function* fetchKeys() {
   const currentUser = yield select(Selectors.currentUser);
+
+  yield put({ type: ActionTypes.SET_LOADING_KEYS });
   const res = yield getKeysApi();
+
   if (res.error) {
     const toast = {
       message: 'Something went wrong !',

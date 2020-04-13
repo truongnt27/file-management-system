@@ -23,6 +23,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Edit as EditIcon, Visibility as ViewIcon, ToggleOff, ToggleOn } from '@material-ui/icons';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { StatusBullet, DeleteConfirmDialog } from 'components';
+import { Skeleton } from '@material-ui/lab';
 
 import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
@@ -287,7 +288,7 @@ const useStyles = makeStyles(theme => ({
 export default function KeysTable(props) {
   const classes = useStyles();
 
-  const { keys: rows } = props;
+  const { keys: rows, loading = false } = props;
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -401,6 +402,46 @@ export default function KeysTable(props) {
               rowCount={rows.length}
             />
             <TableBody>
+              {
+                loading && (
+                  <>
+                    <TableRow >
+                      <TableCell
+                        align="left"
+                      >
+                        <Skeleton variant="rect" />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        padding="none"
+                        scope="row"
+                      >
+                        <Skeleton variant="rect" />
+                      </TableCell>
+                      <TableCell align="left" ><Skeleton variant="rect" /></TableCell>
+                      <TableCell align="left" ><Skeleton variant="rect" /></TableCell>
+                      <TableCell align="left" ><Skeleton variant="rect" /></TableCell>
+                    </TableRow>
+                    <TableRow >
+                      <TableCell
+                        align="left"
+                      >
+                        <Skeleton variant="rect" />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        padding="none"
+                        scope="row"
+                      >
+                        <Skeleton variant="rect" />
+                      </TableCell>
+                      <TableCell align="left" ><Skeleton variant="rect" /></TableCell>
+                      <TableCell align="left" ><Skeleton variant="rect" /></TableCell>
+                      <TableCell align="left" ><Skeleton variant="rect" /></TableCell>
+                    </TableRow>
+                  </>
+                )
+              }
               {stableSort(rows, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
@@ -481,5 +522,6 @@ export default function KeysTable(props) {
 }
 KeysTable.propTypes = {
   className: PropTypes.string,
-  keys: PropTypes.array.isRequired
+  keys: PropTypes.array.isRequired,
+  loading: PropTypes.bool
 };

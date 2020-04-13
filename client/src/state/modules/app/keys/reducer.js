@@ -1,4 +1,4 @@
-import { Status, CREATE_KEY, DELETE_KEY, SET_KEYS } from './actions';
+import { Status, CREATE_KEY, DELETE_KEY, SET_KEYS, SET_LOADING_KEYS } from './actions';
 
 const initialState = {
   status: Status.INIT,
@@ -44,6 +44,12 @@ export default function keysReducer(state = initialState, action) {
         status: Status.LOADED,
         byId: keysObj,
         allIds: Object.keys(keysObj)
+      }
+    }
+    case SET_LOADING_KEYS: {
+      return {
+        ...state,
+        status: Status.LOADING,
       }
     }
     default:
