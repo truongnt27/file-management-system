@@ -377,6 +377,59 @@ export default function KeysTable(props) {
 
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
+  const genTableRows = () => {
+    return stableSort(rows, getSorting(order, orderBy))
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((row, index) => {
+        const isItemSelected = isSelected(row._id);
+        const labelId = `checkbox-${index}`;
+        return (
+          <TableRow
+            aria-checked={isItemSelected}
+            hover
+            key={row._id}
+            onClick={event => handleClick(event, row._id)}
+            role="checkbox"
+            selected={isItemSelected}
+            tabIndex={-1}
+          >
+            <TableCell
+              align="left"
+              padding="checkbox"
+            >
+              <Checkbox
+                checked={isItemSelected}
+                color="primary"
+                inputProps={{ 'aria-labelledby': labelId }}
+              />
+            </TableCell>
+            <TableCell
+              component="th"
+              id={labelId}
+              padding="none"
+              scope="row"
+            >
+              {row.alias}
+            </TableCell>
+            <TableCell align="left">{row.description || '_'}</TableCell>
+            <TableCell align="left">
+              <div className={classes.statusContainer}>
+                <StatusBullet
+                  className={classes.status}
+                  size="sm"
+                  type={row.status}
+                />
+                {row.status}
+              </div>
+            </TableCell>
+            <TableCell align="left">
+              {moment(row.creationDate).format('DD/MM/YYYY hh:mm:ss')}
+            </TableCell>
+          </TableRow>
+        );
+      })
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -403,7 +456,7 @@ export default function KeysTable(props) {
             />
             <TableBody>
               {
-                loading && (
+                loading ? (
                   <>
                     <TableRow >
                       <TableCell
@@ -440,59 +493,8 @@ export default function KeysTable(props) {
                       <TableCell align="left" ><Skeleton variant="rect" /></TableCell>
                     </TableRow>
                   </>
-                )
+                ) : genTableRows()
               }
-              {stableSort(rows, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row._id);
-                  const labelId = `checkbox-${index}`;
-                  return (
-                    <TableRow
-                      aria-checked={isItemSelected}
-                      hover
-                      key={row._id}
-                      onClick={event => handleClick(event, row._id)}
-                      role="checkbox"
-                      selected={isItemSelected}
-                      tabIndex={-1}
-                    >
-                      <TableCell
-                        align="left"
-                        padding="checkbox"
-                      >
-                        <Checkbox
-                          checked={isItemSelected}
-                          color="primary"
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        padding="none"
-                        scope="row"
-                      >
-                        {row.alias}
-                      </TableCell>
-                      <TableCell align="left">{row.description || '_'}</TableCell>
-                      <TableCell align="left">
-                        <div className={classes.statusContainer}>
-                          <StatusBullet
-                            className={classes.status}
-                            size="sm"
-                            type={row.status}
-                          />
-                          {row.status}
-                        </div>
-                      </TableCell>
-                      <TableCell align="left">
-                        {moment(row.creationDate).format('DD/MM/YYYY hh:mm:ss')}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-
             </TableBody>
           </Table>
         </div>
