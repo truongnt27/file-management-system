@@ -3,11 +3,28 @@ const { isEmpty } = require('lodash');
 
 module.exports = {
   get: async (req, res) => {
-    const users = await UserStore.find()
-    res.status(200).json({
+    const users = await UserStore.find().lean();
+
+    return res.status(200).json({
       status: "SUCCESS",
       data: {
         users
+      }
+    })
+  },
+
+  me: async (req, res) => {
+    const user = req.user || null;
+    if (!user) {
+      return res.status(500).json({
+        status: "FAILED",
+        message: "Something's wrong"
+      })
+    }
+    return res.status(200).json({
+      status: "SUCCESS",
+      data: {
+        user
       }
     })
   },
@@ -31,10 +48,7 @@ module.exports = {
       })
 
     } catch (error) {
-      return res.status(500).json({
-        status: "FAILED",
-        message: "Something's wrong"
-      })
+      next(error);
     }
   },
 
@@ -76,10 +90,7 @@ module.exports = {
       })
 
     } catch (error) {
-      return res.status(500).json({
-        status: "FAILED",
-        message: "Something's wrong"
-      })
+      next(error);
     }
   },
 
@@ -94,7 +105,7 @@ module.exports = {
       })
     }
     try {
-      const user = await UserStore.findOne({ userId: id });
+      const user = await UserStore.findOne({ _id: id });
 
       if (!user || user == null) {
         return res.status(400).json({
@@ -110,10 +121,7 @@ module.exports = {
         }
       })
     } catch (error) {
-      return res.status(500).json({
-        status: "FAILED",
-        message: "Something's wrong"
-      })
+      next(error);
     }
 
   }

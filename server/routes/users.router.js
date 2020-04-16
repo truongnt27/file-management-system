@@ -11,6 +11,11 @@ router
     userController.get
   )
   .get(
+    '/me',
+    protectedRoute,
+    userController.get
+  )
+  .get(
     '/:userId',
     protectedRoute,
     userController.getById
