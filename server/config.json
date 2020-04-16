@@ -6,5 +6,14 @@
   "google": {
     "GOOGLE_CLIENT_ID": "1059460434373-ecabipeoun9l5s44qliuo3h9eujl3rhl.apps.googleusercontent.com",
     "GOOGLE_CLIENT_SECRET": "t-AApMjAoqgrXZkGRhg7nSL3"
+  },
+  "jwtConfig": {
+    "secret": "A 16 pear",
+    "option": {
+      "expiresIn": "7d"
+    }
+  },
+  "cookie": {
+    "secret": "A warm refrigerator"
   }
 }

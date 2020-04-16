@@ -1,42 +1,23 @@
-import axios from 'axios';
+import apiCaller from './apiCaller';
 
-export const uploadFileApi = async (file, keyId, userId) => {
-  try {
+export const uploadFileApi = (file, keyId, userId) => {
+  const formData = new FormData();
+  formData.append('keyId', keyId);
+  formData.append('owner', userId);
+  formData.append('file', file);
 
-    const formData = new FormData();
-    formData.append('keyId', keyId);
-    formData.append('owner', userId);
-    formData.append('file', file);
-
-    const result = await axios.post('http://localhost:3002/api/files', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-
-    return result.data;
-  } catch (error) {
-    console.log(error);
-  }
+  return apiCaller.post('/files', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
 }
 
 export const downloadFileApi = async (fileId) => {
-  try {
-    const result = await axios.get(`http://localhost:3002/api/files/${fileId}/download`);
-    return result.data;
-  } catch (error) {
-    return ({
-      error: true,
-      ...error
-    })
-  }
+  return apiCaller.get(`/files/${fileId}/download`);
 }
 
 export const getFilesApi = async () => {
-  try {
-    const result = await axios.get('http://localhost:3002/api/files');
-    return result.data;
-  } catch (error) {
-    return error
-  }
+  return apiCaller.get('/files');
+
 }

@@ -17,9 +17,12 @@ const keysRouter = require("./routes/keys.router");
 const filesRouter = require("./routes/files.router");
 const cryptoRouter = require("./routes/crypto.router");
 const logsRouter = require("./routes/logs.router");
-
 const app = express();
+
+const config = require('./config.json');
+
 app.use(cors({
+  credentials: true,
   origin: 'http://localhost:3000',
   methods: "GET,PUT,POST,DELETE"
 }));
@@ -32,7 +35,7 @@ app.use(bodyParser.json());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(config.cookie.secret));
 app.use(session(
   {
     secret: "Shh, its a secret!",

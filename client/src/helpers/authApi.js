@@ -1,26 +1,9 @@
-import axios from 'axios';
+import ApiCaller from './apiCaller';
 
-export const authUserSocial = async (provider) => {
-  try {
-    const config = {
-      headers: { 'Access-Control-Allow-Origin': '*' }
-    };
-    const result = await axios.get(`http://localhost:3002/api/auth/${provider}`, config);
-
-
-    console.log(result);
-
-  } catch (error) {
-    return error
-  }
+export const authUserSocial = (provider) => {
+  return ApiCaller.get(`/auth/${provider}`);
 }
 
-export const authUserLocal = async (user) => {
-  try {
-
-    const result = await axios.post('http://localhost:3002/api/auth/sign-in', user);
-    return result.data;
-  } catch (error) {
-    return error
-  }
+export const authUserLocal = (user) => {
+  return ApiCaller.post('/auth/sign-in', user);
 }
