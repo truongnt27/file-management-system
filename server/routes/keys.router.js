@@ -1,14 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
-
 const keyController = require('../controllers/keys.controller');
+const { protectedRoute } = require('../helpers/authHelper');
 
 router
-  .get('/', passport.authenticate('jwt'), keyController.get)
-  .get('/:keyAlias', keyController.getByAlias)
-  .post('/', keyController.store)
-  .put('/:keyId', keyController.update)
-  .delete('/:keyId', keyController.delete)
+  .get(
+    '/',
+    protectedRoute,
+    keyController.get
+  )
+  .get(
+    '/:keyAlias',
+    protectedRoute,
+    keyController.getByAlias
+  )
+  .post(
+    '/',
+    protectedRoute,
+    keyController.store
+  )
+  .put(
+    '/:keyId',
+    protectedRoute,
+    keyController.update
+  )
+  .delete(
+    '/:keyId',
+    protectedRoute,
+    keyController.delete
+  )
 
 module.exports = router;

@@ -3,12 +3,22 @@ const router = express.Router();
 
 const filesController = require('../controllers/files.controller');
 const upload = require('../helpers/fileSaver');
+const { protectedRoute } = require('../helpers/authHelper');
 
 router
-  .get('/', filesController.get)
-  .get('/:fileId/download', filesController.download)
+  .get(
+    '/',
+    protectedRoute,
+    filesController.get
+  )
+  .get(
+    '/:fileId/download',
+    protectedRoute,
+    filesController.download
+  )
   .post(
     '/',
+    protectedRoute,
     upload.single('file'),
     filesController.store
   )
