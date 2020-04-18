@@ -1,26 +1,22 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { isAuthenticated } from 'state/modules/auth/selector';
-import { useSelector } from 'react-redux'
+// import { isAuthenticated } from 'state/modules/auth/selector';
+// import { useSelector } from 'react-redux'
 
 const RouteWithLayout = props => {
   const { layout: Layout, component: Component, requireAuth, ...rest } = props;
-  const isLoggined = true;
-  //const isLoggined = useSelector(isAuthenticated);
 
   if (requireAuth) {
     return (
       <Route
         {...rest}
-        render={matchProps => {
-          return isLoggined ? (
+        render={
+          matchProps =>
             <Layout>
               <Component {...matchProps} />
             </Layout>
-          ) :
-            <Redirect to="/sign-in" />
-        }}
+        }
       />
     );
   }
