@@ -21,6 +21,12 @@ function* createKey(action) {
 
   if (res.status === API_STATUS_CODE.SUCCESS) {
     yield put(ActionTypes.createKey(res.data.key))
+    const toast = {
+      message: 'Create key succesfully !',
+      type: TOAST_TYPE.SUCCESS
+    }
+    yield put(showToast(toast));
+
     yield put(push('/keys'));
   }
 }
@@ -39,6 +45,11 @@ function* updateKey(action) {
 
   if (res.status === API_STATUS_CODE.SUCCESS) {
     yield put(ActionTypes.createKey(res.data.key));
+    const toast = {
+      message: 'Update key succesfully !',
+      type: TOAST_TYPE.SUCCESS
+    }
+    yield put(showToast(toast));
     yield put(push('/keys'));
   }
 }
@@ -51,7 +62,7 @@ function* deleteKey(action) {
 
   const res = yield deleteKeyApi(keyId);
   if (res.status === API_STATUS_CODE.SUCCESS) {
-    console.log('success');
+    //
   }
 }
 
