@@ -10,7 +10,7 @@ import {
   History as HistoryIcon,
   Delete as DeleteIcon,
   Settings as SettingsIcon,
-  AccountBox as AccountBoxIcon
+  Group as UsersIcon
 } from '@material-ui/icons';
 
 import { Profile, SidebarNav } from './components';
@@ -58,6 +58,11 @@ const Sidebar = props => {
       title: 'Manage keys',
       href: '/keys',
       icon: <VpnKeyIcon />
+    },
+    {
+      title: 'All users',
+      href: '/users',
+      icon: < UsersIcon />
     },
     {
       title: 'Activity logs',

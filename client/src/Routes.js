@@ -11,7 +11,8 @@ import {
   SignUp as SignUpView,
   KeyList as KeyListView,
   Account as AccountView,
-  FilesManagement as FilesManagementView
+  FilesManagement as FilesManagementView,
+  UserList as UserListView
 } from './views';
 
 import { CreateKey as CreateKeyView } from './views/KeyList/components';
@@ -54,6 +55,13 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/logs"
+        requireAuth
+      />
+      <RouteWithLayout
+        component={UserListView}
+        exact
+        layout={MainLayout}
+        path="/users"
         requireAuth
       />
       <RouteWithLayout

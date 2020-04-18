@@ -3,7 +3,8 @@ const { isEmpty } = require('lodash');
 
 module.exports = {
   get: async (req, res) => {
-    const users = await UserStore.find().lean();
+    const id = req.user._id;
+    const users = await UserStore.find({ _id: { $ne: id } }).lean();
 
     return res.status(200).json({
       status: "SUCCESS",

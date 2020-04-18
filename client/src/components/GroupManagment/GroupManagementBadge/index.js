@@ -6,7 +6,7 @@ import {
   ArrowDropDown as ArrowDropDownIcon
 } from '@material-ui/icons';
 import { withStyles } from '@material-ui/styles';
-import cx from 'classnames';
+import cx from 'clsx';
 
 
 const muiStyles = theme => ({
