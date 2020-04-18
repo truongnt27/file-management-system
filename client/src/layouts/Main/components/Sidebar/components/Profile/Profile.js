@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import { Selectors } from 'state/modules/auth';
 import genAvataImg from 'helpers/genAvataImg';
 
+import { Skeleton } from '@material-ui/lab';
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -31,31 +33,49 @@ const Profile = props => {
 
   const classes = useStyles();
   const user = useSelector(Selectors.currentUser);
+  const { fullname } = user;
 
-  const { displayName, backgroundColor } = useMemo(() => genAvataImg(user.fullname), [user.fullname]);
+  const { displayName, backgroundColor } = useMemo(() => genAvataImg(fullname), [fullname]);
 
   return (
     <div
       {...rest}
       className={clsx(classes.root, className)}
     >
-      <Avatar
-        alt="Person"
-        className={classes.avatar}
-        component={RouterLink}
-        src={user.avatarPicture}
-        style={{ backgroundColor }}
-        to="/account"
-      >
-        {displayName}
-      </Avatar>
-      <Typography
-        className={classes.name}
-        variant="h4"
-      >
-        {user.fullname}
-      </Typography>
-      <Typography variant="body2">{user.email}</Typography>
+      {
+        fullname ?
+          <>
+            <Avatar
+              alt="Person"
+              className={classes.avatar}
+              component={RouterLink}
+              src={user.avatarPicture}
+              style={{ backgroundColor }}
+              to="/account"
+            >
+              {displayName}
+            </Avatar>
+            <Typography
+              className={classes.name}
+              variant="h4"
+            >
+              {user.fullname}
+            </Typography>
+            <Typography variant="body2">{user.email}</Typography>
+          </> :
+          <>
+            <Skeleton
+              className={classes.avatar}
+              variant="circle"
+            />
+            <Skeleton
+              className={classes.name}
+              variant="react"
+              width={60}
+            />
+          </>
+      }
+
     </div>
   );
 };
