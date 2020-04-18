@@ -7,3 +7,7 @@ export const authUserSocial = (provider) => {
 export const authUserLocal = (user) => {
   return ApiCaller.post('/auth/sign-in', user);
 }
+
+export const signOutApi = () => {
+  return ApiCaller.get('/auth/sign-out');
+}

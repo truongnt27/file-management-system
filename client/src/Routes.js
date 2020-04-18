@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Switch, Redirect } from 'react-router-dom';
 import { RouteWithLayout } from './components';
 import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
@@ -16,8 +17,15 @@ import {
 import { CreateKey as CreateKeyView } from './views/KeyList/components';
 import { EditKey as EditKeyView } from './views/KeyList/components';
 import { FileUpload as FilesUploadView } from './views/FilesManagement/components';
+import { boot } from 'state/modules/app';
 
 const Routes = () => {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(boot())
+  }, [])
   return (
     <Switch>
       <RouteWithLayout

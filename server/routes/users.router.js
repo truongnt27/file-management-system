@@ -13,7 +13,7 @@ router
   .get(
     '/me',
     protectedRoute,
-    userController.get
+    userController.me
   )
   .get(
     '/:userId',

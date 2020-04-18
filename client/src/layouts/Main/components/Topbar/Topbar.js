@@ -8,6 +8,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 
+import { useDispatch } from 'react-redux';
+import { SIGN_OUT } from 'state/modules/auth/actions';
+
 const useStyles = makeStyles(theme => ({
   root: {
     boxShadow: 'none'
@@ -24,8 +27,12 @@ const Topbar = props => {
   const { className, onSidebarOpen, ...rest } = props;
 
   const classes = useStyles();
-
+  const dispatch = useDispatch();
   const [notifications] = useState([]);
+
+  const handleSignOut = () => {
+    dispatch({ type: SIGN_OUT });
+  }
 
   return (
     <AppBar
@@ -54,7 +61,7 @@ const Topbar = props => {
             className={classes.signOutButton}
             color="inherit"
           >
-            <InputIcon />
+            <InputIcon onClick={handleSignOut} />
           </IconButton>
         </Hidden>
         <Hidden lgUp>

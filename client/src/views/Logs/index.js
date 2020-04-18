@@ -113,13 +113,6 @@ const Logs = props => {
           </PerfectScrollbar>
         </CardContent>
         <Divider />
-        <CardActions className={classes.actions}>
-          <TablePagination
-            component="div"
-            count={logs.length}
-            rowsPerPageOptions={[50, 100, 200]}
-          />
-        </CardActions>
       </Card>
     </div>
 

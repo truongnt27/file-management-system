@@ -7,10 +7,12 @@ import { keysReducer, namespace as keysN } from './modules/app/keys';
 import { filesReducer, namespace as filesN } from './modules/app/files';
 import { logsReducer, namespace as logsN } from './modules/app/logs';
 import { notificationReducer, namespace as notificationN } from './modules/notification';
+import { namespace, reducer } from './modules/app';
 
 
 const createRootReducer = (history) => combineReducers({
   router: connectRouter(history),
+  [namespace]: reducer,
   [authN]: authReducer,
   [usersN]: usersReducer,
   [keysN]: keysReducer,

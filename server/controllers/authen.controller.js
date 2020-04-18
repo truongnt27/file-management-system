@@ -47,6 +47,15 @@ module.exports = {
       });
     })(req, res, next)
   },
+  signout: (req, res, next) => {
+    return res
+      .status(200)
+      .clearCookie('authToken', { httpOnly: true })
+      .json({
+        status: "SUCCESS",
+        message: "Signed out"
+      })
+  },
 
   // facebook: (req, res, next) => {
   //   return res.status(200).json({

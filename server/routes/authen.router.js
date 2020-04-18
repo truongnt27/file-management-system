@@ -13,6 +13,10 @@ router
     '/sign-up',
     authenController.signup
   )
+  .get(
+    '/sign-out',
+    authenController.signout
+  )
   // .get(
   //   '/facebook',
   //   passport.authenticate('facebook', { scope: 'email' }),
