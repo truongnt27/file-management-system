@@ -152,30 +152,38 @@ function FileViewer(props) {
           </Typography>
         </Grid>
         <Grid item>
-          {
-            selectedUsers.map(user => {
-              const { displayName } = genAvataImg(user.fullname);
-              return (
-                <Tooltip
-                  title={user.email}
-                >
-                  <Chip
-                    avatar={(
-                      <Avatar
-                        src={user.profileImage}
-                      >
-                        {displayName}
-                      </Avatar>)}
+          <Grid container>
+            {
+              selectedUsers.map(user => {
+                const { displayName } = genAvataImg(user.fullname);
+                return (
+                  <Grid
+                    item
+                    lg={4}
+                    sm={12}
+                  >
+                    <Tooltip
+                      title={user.email}
+                    >
+                      <Chip
+                        avatar={(
+                          <Avatar
+                            src={user.profileImage}
+                          >
+                            {displayName}
+                          </Avatar>)}
 
-                    className={classes.chips}
-                    color="primary"
-                    label={user.fullname}
-                    variant="outlined"
-                  />
-                </Tooltip>
-              )
-            })
-          }
+                        className={classes.chips}
+                        color="primary"
+                        label={user.fullname}
+                        variant="outlined"
+                      />
+                    </Tooltip>
+                  </Grid>
+                )
+              })
+            }
+          </Grid>
         </Grid>
       </Grid>
     </Drawer>

@@ -36,38 +36,6 @@ passport.use('local.signin', new LocalStrategy({
   });
 }));
 
-// passport.use('local.signup', new LocalStrategy({
-//   usernameField: 'email',
-//   passwordField: 'password',
-//   passReqToCallback: true
-// }, function (req, email, password, done) {
-
-//   UserStore.findOne({ email }, function (err, user) {
-//     if (err) {
-//       return done(err);
-//     }
-//     if (user) {
-//       return done(null, false);
-//     }
-
-//     const newUser = new UserStore({
-//       email: email,
-//       password: password,
-//       type: "user",
-//     });
-
-//     newUser.save(function (err, result) {
-//       if (err) {
-//         return done(err);
-//       }
-//       return done(null, newUser);
-//     });
-//   });
-// }));
-
-
-// ExtractJwt = require('passport-jwt').ExtractJwt;
-
 const opts = {}
 
 opts.jwtFromRequest = function (req) {
@@ -80,16 +48,17 @@ opts.jwtFromRequest = function (req) {
 
 opts.secretOrKey = config.jwtConfig.secret;
 
-passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
-  UserStore.findOne({ _id: jwt_payload.id }, function (err, user) {
-    if (err) {
-      return done(err, false);
-    }
+passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
+  try {
+    const user = await UserStore.findOne({ _id: jwt_payload.id });
     if (user) {
+      user.lastActive = Date.now();
+      await user.save();
       return done(null, user);
-    } else {
-      return done(null, false);
     }
-  });
+    return done(err, false);
+  } catch (err) {
+    return done(null, false);
+  }
 
 }));

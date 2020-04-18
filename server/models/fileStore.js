@@ -7,7 +7,8 @@ const schema = new Schema({
   owner: { type: Schema.Types.ObjectId, ref: 'UserStore', required: true },
   status: { type: String, required: true, default: constant.STATUS.ENABLE },
   keyId: { type: Schema.Types.ObjectId, ref: 'KeyStore', required: true },
-  size: { type: String, required: true }
+  size: { type: String, required: true },
+  activities: [{ type: Schema.Types.ObjectId, ref: "FileStore", required: false }]
 });
 
 module.exports = mongoose.model("FileStore", schema);

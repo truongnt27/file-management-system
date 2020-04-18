@@ -36,8 +36,7 @@ module.exports = {
 
       const log = new Log({
         time: Date.now(),
-
-        userId: '',
+        userId: req.user._id,
         description: `${EVENT_TYPE.UPDATE_KEY} ${resultKey.alias}`
       });
 
@@ -83,7 +82,7 @@ module.exports = {
 
       const log = new Log({
         time: Date.now(),
-        userId: '',
+        userId: req.user._id,
         description: `${EVENT_TYPE.CREATE_KEY} ${key.alias}`
       });
       log.save();

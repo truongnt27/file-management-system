@@ -34,7 +34,7 @@ module.exports = {
 
       const log = new Log({
         time: Date.now(),
-        userId: '',
+        userId: req.user._id,
         description: `${EVENT_TYPE.DOWNLOAD_FILE} ${name}`
       });
 
@@ -59,25 +59,35 @@ module.exports = {
         })
       }
 
+      const log1 = new Log({
+        time: Date.now(),
+        userId: req.user._id,
+        description: `${EVENT_TYPE.UPLOAD_FILE} ${file.originalname}`
+      });
+
+      const logged = await log1.save();
+
       const fileStore = new FileStore({
         name: file.originalname,
         owner,
         keyId,
-        size: file.size
+        size: file.size,
+        activities: [logged._id]
       })
 
       const result = await fileStore.save();
 
-      const log = new Log({
-        time: Date.now(),
-        userId: '',
-        description: `${EVENT_TYPE.UPLOAD_FILE} ${file.originalname}`
-      });
-
-      log.save();
-
       encryptFile(`${owner}/${req.file.originalname}`, keyId);
-      res.status(200).json({
+
+      // const log2 = new Log({
+      //   time: Date.now(),
+      //   userId: req.user._id,
+      //   description: `${EVENT_TYPE.ENCRYPT_FILE} ${file.originalname}`
+      // });
+
+      // await log2.save();
+
+      return res.status(200).json({
         status: 'SUCCESS',
         message: 'File saved',
         data: {

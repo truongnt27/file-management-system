@@ -14,6 +14,7 @@ var userSchema = new Schema({
   files: { type: Array, required: false },
   avatarPicture: { type: String, required: false },
   googleId: { type: String, required: false },
+  lastActive: { type: Date }
 });
 
 module.exports = mongoose.model("UserStore", userSchema);
