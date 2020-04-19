@@ -20,3 +20,9 @@ export const TOAST_TYPE = {
   FAILED: 'FAILED',
   WARNING: 'WARNING'
 }
+
+export const USER_TYPES = {
+  USER: 'User',
+  MANAGER: 'Manager',
+  ADMIN: 'Admin'
+}

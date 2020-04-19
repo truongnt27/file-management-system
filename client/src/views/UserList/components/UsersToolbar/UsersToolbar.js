@@ -29,10 +29,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersToolbar = props => {
-  const { className, ...rest } = props;
+  const { className, onOpenDialog, ...rest } = props;
 
   const classes = useStyles();
-
+  const handlClickCreateUser = () => {
+    onOpenDialog && onOpenDialog();
+  }
   return (
     <div
       {...rest}
@@ -55,6 +57,7 @@ const UsersToolbar = props => {
         <span className={classes.spacer} />
         <Button
           color="primary"
+          onClick={handlClickCreateUser}
           variant="contained"
         >
           Add user
@@ -65,7 +68,8 @@ const UsersToolbar = props => {
 };
 
 UsersToolbar.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  onOpenDialog: PropTypes.func
 };
 
 export default UsersToolbar;
