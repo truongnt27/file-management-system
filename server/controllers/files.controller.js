@@ -49,7 +49,8 @@ module.exports = {
 
   store: async (req, res, next) => {
     try {
-      const { keyId, owner } = req.body || null;
+      const owner = req.user._id;
+      const { keyId } = req.body || null;
       const file = req.file || null;
 
       if (isEmpty(keyId) || isEmpty(file)) {
