@@ -46,10 +46,6 @@ const FileUpload = () => {
 
   const keysStore = useSelector(Selectors.keysStore);
   const keys = keysStore.byId;
-  const defaultKeyId = keysStore.allIds[0];
-
-  const [file, setFile] = useState(null);
-  const [selectedKey, setSelectedKey] = useState(defaultKeyId);
 
   const keysArr = Object.values(keys).reduce((acc, key) => {
     if (key.status === 'ENABLE') {
@@ -57,6 +53,10 @@ const FileUpload = () => {
     }
     return acc;
   }, [])
+
+  const defaultKeyId = keysArr[0].value;
+  const [file, setFile] = useState(null);
+  const [selectedKey, setSelectedKey] = useState(defaultKeyId);
 
   const usersStore = useSelector(usersSelector);
 
