@@ -56,10 +56,10 @@ function getSorting(order, orderBy) {
 }
 
 const headRows = [
-  { id: 'user', label: 'User' },
+  { id: 'user', label: 'Name & Email' },
   { id: 'type', label: 'Type' },
   { id: 'address', label: 'Address' },
-  { id: 'lastActive', label: 'Last active' },
+  { id: 'lastActive', label: 'Last Activity' },
 
 ];
 
