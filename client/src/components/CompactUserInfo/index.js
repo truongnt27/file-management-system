@@ -11,6 +11,9 @@ const useStyles = makeStyles(theme => ({
   avatorContainer: {
     marginRight: theme.spacing(1)
   },
+  fullname: {
+    fontSize: '14px'
+  },
   subtitle: {
     fontSize: '12px',
     color: 'rgba(0,0,0,0.54)'
@@ -42,7 +45,7 @@ const CompactUserInfo = (props) => {
       </div>
       <div >
         <div >
-          <div >{fullname}</div>
+          <div className={classes.fullname} >{fullname}</div>
           <div>{badges}</div>
         </div>
         <div className={classes.subtitle} >
