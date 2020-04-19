@@ -7,3 +7,7 @@ export const fetchUsersApi = () => {
 export const getCurrentUser = () => {
   return apiCaller.get('/users/me');
 }
+
+export const createUserApi = (user) => {
+  return apiCaller.post('/users', { user });
+} 

@@ -363,7 +363,7 @@ export default function UsersTable(props) {
               {row.type}
             </TableCell>
             <TableCell align="left">
-              {row.address}
+              {row.address || '___'}
             </TableCell>
             <TableCell align="left">
               {row.lastActive ? moment(row.lastActive).format('DD/MM/YYYY hh:mm:ss') : '___'}

@@ -1,5 +1,6 @@
 const UserStore = require('../models/userStore');
 const { isEmpty } = require('lodash');
+const constant = require('../helpers/constant');
 
 module.exports = {
   get: async (req, res) => {
@@ -60,7 +61,7 @@ module.exports = {
         message: "Missing user info"
       })
     }
-    const userStore = UserStore({ user });
+    const userStore = new UserStore({ ...user });
     const resultUser = await userStore.save();
     return res.status(200).json({
       status: "SUCCESS",
@@ -80,7 +81,7 @@ module.exports = {
     }
 
     try {
-      await UserStore.deleteOne({ userId: id });
+      await UserStore.findOneAndUpdate({ _id: id }, { status: constant.USER_STATUS.INACTIVE });
 
       return res.status(200).json({
         status: "SUCCESS",

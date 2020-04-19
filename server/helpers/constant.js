@@ -4,6 +4,10 @@ module.exports = {
     MANAGER: 'Manager',
     ADMIN: 'Admin'
   },
+  USER_STATUS: {
+    ACTIVE: 'ACTIVE',
+    INACTIVE: 'INACTIVE',
+  },
   PERMISSION_TYPES: {
     EDIT: 'EDIT',
     ROTATE: 'ROTATE',

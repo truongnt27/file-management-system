@@ -22,7 +22,7 @@ import validate from 'validate.js';
 import { USER_TYPES } from 'helpers/constant';
 
 const schema = {
-  username: {
+  fullname: {
     presence: { allowEmpty: false, message: 'is required' },
     length: {
       maximum: 32
@@ -40,14 +40,7 @@ const schema = {
     length: {
       maximum: 128
     }
-  },
-  policy: {
-    presence: { allowEmpty: false, message: 'is required' },
-    inclusion: {
-      within: [true],
-      message: 'is reqired'
-    }
-  },
+  }
 };
 
 const styles = (theme) => ({
@@ -100,7 +93,7 @@ const DialogActions = withStyles((theme) => ({
 }))(MuiDialogActions);
 
 export default function CreateUser(props) {
-  const { open, onClose } = props;
+  const { open, onClose, onCreate } = props;
   const classes = {};
 
   const handleClose = () => {
@@ -143,7 +136,12 @@ export default function CreateUser(props) {
       }
     }));
   };
-  console.log(formState.values);
+
+  const handleCreateUser = () => {
+    onCreate && onCreate(formState.values);
+  }
+  console.log(formState.isValid);
+
 
   return (
     <div>
@@ -165,12 +163,12 @@ export default function CreateUser(props) {
             <TextField
               autoFocus
               className={classes.textField}
-              error={hasError('username')}
+              error={hasError('fullname')}
               fullWidth
               helperText={
-                hasError('username') ? formState.errors.username[0] : null
+                hasError('fullname') ? formState.errors.fullname[0] : null
               }
-              id="username"
+              id="fullname"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -178,9 +176,9 @@ export default function CreateUser(props) {
                   </InputAdornment>
                 ),
               }}
-              label="Username"
+              label="Fullname"
               margin="normal"
-              name="username"
+              name="fullname"
               onChange={handleChange}
               required
               type="text"
@@ -258,7 +256,7 @@ export default function CreateUser(props) {
             autoFocus
             color="primary"
             disabled={!formState.isValid}
-            onClick={handleClose}
+            onClick={handleCreateUser}
             variant="contained"
           >
             Save

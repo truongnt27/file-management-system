@@ -3,8 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 
 import { UsersToolbar, UsersTable, CreateUser } from './components';
 import { useDispatch, useSelector } from 'react-redux';
-import { FETCH_USERS, usersSelector, } from 'state/modules/app/users/actions';
-import { get } from 'lodash';
+import { FETCH_USERS, usersSelector, createUserSaga } from 'state/modules/app/users/actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -15,9 +14,37 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UserList = () => {
+const UserList = ({ users, onCreate }) => {
   const classes = useStyles();
   const [openCreatingDialog, setOpenCreatingDialog] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenCreatingDialog(true);
+  }
+
+  const handleCloseDialog = () => {
+    setOpenCreatingDialog(false);
+  }
+  const handleOnCreate = (userInfo) => {
+    setOpenCreatingDialog(false);
+    onCreate && onCreate(userInfo);
+  }
+  return (
+    <div className={classes.root}>
+      <UsersToolbar onOpenDialog={handleOpenDialog} />
+      <div className={classes.content}>
+        <UsersTable users={users} />
+      </div>
+      <CreateUser
+        onClose={handleCloseDialog}
+        onCreate={handleOnCreate}
+        open={openCreatingDialog}
+      />
+    </div>
+  );
+};
+
+const UserListSmartComponent = () => {
   const usersStore = useSelector(usersSelector);
   const dispatch = useDispatch();
 
@@ -28,30 +55,16 @@ const UserList = () => {
   const usersById = usersStore.byId || {};
   const users = Object.values(usersById);
 
-  const handleOpenDialog = () => {
-    setOpenCreatingDialog(true);
-  }
-
-  const handleCloseDialog = () => {
-    setOpenCreatingDialog(false);
-  }
-
-  const handleCreateUser = () => {
-
+  const createUser = (user) => {
+    dispatch(createUserSaga(user));
   }
 
   return (
-    <div className={classes.root}>
-      <UsersToolbar onOpenDialog={handleOpenDialog} />
-      <div className={classes.content}>
-        <UsersTable users={users} />
-      </div>
-      <CreateUser
-        onClose={handleCloseDialog}
-        open={openCreatingDialog}
-      />
-    </div>
-  );
-};
+    <UserList
+      onCreate={createUser}
+      users={users}
+    />
+  )
+}
 
-export default UserList;
+export default UserListSmartComponent;
