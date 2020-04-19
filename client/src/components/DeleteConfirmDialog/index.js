@@ -44,6 +44,7 @@ function DeleteConfirmDialog(props) {
           <Button
             color="primary"
             onClick={handleDelete}
+            variant="contained"
           >
             Delete
           </Button>
