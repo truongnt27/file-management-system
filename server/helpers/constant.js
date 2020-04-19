@@ -14,7 +14,8 @@ module.exports = {
   STATUS: {
     ENABLE: 'ENABLE',
     DISABLE: 'DISABLE',
-    PENDING: 'PENDING'
+    PENDING: 'PENDING',
+    DEL_FILE: 'DEL_FILE'
   },
   EVENT_TYPE: {
     CREATE_KEY: 'CREATE KEY',

@@ -11,7 +11,7 @@ const { isEmpty } = require('lodash');
 module.exports = {
   get: async (req, res, next) => {
     try {
-      const files = await FileStore.find();
+      const files = await FileStore.find().populate('owner', 'fullname');
       return res.status(200).json({
         status: "SUCCESS",
         data: {

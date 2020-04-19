@@ -373,7 +373,7 @@ export default function FilesTable(props) {
                       >
                         {row.name}
                       </TableCell>
-                      <TableCell align="left">{row.owner}</TableCell>
+                      <TableCell align="left">{row.owner.fullname}</TableCell>
                       <TableCell align="left">
                         <div className={classes.statusContainer}>
                           <StatusBullet

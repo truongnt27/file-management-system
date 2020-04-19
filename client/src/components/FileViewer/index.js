@@ -59,7 +59,7 @@ function FileViewer(props) {
   const { permissions = {} } = keyData;
 
   const selectedUsers = Object.keys(permissions).map(userId => get(usersStore, ['byId', userId], ''));
-  const ownerData = get(usersStore, ['byId', owner], {});
+
 
   const handleClose = () => {
     const { onClose } = props;
@@ -92,7 +92,7 @@ function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Owner:</strong> {ownerData.fullname}
+            <strong>Owner:</strong> {owner.fullname}
           </Typography>
           <Person className={classes.icons} />
         </Grid>

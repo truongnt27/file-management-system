@@ -2,7 +2,7 @@ const KeyStore = require('../models/keyStore');
 const CryptoKey = require('../models/cryptoKey');
 const FileStore = require('../models/fileStore');
 const Log = require('../models/eventLog');
-const { EVENT_TYPE } = require('../helpers/constant');
+const { EVENT_TYPE, STATUS } = require('../helpers/constant');
 const { isEmpty } = require('lodash');
 const genCryptoKey = require('../keys/keyGen');
 
@@ -31,7 +31,7 @@ module.exports = {
     try {
       const resultKey = await KeyStore.findOneAndUpdate({ _id: keyId }, key, { new: true });
       if (key.status) {
-        await FileStore.updateMany({ keyId }, { status: key.status });
+        await FileStore.updateMany({ keyId, status: { $ne: STATUS.DEL_FILE } }, { status: key.status });
       }
 
       const log = new Log({
