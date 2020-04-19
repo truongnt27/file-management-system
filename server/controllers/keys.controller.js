@@ -8,7 +8,7 @@ const genCryptoKey = require('../keys/keyGen');
 
 module.exports = {
   get: async (req, res) => {
-    const keys = await KeyStore.find().lean();
+    const keys = await KeyStore.find().populate('owner', 'fullname').lean();
     res.status(200).json({
       status: "SUCCESS",
       data: {

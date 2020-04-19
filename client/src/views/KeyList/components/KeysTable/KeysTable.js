@@ -57,6 +57,7 @@ function getSorting(order, orderBy) {
 
 const headRows = [
   { id: 'alias', label: 'Alias ' },
+  { id: 'owner', label: 'Owner ' },
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
   { id: 'creationDate', label: 'Creation date(dd/mm/yyyy hh:mm:ss)' },
@@ -411,6 +412,7 @@ export default function KeysTable(props) {
             >
               {row.alias}
             </TableCell>
+            <TableCell align="left">{row.owner.fullname || '_'}</TableCell>
             <TableCell align="left">{row.description || '_'}</TableCell>
             <TableCell align="left">
               <div className={classes.statusContainer}>
