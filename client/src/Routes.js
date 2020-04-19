@@ -30,6 +30,11 @@ const Routes = () => {
   }, [])
   return (
     <Switch>
+      <Redirect
+        exact
+        from="/"
+        to="/dashboard"
+      />
       <RouteWithLayout
         component={DashboardView}
         exact
