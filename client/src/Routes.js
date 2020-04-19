@@ -12,7 +12,8 @@ import {
   KeyList as KeyListView,
   Account as AccountView,
   FilesManagement as FilesManagementView,
-  UserList as UserListView
+  UserList as UserListView,
+  Dashboard as DashboardView
 } from './views';
 
 import { CreateKey as CreateKeyView } from './views/KeyList/components';
@@ -29,6 +30,13 @@ const Routes = () => {
   }, [])
   return (
     <Switch>
+      <RouteWithLayout
+        component={DashboardView}
+        exact
+        layout={MainLayout}
+        path="/dashboard"
+        requireAuth
+      />
       <RouteWithLayout
         component={AccountView}
         exact

@@ -74,11 +74,11 @@ const Sidebar = props => {
       href: '/trash',
       icon: <DeleteIcon />
     },
-    {
-      title: 'Settings',
-      href: '/settings',
-      icon: <SettingsIcon />
-    },
+    // {
+    //   title: 'Settings',
+    //   href: '/settings',
+    //   icon: <SettingsIcon />
+    // },
   ];
 
   return (
