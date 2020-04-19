@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
-  CardActions,
   CardContent,
   Button,
   Divider,
@@ -16,10 +15,8 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-  TablePagination,
   TableSortLabel,
 } from '@material-ui/core';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
 import { Selectors, Actions } from 'state/modules/app/logs';
 
@@ -90,7 +87,7 @@ const Logs = props => {
                         </TableSortLabel>
                       </Tooltip>
                     </TableCell>
-                    <TableCell>UserId</TableCell>
+                    <TableCell>User</TableCell>
                     <TableCell>Description</TableCell>
                   </TableRow>
                 </TableHead>
@@ -103,7 +100,7 @@ const Logs = props => {
                       <TableCell>
                         {moment(log.time).format('DD/MM/YYYY hh:mm:ss')}
                       </TableCell>
-                      <TableCell>{log.userId}</TableCell>
+                      <TableCell>{log.userId.fullname}</TableCell>
                       <TableCell>{log.description}</TableCell>
                     </TableRow>
                   ))}
