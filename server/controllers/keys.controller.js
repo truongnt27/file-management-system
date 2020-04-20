@@ -3,7 +3,6 @@ const CryptoKey = require('../models/cryptoKey');
 const FileStore = require('../models/fileStore');
 const UserStore = require('../models/userStore');
 const Log = require('../models/eventLog');
-const mongoose = require("mongoose");
 
 const { EVENT_TYPE, STATUS } = require('../helpers/constant');
 const { isEmpty } = require('lodash');
@@ -126,7 +125,7 @@ module.exports = {
       const key = await KeyStore.findOneAndDelete({ _id: keyId });
       const { permissions } = key;
       const usersArr = Object.keys(permissions);
-      await UserStore.updateMany({ _id: { $in: usersArr } }, { $pull: { keyList: mongoose.Types.ObjectId(keyId) } });
+      await UserStore.updateMany({ _id: { $in: usersArr } }, { $pull: { keyList: keyId } });
 
       const log = new Log({
         time: Date.now(),

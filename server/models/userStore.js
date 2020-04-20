@@ -11,8 +11,8 @@ var userSchema = new Schema({
   profile: { type: String, required: false },
   address: { type: String, required: false },
   dob: { type: Date, required: false },
-  keyList: { type: Array, required: false },
-  files: { type: Array, required: false },
+  keyList: [{ type: Schema.Types.ObjectId, ref: 'KeyStore' }],
+  files: [{ type: Schema.Types.ObjectId, ref: 'FileStore' }],
   avatarPicture: { type: String, required: false },
   googleId: { type: String, required: false },
   lastActive: { type: Date }
