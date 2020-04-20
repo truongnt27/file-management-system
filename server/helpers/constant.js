@@ -13,13 +13,14 @@ module.exports = {
     ROTATE: 'ROTATE',
     DISABLE: 'DISABLE',
     ENABLE: 'ENABLE',
-    DELETE: 'DELETE'
+    DELETE: 'DELETE',
+    ALL_ACESS: 'ALL ACESS'
   },
   STATUS: {
     ENABLE: 'ENABLE',
     DISABLE: 'DISABLE',
     PENDING: 'PENDING',
-    DEL_FILE: 'DEL_FILE'
+    DEL_FILE: 'DELETE FILE'
   },
   EVENT_TYPE: {
     CREATE_KEY: 'CREATE KEY',
