@@ -8,7 +8,7 @@ var userSchema = new Schema({
   type: { type: String, required: true, default: constant.USER_TYPES.USER },
   status: { type: String, required: true, default: constant.USER_STATUS.ACTIVE },
   fullname: { type: String, required: false },
-  profile: { type: String, required: false },
+  phone: { type: String, required: false },
   address: { type: String, required: false },
   dob: { type: Date, required: false },
   keyList: [{ type: Schema.Types.ObjectId, ref: 'KeyStore' }],
