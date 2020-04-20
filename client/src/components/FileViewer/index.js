@@ -35,31 +35,10 @@ const useStyle = makeStyles(theme => ({
   }
 }))
 
-function FileViewer(props) {
-
+export function FileViewer(props) {
+  const { file, sharedUsers, open } = props;
   const classes = useStyle();
-  const keysStore = useSelector(Selectors.keysStore);
-  const usersStore = useSelector(usersSelector);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    (keysStore.status !== 'LOADED') && dispatch({ type: Actions.FETCH_KEYS });
-    (usersStore.status !== 'LOADED') && dispatch({ type: FETCH_USERS });
-  }, [keysStore.status, usersStore.status])
-
-  const { fileId, open = false } = props;
-  const file = useSelector(state => keysSelector.getFileById(state)(fileId));
-  const { keyId, owner } = file || '';
-  const keyData = useSelector(state => Selectors.getKeyById(state, keyId));
-
-  if (isEmpty(file) || isEmpty(keyData)) {
-    return null;
-  }
-
-  const { permissions = {} } = keyData;
-
-  const selectedUsers = Object.keys(permissions).map(userId => get(usersStore, ['byId', userId], ''));
-
+  const { owner } = file || '';
 
   const handleClose = () => {
     const { onClose } = props;
@@ -133,7 +112,7 @@ function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Protected by:</strong> {keyData.alias}
+            <strong>Protected by:</strong> {file.keyId.alias}
           </Typography>
           <VpnKey
             className={classes.icons}
@@ -154,7 +133,7 @@ function FileViewer(props) {
         <Grid item>
           <Grid container>
             {
-              selectedUsers.map(user => {
+              sharedUsers.map(user => {
                 const { displayName } = genAvataImg(user.fullname);
                 return (
                   <Grid
@@ -168,7 +147,7 @@ function FileViewer(props) {
                       <Chip
                         avatar={(
                           <Avatar
-                            src={user.profileImage}
+                            src={user.avatarPicture}
                           >
                             {displayName}
                           </Avatar>)}
@@ -191,7 +170,47 @@ function FileViewer(props) {
 }
 
 FileViewer.propTypes = {
-  file: PropTypes.object.isRequired
+  file: PropTypes.object.isRequired,
+  onClose: PropTypes.func,
+  sharedUsers: PropTypes.array.isRequired
 }
 
-export default FileViewer;
+const FileViewerSmartComponent = (props) => {
+  const keysStore = useSelector(Selectors.keysStore);
+  const usersStore = useSelector(usersSelector);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (keysStore.status !== 'LOADED') && dispatch({ type: Actions.FETCH_KEYS });
+    (usersStore.status !== 'LOADED') && dispatch({ type: FETCH_USERS });
+  }, [keysStore.status, usersStore.status])
+
+  const { fileId, open = false, onClose } = props;
+  const file = useSelector(state => keysSelector.getFileById(state)(fileId));
+
+  const keyData = useSelector(state => Selectors.getKeyById(state, file.keyId));
+
+  if (isEmpty(file) || isEmpty(keyData)) {
+    return null;
+  }
+
+  const { permissions = {} } = keyData;
+
+  const selectedUsers = Object.keys(permissions).map(userId => get(usersStore, ['byId', userId], ''));
+  const sharedUsers = selectedUsers.filter(user => user._id !== file.owner._id);
+
+  const handleClose = () => {
+    onClose && onClose();
+  }
+
+  return (
+    <FileViewer
+      file={file}
+      onClose={handleClose}
+      open={open}
+      sharedUsers={sharedUsers}
+    />
+  )
+}
+
+export default FileViewerSmartComponent;

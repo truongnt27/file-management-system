@@ -13,7 +13,11 @@ module.exports = {
   get: async (req, res, next) => {
     try {
       const { files: fileList } = req.user || [];
-      const files = await FileStore.find({ _id: { $in: fileList } }).populate('owner', 'fullname');
+      const files = await FileStore
+        .find({ _id: { $in: fileList } })
+        .populate('owner', 'fullname')
+        .populate('keyId, alias');
+
       return res.status(200).json({
         status: "SUCCESS",
         data: {
