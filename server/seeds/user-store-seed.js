@@ -7,10 +7,10 @@ var users = [
   new User({
     email: "dev1@company.com",
     password: "123456",
-    fullname: "Nguyễn Văn A",
+    fullname: "Nguyễn Văn An",
     dob: "December 17, 1995",
     contact: "0962123456",
-    address: "Ngõ Quỳnh, Quỳnh Lôi, Hai Bà Trưng, Hà Nội",
+    address: "Quỳnh Lôi, Hai Bà Trưng, Hà Nội",
     type: "User",
     keyList: [],
     files: []
@@ -18,21 +18,22 @@ var users = [
   new User({
     email: "dev2@company.com",
     password: "123456",
-    fullname: "Đinh Văn Nguyên",
+    fullname: "Kim Ji Won",
     dob: "December 17, 1995",
     contact: "0962123456",
-    address: "Ngõ Trại, Cầu Giấy, Hà Nội",
+    address: "Seul, Korean",
     type: "User",
     keyList: [],
-    files: []
+    files: [],
+    avatarPicture: 'https://images.unsplash.com/photo-1517841905240-472988babdf9'
   }),
   new User({
     email: "manager1@company.com",
     password: "123456",
-    fullname: "Nguyễn Thắng Trung",
+    fullname: "Phạm Văn Bá",
     dob: "December 17, 1995",
     contact: "0962123456",
-    address: "Ngõ Tự do, Đồng Tâm, Hai Bà Trưng, Hà Nội",
+    address: "Khâm Thiên, Đống Đa, Hà Nội",
     keyList: [],
     files: [],
     type: "Manager",
@@ -43,21 +44,23 @@ var users = [
     fullname: "Nguyễn Thắng Trường",
     dob: "December 17, 1995",
     contact: "0962123456",
-    address: "Ngõ Tự do, Đồng Tâm, Hai Bà Trưng, Hà Nội",
+    address: "Đồng Tâm, Hai Bà Trưng, Hà Nội",
     type: "Manager",
     keyList: [],
     files: [],
+    avatarPicture: 'https://www.w3schools.com/html/img_girl.jpg'
   }),
   new User({
     email: "manager2@company.com",
     password: "123456",
-    fullname: "Trần Văn An",
+    fullname: "Jose Teddy",
     dob: "December 17, 1995",
     contact: "0962123456",
-    address: "Ngõ Quỳnh, Quỳnh Lôi, Hai Bà Trưng, Hà Nội",
+    address: "San Francisco, LA, USA ",
     type: "Manager",
     keyList: [],
-    files: []
+    files: [],
+    avatarPicture: 'https://images.unsplash.com/photo-1506919258185-6078bba55d2a'
   }),
   new User({
     email: "manager3@company.com",
@@ -65,7 +68,7 @@ var users = [
     fullname: "Nguyễn Đức Toàn",
     dob: "December 17, 1973",
     contact: "0962123456",
-    address: "Ngõ Trại, Cầu Giấy, Hà Nội",
+    address: "Duy Tân, Cầu Giấy, Hà Nội",
     type: "Manager",
     keyList: [],
     files: [],
@@ -84,13 +87,14 @@ var users = [
   new User({
     email: "manager5@company.com",
     password: "123456",
-    fullname: "Nguyễn Văn Bình",
+    fullname: "Harry Kate",
     dob: "December 17, 1995",
     contact: "0962123456",
-    address: "Ngõ Tự do, Đồng Tâm, Hai Bà Trưng, Hà Nội",
+    address: "San Francisco, LA, USA ",
     keyList: [],
     files: [],
     type: "Manager",
+    avatarPicture: "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
   }),
 ];
 

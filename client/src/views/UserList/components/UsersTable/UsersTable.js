@@ -355,7 +355,7 @@ export default function UsersTable(props) {
             <TableCell align="left" >
               <CompactUserInfo
                 fullname={row.fullname}
-                profileImage={row.avatarImage}
+                profileImage={row.avatarPicture}
                 subtitle={row.email}
               />
             </TableCell>
