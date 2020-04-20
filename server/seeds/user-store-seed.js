@@ -11,7 +11,7 @@ var users = [
     dob: "December 17, 1995",
     contact: "0962123456",
     address: "Ngõ Quỳnh, Quỳnh Lôi, Hai Bà Trưng, Hà Nội",
-    type: "user",
+    type: "User",
     keyList: [],
     files: []
   }),
@@ -22,7 +22,7 @@ var users = [
     dob: "December 17, 1995",
     contact: "0962123456",
     address: "Ngõ Trại, Cầu Giấy, Hà Nội",
-    type: "user",
+    type: "User",
     keyList: [],
     files: []
   }),
@@ -35,7 +35,7 @@ var users = [
     address: "Ngõ Tự do, Đồng Tâm, Hai Bà Trưng, Hà Nội",
     keyList: [],
     files: [],
-    type: "manager",
+    type: "Manager",
   }),
   new User({
     email: "admin@company.com",
@@ -44,7 +44,7 @@ var users = [
     dob: "December 17, 1995",
     contact: "0962123456",
     address: "Ngõ Tự do, Đồng Tâm, Hai Bà Trưng, Hà Nội",
-    type: "manager",
+    type: "Manager",
     keyList: [],
     files: [],
   }),
@@ -55,7 +55,7 @@ var users = [
     dob: "December 17, 1995",
     contact: "0962123456",
     address: "Ngõ Quỳnh, Quỳnh Lôi, Hai Bà Trưng, Hà Nội",
-    type: "manager",
+    type: "Manager",
     keyList: [],
     files: []
   }),
@@ -66,7 +66,7 @@ var users = [
     dob: "December 17, 1973",
     contact: "0962123456",
     address: "Ngõ Trại, Cầu Giấy, Hà Nội",
-    type: "manager",
+    type: "Manager",
     keyList: [],
     files: [],
   }),
@@ -79,7 +79,7 @@ var users = [
     address: "Trần Khát Chân, Hai Bà Trưng, Hà Nội",
     keyList: [],
     files: [],
-    type: "manager",
+    type: "Manager",
   }),
   new User({
     email: "manager5@company.com",
@@ -90,7 +90,7 @@ var users = [
     address: "Ngõ Tự do, Đồng Tâm, Hai Bà Trưng, Hà Nội",
     keyList: [],
     files: [],
-    type: "manager",
+    type: "Manager",
   }),
 ];
 
