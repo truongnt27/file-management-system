@@ -67,12 +67,8 @@ const FileUpload = () => {
     }, [usersStore.status, keysStore.status])
 
   const permissions = Object.keys(get(keys, [selectedKey, 'permissions'], []));
-
   const selectedUsers = !isEmpty(usersStore.byId) ? permissions.map(userId => usersStore.byId[userId]) : [];
-  console.log(selectedUsers);
-
-  const ownerId = get(keys, [selectedKey, 'owner'], '');
-  const ownerData = get(usersStore, ['byId', ownerId], {});
+  const owner = get(keys, [selectedKey, 'owner'], {});
 
   const handleChange = (e) => {
     setFile(e.target.files[0])
@@ -145,7 +141,7 @@ const FileUpload = () => {
               xs={12}
             >
               <Typography variant="body1">
-                Owner: {ownerData ? ownerData.fullname : '_'}
+                Owner: {owner.fullname || '_'}
               </Typography>
               <Typography variant="body1">
                 Usage:
