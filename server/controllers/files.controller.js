@@ -80,8 +80,8 @@ module.exports = {
 
       const result = await fileStore.save();
       const key = await KeyStore.findOne({ _id: keyId });
-      const permisions = key.permisions || [];
-      await UserStore.updateMany({ _id: { $in: permisions } }, { $push: { files: result._id } });
+      const { permissions = {} } = key;
+      await UserStore.updateMany({ _id: { $in: Object.keys(permissions) } }, { $push: { files: result._id } });
 
       encryptFile(`${owner}/${req.file.originalname}`, keyId);
 
