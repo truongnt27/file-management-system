@@ -1,5 +1,6 @@
 const FileStore = require('../models/fileStore');
 const KeyStore = require('../models/keyStore');
+const UserStore = require('../models/userStore');
 const Log = require('../models/eventLog');
 const encryptFile = require('../crypto/encryptFile');
 const decryptFile = require('../crypto/decryptFile');
@@ -11,7 +12,8 @@ const { isEmpty } = require('lodash');
 module.exports = {
   get: async (req, res, next) => {
     try {
-      const files = await FileStore.find().populate('owner', 'fullname');
+      const { files: fileList } = req.user || [];
+      const files = await FileStore.find({ _id: { $in: fileList } }).populate('owner', 'fullname');
       return res.status(200).json({
         status: "SUCCESS",
         data: {
@@ -77,6 +79,9 @@ module.exports = {
       })
 
       const result = await fileStore.save();
+      const key = await KeyStore.findOne({ _id: keyId });
+      const permisions = key.permisions || [];
+      await UserStore.updateMany({ _id: { $in: permisions } }, { $push: { files: result._id } });
 
       encryptFile(`${owner}/${req.file.originalname}`, keyId);
 

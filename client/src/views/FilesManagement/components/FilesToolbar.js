@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
 
 import { SearchInput } from 'components';
-import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -26,17 +25,17 @@ const useStyles = makeStyles(theme => ({
   },
   searchInput: {
     marginRight: theme.spacing(1)
-  },
-  createfile: {
-    color: '#FFFFFF'
   }
 }));
 
 const FilesToolbar = props => {
-  const { className, ...rest } = props;
+  const { className, onUpload, ...rest } = props;
 
   const classes = useStyles();
 
+  const handleClickUpload = () => {
+    onUpload && onUpload();
+  }
   return (
     <div
       {...rest}
@@ -46,14 +45,10 @@ const FilesToolbar = props => {
         <span className={classes.spacer} />
         <Button
           color="primary"
+          onClick={handleClickUpload}
           variant="contained"
         >
-          <Link
-            className={classes.createfile}
-            to="/files/upload"
-          >
-            Upload file
-          </Link>
+          Upload file
         </Button>
       </div>
       <div className={classes.row}>
@@ -67,7 +62,8 @@ const FilesToolbar = props => {
 };
 
 FilesToolbar.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  onUpload: PropTypes.func
 };
 
 export default FilesToolbar;
