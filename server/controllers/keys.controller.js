@@ -1,7 +1,10 @@
 const KeyStore = require('../models/keyStore');
 const CryptoKey = require('../models/cryptoKey');
 const FileStore = require('../models/fileStore');
+const UserStore = require('../models/userStore');
 const Log = require('../models/eventLog');
+const mongoose = require("mongoose");
+
 const { EVENT_TYPE, STATUS } = require('../helpers/constant');
 const { isEmpty } = require('lodash');
 const genCryptoKey = require('../keys/keyGen');
@@ -80,6 +83,10 @@ module.exports = {
 
       const resultKey = await keyStore.save();
 
+      const { permissions } = key || null;
+      const usersArr = Object.keys(permissions);
+      await UserStore.updateMany({ _id: { $in: usersArr } }, { $push: { keyList: resultKey._id } })
+
       const log = new Log({
         time: Date.now(),
         userId: req.user._id,
@@ -114,8 +121,10 @@ module.exports = {
     }
 
     try {
-
-      await KeyStore.deleteOne({ _id: keyId });
+      const key = await KeyStore.findOneAndDelete({ _id: keyId });
+      const { permissions } = key;
+      const usersArr = Object.keys(permissions);
+      await UserStore.updateMany({ _id: { $in: usersArr } }, { $pull: { keyList: mongoose.Types.ObjectId(keyId) } });
 
       const log = new Log({
         time: Date.now(),
@@ -123,7 +132,7 @@ module.exports = {
         description: `${EVENT_TYPE.DEL_KEY} ${key.alias}`
       });
 
-      log.save();
+      await log.save();
 
       return res.status(200).json({
         status: "SUCCESS",
