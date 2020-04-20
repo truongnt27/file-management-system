@@ -11,7 +11,9 @@ const genCryptoKey = require('../keys/keyGen');
 
 module.exports = {
   get: async (req, res) => {
-    const keys = await KeyStore.find().populate('owner', 'fullname').lean();
+    const { keyList } = req.user;
+
+    const keys = await KeyStore.find({ _id: { $in: keyList } }).populate('owner', 'fullname').lean();
     res.status(200).json({
       status: "SUCCESS",
       data: {
