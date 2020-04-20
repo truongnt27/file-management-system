@@ -10,7 +10,7 @@ export const updateKeyApi = (key) => {
 }
 
 export const deleteKeyApi = (keyId) => {
-  return ApiCaller.delete(`/keys/${keyId}`);
+  return ApiCaller.del(`/keys/${keyId}`);
 }
 
 export const getKeysApi = async () => {
