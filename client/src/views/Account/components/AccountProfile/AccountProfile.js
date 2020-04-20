@@ -35,17 +35,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AccountProfile = props => {
-  const { className, ...rest } = props;
+  const { className, user, ...rest } = props;
 
   const classes = useStyles();
 
-  const user = {
-    name: 'Shen Zhi',
-    city: 'Los Angeles',
-    country: 'USA',
-    timezone: 'GTM-7',
-    avatar: '/images/avatars/avatar_11.png'
-  };
+  const {
+    fullname,
+    timezone,
+    type,
+    avatarPicture: avatar
+  } = user;
 
   return (
     <Card
@@ -59,26 +58,19 @@ const AccountProfile = props => {
               gutterBottom
               variant="h2"
             >
-              John Doe
+              {fullname}
             </Typography>
             <Typography
               className={classes.locationText}
               color="textSecondary"
               variant="body1"
             >
-              {user.city}, {user.country}
-            </Typography>
-            <Typography
-              className={classes.dateText}
-              color="textSecondary"
-              variant="body1"
-            >
-              {moment().format('hh:mm A')} ({user.timezone})
+              {type}
             </Typography>
           </div>
           <Avatar
             className={classes.avatar}
-            src={user.avatar}
+            src={avatar}
           />
         </div>
         <div className={classes.progress}>

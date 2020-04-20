@@ -15,9 +15,10 @@ const useStyles = makeStyles(theme => ({
 
 const Account = () => {
   const classes = useStyles();
-  const userState = useSelector(Selectors.currentUser);
-  const user = userState.data || {};
-
+  const user = useSelector(Selectors.currentUser);
+  if (!user.fullname) {
+    return null;
+  }
   return (
     <div className={classes.root}>
       <Grid

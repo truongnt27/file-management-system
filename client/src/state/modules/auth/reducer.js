@@ -2,7 +2,13 @@ import { Status, AUTH_USER_SUCCESS } from './actions';
 
 const initialState = {
   status: Status.INIT,
-  user: {}
+  user: {
+    email: '',
+    fullname: '',
+    type: 'User',
+    files: [],
+    keyList: []
+  }
 };
 
 export default function authReducer(state = initialState, action) {
