@@ -100,7 +100,7 @@ const Logs = props => {
                       <TableCell>
                         {moment(log.time).format('DD/MM/YYYY hh:mm:ss')}
                       </TableCell>
-                      <TableCell>{log.userId.fullname}</TableCell>
+                      <TableCell>{log.userId ? log.userId.fullname : '__'}</TableCell>
                       <TableCell>{log.description}</TableCell>
                     </TableRow>
                   ))}

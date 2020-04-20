@@ -20,6 +20,7 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
 import { Selectors, Actions } from 'state/modules/app/logs';
 import { useDispatch, useSelector } from 'react-redux';
+import { push } from 'connected-react-router';
 import moment from 'moment';
 
 const useStyles = makeStyles(() => ({
@@ -39,12 +40,14 @@ const useStyles = makeStyles(() => ({
 }));
 
 const LastActivities = props => {
-  const { className, ...rest } = props;
+  const { className, onViewAll, ...rest } = props;
 
   const classes = useStyles();
 
   const logs = props.logs || [];
-
+  const handleViewAll = () => {
+    onViewAll && onViewAll();
+  }
   return (
     <Card
       {...rest}
@@ -65,11 +68,11 @@ const LastActivities = props => {
                 <ListItemAvatar>
                   <Avatar
                     alt="Remy Sharp"
-                    src={log.userId.avatarPicture}
+                    src={log.userId && log.userId.avatarPicture}
                   />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={log.userId.fullname}
+                  primary={log.userId ? log.userId.fullname : '_'}
                   secondary={
                     <React.Fragment>
                       <Typography
@@ -96,6 +99,7 @@ const LastActivities = props => {
       <CardActions className={classes.actions}>
         <Button
           color="primary"
+          onClick={handleViewAll}
           size="small"
           variant="text"
         >
@@ -121,9 +125,13 @@ const LastActivitiesSmartComponent = () => {
   }, [logsStore.status])
   const logs = Object.values(logsStore.byId).slice(0, 6);
 
+  const handleViewAll = () => {
+    dispatch(push('/logs'));
+  }
   return (
     <LastActivities
       logs={logs}
+      onViewAll={handleViewAll}
     />
   )
 }
