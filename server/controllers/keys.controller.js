@@ -4,7 +4,7 @@ const FileStore = require('../models/fileStore');
 const UserStore = require('../models/userStore');
 const Log = require('../models/eventLog');
 
-const { EVENT_TYPE, STATUS } = require('../helpers/constant');
+const { EVENT_TYPE, STATUS, PERMISSION_TYPES } = require('../helpers/constant');
 const { isEmpty } = require('lodash');
 const genCryptoKey = require('../keys/keyGen');
 
@@ -63,6 +63,7 @@ module.exports = {
 
   store: async (req, res) => {
     const key = req.body.key;
+    const userId = req.user._id;
     if (!key) {
       return res.status(400).json({
         status: "FAILED",
@@ -85,12 +86,13 @@ module.exports = {
       const resultKey = await keyStore.save();
 
       const { permissions } = key || null;
-      const usersArr = Object.keys(permissions);
+      const updatedPemission = { [userId]: [PERMISSION_TYPES.ALL_ACCESS], ...permissions };
+      const usersArr = Object.keys(updatedPemission);
       await UserStore.updateMany({ _id: { $in: usersArr } }, { $push: { keyList: resultKey._id } })
 
       const log = new Log({
         time: Date.now(),
-        userId: req.user._id,
+        userId,
         description: `${EVENT_TYPE.CREATE_KEY} ${key.alias}`
       });
       log.save();
