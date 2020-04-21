@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
 import { Folder } from '@material-ui/icons';
+import { useSelector } from 'react-redux';
+import { allIds } from 'state/modules/app/files/selector';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,6 +36,7 @@ const TotalProfit = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+  const totalFiles = useSelector(allIds).length;
 
   return (
     <Card
@@ -58,7 +61,7 @@ const TotalProfit = props => {
               color="inherit"
               variant="h3"
             >
-              12
+              {totalFiles}
             </Typography>
           </Grid>
           <Grid item>

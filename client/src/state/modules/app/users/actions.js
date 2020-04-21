@@ -46,3 +46,4 @@ export const setUser = (user) => ({
 
 export const usersSelector = state => state[namespace];
 export const getUserById = state => id => state[namespace].byId[id];
+export const allIds = state => state[namespace].allIds;

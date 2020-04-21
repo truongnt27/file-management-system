@@ -6,6 +6,9 @@ import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import VpnKey from '@material-ui/icons/VpnKey';
 
+import { useSelector } from 'react-redux';
+import { Selectors } from 'state/modules/app/keys';
+
 const useStyles = makeStyles(theme => ({
   root: {
     height: '100%'
@@ -42,8 +45,8 @@ const useStyles = makeStyles(theme => ({
 
 const TotalKeys = props => {
   const { className, ...rest } = props;
-
   const classes = useStyles();
+  const totalKeys = useSelector(Selectors.allIds).length;
 
   return (
     <Card
@@ -64,7 +67,7 @@ const TotalKeys = props => {
             >
               TOTAL KEYS
             </Typography>
-            <Typography variant="h3">5</Typography>
+            <Typography variant="h3">{totalKeys}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
