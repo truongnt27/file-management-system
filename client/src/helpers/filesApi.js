@@ -14,7 +14,7 @@ export const uploadFileApi = (file, keyId, userId) => {
 }
 
 export const downloadFileApi = async (fileId) => {
-  return apiCaller.get(`/files/${fileId}/download`);
+  return apiCaller.get(`/files/${fileId}/download`, { responseType: 'blob' });
 }
 
 export const getFilesApi = async () => {

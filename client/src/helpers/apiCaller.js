@@ -4,9 +4,9 @@ const baseUrl = 'http://localhost:3002/api';
 const defaultConfig = {
   withCredentials: true
 }
-const get = async (url) => {
+const get = async (url, config) => {
   try {
-    const result = await axios.get(`${baseUrl}${url}`, defaultConfig);
+    const result = await axios.get(`${baseUrl}${url}`, { ...defaultConfig, ...config });
     return result.data;
   } catch (error) {
     return ({
