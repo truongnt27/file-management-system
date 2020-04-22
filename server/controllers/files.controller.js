@@ -2,8 +2,8 @@ const FileStore = require('../models/fileStore');
 const KeyStore = require('../models/keyStore');
 const UserStore = require('../models/userStore');
 const Log = require('../models/eventLog');
-const encryptFile = require('../crypto/encryptFile');
-const decryptFile = require('../crypto/decryptFile');
+const Encryptor = require('../helpers/encryptFile');
+const { encryptFile, decryptFile } = Encryptor;
 
 const { EVENT_TYPE } = require('../helpers/constant');
 
@@ -33,20 +33,33 @@ module.exports = {
   download: async (req, res, next) => {
     try {
       const { fileId } = req.params;
-      const file = await FileStore.findOne({ _id: fileId });
+      const file = await FileStore.findOne({ _id: fileId }).populate({ path: 'keyId', select: 'status', populate: { path: 'cryptoKeyId' } });
       const { owner, name, keyId } = file;
-      const dir = `${owner}/${name}`;
-      //decryptFile(dir, keyId);
+      const dir = `${owner}/${name}.enc`;
+      const { status, cryptoKeyId } = keyId;
 
+      if (status !== "ENABLE") {
+        return res.status(400).json({
+          status: "FAILED",
+          message: "File is unavailable"
+        })
+      }
+      const key = cryptoKeyId.plaintext;
+      console.log(key);
+
+      const fileStream = decryptFile(`./public/uploads/${dir}`, key);
+
+      if (fileStream.err) {
+        next(fileStream.err);
+      }
       const log = new Log({
         time: Date.now(),
         userId: req.user._id,
         description: `${EVENT_TYPE.DOWNLOAD_FILE} ${name}`
       });
-
       log.save();
-
-      res.download(`./public/uploads/${dir}`);
+      fileStream.pipe(res);
+      // res.download(`./public/uploads/${dir}`);
     }
     catch (err) {
       next(err)
@@ -83,11 +96,12 @@ module.exports = {
       })
 
       const result = await fileStore.save();
-      const key = await KeyStore.findOne({ _id: keyId });
-      const { permissions = {} } = key;
+      const key = await KeyStore.findOne({ _id: keyId }).populate('cryptoKeyId');
+      const { permissions = {}, cryptoKeyId } = key;
       await UserStore.updateMany({ _id: { $in: Object.keys(permissions) } }, { $push: { files: result._id } });
+      console.log('cryptoKeyId.plaintext', cryptoKeyId.plaintext);
 
-      encryptFile(`${owner}/${req.file.originalname}`, keyId);
+      encryptFile(`./public/uploads/${owner}/${req.file.originalname}`, cryptoKeyId.plaintext);
 
       // const log2 = new Log({
       //   time: Date.now(),

@@ -3,7 +3,7 @@ const { isEmpty } = require('lodash');
 module.exports = {
   get: async (req, res, next) => {
     try {
-      const logs = await Log.find().populate('userId', 'fullname avatarPicture');
+      const logs = await Log.find().sort({ time: -1 }).populate('userId', 'fullname avatarPicture');
       return res.status(200).json({
         status: 'SUCCESS',
         data: {
