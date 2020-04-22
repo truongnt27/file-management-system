@@ -694,11 +694,6 @@ extglob@^2.0.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-file-encryptor@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/file-encryptor/-/file-encryptor-0.1.1.tgz#506a5aba153cc109943c38fd445506a84557b9fe"
-  integrity sha1-UGpauhU8wQmUPDj9RFUGqEVXuf4=
-
 file-uri-to-path@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz#553a7b8446ff6f684359c445f1e37a05dacc33dd"
