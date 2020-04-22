@@ -5,6 +5,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import {
+  Paper,
   Card,
   CardContent,
   Button,
@@ -21,6 +22,7 @@ import {
 import { Selectors, Actions } from 'state/modules/app/logs';
 
 import { useDispatch, useSelector } from 'react-redux';
+import TableToolbar from './TableToolbar'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -67,52 +69,54 @@ const Logs = props => {
         style={{ marginBottom: '15px' }}
         variant="contained"
       >Export</Button>
-      <Card >
-        <CardContent className={classes.content}>
-          <PerfectScrollbar>
-            <div className={classes.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sortDirection="desc">
-                      <Tooltip
-                        enterDelay={300}
-                        title="Sort"
-                      >
-                        <TableSortLabel
-                          active
-                          direction="desc"
+      <Paper >
+        <TableToolbar />
+        <Card >
+          <CardContent className={classes.content}>
+            <PerfectScrollbar>
+              <div className={classes.inner}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sortDirection="desc">
+                        <Tooltip
+                          enterDelay={300}
+                          title="Sort"
                         >
-                          Time
-                        </TableSortLabel>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell>User</TableCell>
-                    <TableCell>Description</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {logs.map(log => (
-                    <TableRow
-                      hover
-                      key={log._id}
-                    >
-                      <TableCell>
-                        {moment(log.time).format('DD/MM/YYYY hh:mm:ss')}
+                          <TableSortLabel
+                            active
+                            direction="desc"
+                          >
+                            Time
+                          </TableSortLabel>
+                        </Tooltip>
                       </TableCell>
-                      <TableCell>{log.userId ? log.userId.fullname : '__'}</TableCell>
-                      <TableCell>{log.description}</TableCell>
+                      <TableCell>User</TableCell>
+                      <TableCell>Description</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <Divider />
-      </Card>
+                  </TableHead>
+                  <TableBody>
+                    {logs.map(log => (
+                      <TableRow
+                        hover
+                        key={log._id}
+                      >
+                        <TableCell>
+                          {moment(log.time).format('DD/MM/YYYY hh:mm:ss')}
+                        </TableCell>
+                        <TableCell>{log.userId ? log.userId.fullname : '__'}</TableCell>
+                        <TableCell>{log.description}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </PerfectScrollbar>
+          </CardContent>
+          <Divider />
+        </Card>
+      </Paper>
     </div>
-
   );
 };
 
