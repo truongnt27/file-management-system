@@ -45,21 +45,20 @@ module.exports = {
         })
       }
       const key = cryptoKeyId.plaintext;
-      console.log(key);
-
       const fileStream = decryptFile(`./public/uploads/${dir}`, key);
 
-      if (fileStream.err) {
-        next(fileStream.err);
-      }
+      fileStream.on('error', err => {
+        return next(err);
+      })
+
       const log = new Log({
         time: Date.now(),
         userId: req.user._id,
         description: `${EVENT_TYPE.DOWNLOAD_FILE} ${name}`
       });
       log.save();
+
       fileStream.pipe(res);
-      // res.download(`./public/uploads/${dir}`);
     }
     catch (err) {
       next(err)
@@ -99,7 +98,6 @@ module.exports = {
       const key = await KeyStore.findOne({ _id: keyId }).populate('cryptoKeyId');
       const { permissions = {}, cryptoKeyId } = key;
       await UserStore.updateMany({ _id: { $in: Object.keys(permissions) } }, { $push: { files: result._id } });
-      console.log('cryptoKeyId.plaintext', cryptoKeyId.plaintext);
 
       encryptFile(`./public/uploads/${owner}/${req.file.originalname}`, cryptoKeyId.plaintext);
 
