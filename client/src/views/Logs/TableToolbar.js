@@ -1,13 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-
+import MomentUtils from '@date-io/moment';
 import {
-  OutlinedInput,
-  Select,
   Typography,
   Toolbar,
 } from '@material-ui/core';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+
+import moment from 'moment';
 
 const useToolbarStyles = makeStyles(theme => ({
   root: {
@@ -23,10 +27,22 @@ const useToolbarStyles = makeStyles(theme => ({
   title: {
     flex: '0 0 auto',
   },
+  fromDate: {
+    marginRight: theme.spacing(1)
+  }
 }));
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
+  const { fromDate, toDate, onFromDate, onToDate } = props;
+
+  const handleToDateChange = (date) => {
+    onToDate && onToDate(date);
+  };
+
+  const handleFromDateChange = (date) => {
+    onFromDate && onFromDate(date);
+  };
 
   return (
     <Toolbar
@@ -42,32 +58,44 @@ const EnhancedTableToolbar = props => {
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
-        <div style={{ display: 'flex' }}>
-          <Select
-            input={
-              <OutlinedInput
-                name="age"
-                style={{ width: '200px', height: '40px' }}
-              />
-            }
-            native
-          // onChange={handleChange('age')}
-
-          >
-            <option value="" > Last week</option>
-            <option value={10}>Last month</option>
-            <option value={20}>Last year</option>
-          </Select>
-        </div>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          <div style={{ display: 'flex' }} >
+            <KeyboardDatePicker
+              className={classes.fromDate}
+              format="DD/MM/YYYY"
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+              label="From date"
+              name="fromDate"
+              onChange={handleFromDateChange}
+              value={fromDate}
+              variant="inline"
+            />
+            <KeyboardDatePicker
+              className={classes.toDate}
+              format="DD/MM/YYYY"
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+              label="To date"
+              name="toDate"
+              onChange={handleToDateChange}
+              value={toDate}
+              variant="inline"
+            />
+          </div>
+        </MuiPickersUtilsProvider>
       </div>
-    </Toolbar >
+    </Toolbar>
   );
 };
 
 EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onDownload: PropTypes.func.isRequired,
-  onViewDetail: PropTypes.func.isRequired,
+  fromDate: PropTypes.string.isRequired,
+  onFromDate: PropTypes.func.isRequired,
+  onToDate: PropTypes.func.isRequired,
+  toDate: PropTypes.string.isRequired,
 };
 
 export default EnhancedTableToolbar;

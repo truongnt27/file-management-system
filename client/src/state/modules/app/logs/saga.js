@@ -6,11 +6,9 @@ import {
   getLogsApi
 } from 'helpers/logsApi';
 
-import { Selectors } from 'state/modules/auth';
-
-function* fetchLogs() {
-  const currentUser = yield select(Selectors.currentUser);
-  const res = yield getLogsApi();
+function* fetchLogs(action) {
+  const { fromDate, toDate } = action.payload;
+  const res = yield getLogsApi(fromDate, toDate);
 
   if (res.status === API_STATUS_CODE.SUCCESS) {
     yield put(ActionTypes.setLogs(res.data.logs));

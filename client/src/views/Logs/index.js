@@ -5,6 +5,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import {
+  Paper,
   Card,
   CardContent,
   Button,
@@ -18,8 +19,9 @@ import {
   TableSortLabel,
 } from '@material-ui/core';
 
-import { Selectors, Actions } from 'state/modules/app/logs';
+import TableToolbar from './TableToolbar';
 
+import { Selectors, Actions } from 'state/modules/app/logs';
 import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
@@ -44,18 +46,31 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Logs = props => {
+export const Logs = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
   const dispatch = useDispatch();
   const logsStore = useSelector(Selectors.logsStore);
 
-  useEffect(() => {
-    logsStore.status !== 'LOADED' && dispatch({ type: Actions.FETCH_LOGS });
-  }, [logsStore.status])
-
   const logs = Object.values(logsStore.byId);
+
+  const to = moment();
+  const from = moment().subtract(7, 'd').startOf('day');
+  const [fromDate, setFromDate] = React.useState(from); // defaul 7 days from now
+  const [toDate, setToDate] = React.useState(to);
+
+  useEffect(() => {
+    dispatch(Actions.fetchLogs(fromDate, toDate));
+  }, [logsStore.status, fromDate, toDate])
+
+  const hanleFromDate = (date) => {
+    setFromDate(date);
+  }
+
+  const hanleToDate = (date) => {
+    setToDate(date);
+  }
 
   return (
     <div
@@ -67,52 +82,59 @@ const Logs = props => {
         style={{ marginBottom: '15px' }}
         variant="contained"
       >Export</Button>
-      <Card >
-        <CardContent className={classes.content}>
-          <PerfectScrollbar>
-            <div className={classes.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sortDirection="desc">
-                      <Tooltip
-                        enterDelay={300}
-                        title="Sort"
-                      >
-                        <TableSortLabel
-                          active
-                          direction="desc"
+      <Paper>
+        <TableToolbar
+          fromDate={fromDate}
+          onFromDate={hanleFromDate}
+          onToDate={hanleToDate}
+          toDate={toDate}
+        />
+        <Card >
+          <CardContent className={classes.content}>
+            <PerfectScrollbar>
+              <div className={classes.inner}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sortDirection="desc">
+                        <Tooltip
+                          enterDelay={300}
+                          title="Sort"
                         >
-                          Time
-                        </TableSortLabel>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell>User</TableCell>
-                    <TableCell>Description</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {logs.map(log => (
-                    <TableRow
-                      hover
-                      key={log._id}
-                    >
-                      <TableCell>
-                        {moment(log.time).format('DD/MM/YYYY hh:mm:ss')}
+                          <TableSortLabel
+                            active
+                            direction="desc"
+                          >
+                            Time
+                          </TableSortLabel>
+                        </Tooltip>
                       </TableCell>
-                      <TableCell>{log.userId ? log.userId.fullname : '__'}</TableCell>
-                      <TableCell>{log.description}</TableCell>
+                      <TableCell>User</TableCell>
+                      <TableCell>Description</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <Divider />
-      </Card>
+                  </TableHead>
+                  <TableBody>
+                    {logs.map(log => (
+                      <TableRow
+                        hover
+                        key={log._id}
+                      >
+                        <TableCell>
+                          {moment(log.time).format('DD/MM/YYYY hh:mm:ss')}
+                        </TableCell>
+                        <TableCell>{log.userId ? log.userId.fullname : '__'}</TableCell>
+                        <TableCell>{log.description}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </PerfectScrollbar>
+          </CardContent>
+          <Divider />
+        </Card>
+      </Paper>
     </div>
-
   );
 };
 
