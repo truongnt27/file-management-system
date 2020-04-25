@@ -7,21 +7,21 @@ const { encryptFile, decryptFile } = Encryptor;
 
 const { EVENT_TYPE } = require('../helpers/constant');
 
-const { isEmpty } = require('lodash');
+const { isEmpty, unionBy } = require('lodash');
 
 module.exports = {
   get: async (req, res, next) => {
     try {
-      const { files: fileList } = req.user || [];
-      const files = await FileStore
-        .find({ _id: { $in: fileList } })
-        .populate('owner', 'fullname')
-        .populate('keyId, alias');
-
+      const { keyList } = req.user || [];
+      let totalFiles = [];
+      const keys = await KeyStore.find({ _id: { $in: keyList } }).populate({ path: 'files', populate: { path: 'owner', select: 'fullname' } });
+      keys.forEach(key => {
+        totalFiles = unionBy(totalFiles, key.files, '_id')
+      })
       return res.status(200).json({
         status: "SUCCESS",
         data: {
-          files
+          files: totalFiles
         }
       })
     }
@@ -95,20 +95,10 @@ module.exports = {
       })
 
       const result = await fileStore.save();
-      const key = await KeyStore.findOne({ _id: keyId }).populate('cryptoKeyId');
-      const { permissions = {}, cryptoKeyId } = key;
-      await UserStore.updateMany({ _id: { $in: Object.keys(permissions) } }, { $push: { files: result._id } });
+      const key = await KeyStore.findOneAndUpdate({ _id: keyId }, { $push: { files: result._id } }).populate('cryptoKeyId');
+      const { cryptoKeyId } = key;
 
       encryptFile(`./public/uploads/${owner}/${req.file.originalname}`, cryptoKeyId.plaintext);
-
-      // const log2 = new Log({
-      //   time: Date.now(),
-      //   userId: req.user._id,
-      //   description: `${EVENT_TYPE.ENCRYPT_FILE} ${file.originalname}`
-      // });
-
-      // await log2.save();
-
       return res.status(200).json({
         status: 'SUCCESS',
         message: 'File saved',
