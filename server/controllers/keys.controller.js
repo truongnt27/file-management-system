@@ -6,7 +6,8 @@ const Log = require('../models/eventLog');
 
 const { EVENT_TYPE, STATUS, PERMISSION_TYPES } = require('../helpers/constant');
 const { isEmpty } = require('lodash');
-const genCryptoKey = require('../keys/keyGen');
+const genCryptoKey = require('../helpers/keyGen');
+const { convertDateToMilis } = require('../helpers/keyHelper')
 
 module.exports = {
   get: async (req, res) => {
@@ -75,11 +76,14 @@ module.exports = {
       const savedkey = await cryptoKey.save();
       const status = "ENABLE";
       const creationDate = Date.now();
-
+      const lastRotation = Date.now();
+      const rotation = convertDateToMilis();
       const keyStore = KeyStore({
         ...key,
         status,
         creationDate,
+        lastRotation,
+        rotation,
         cryptoKeyId: savedkey._id
       });
 

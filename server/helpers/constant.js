@@ -30,5 +30,22 @@ module.exports = {
     UPLOAD_FILE: 'UPLOAD FILE',
     DOWNLOAD_FILE: 'DOWNLOAD FILE',
     ENCRYPT_FILE: 'ENCRYPT FILE'
-  }
+  },
+  ROTATE_PERIOD: [
+    {
+      value: '30_DAYS',
+      label: '30 days',
+      second: 1000 * 60 * 60 * 24 * 30
+    },
+    {
+      value: '90_DAYS',
+      label: '90 days',
+      second: 1000 * 60 * 60 * 24 * 90
+    },
+    {
+      value: 'YEAR',
+      label: 'Year',
+      second: 1000 * 60 * 60 * 24 * 365
+    }
+  ],
 }
