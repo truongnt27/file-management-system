@@ -77,7 +77,7 @@ module.exports = {
       const status = "ENABLE";
       const creationDate = Date.now();
       const lastRotation = Date.now();
-      const rotation = convertDateToMilis();
+      const rotation = convertDateToMilis(key.rotation);
       const keyStore = KeyStore({
         ...key,
         status,
