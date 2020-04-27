@@ -1,4 +1,4 @@
-import { all, put, takeLeading } from 'redux-saga/effects';
+import { all, put, takeEvery } from 'redux-saga/effects';
 import { BOOT, BOOT_FINISHED } from './';
 import { API_STATUS_CODE } from 'helpers/constant';
 import { getCurrentUser } from 'helpers/usersApi';
@@ -10,7 +10,6 @@ function* boot() {
 
   const res = yield getCurrentUser();
 
-
   if (res.status === API_STATUS_CODE.SUCCESS) {
     yield put(Actions.authSuccess(res.data.user));
   }
@@ -21,6 +20,6 @@ function* boot() {
 
 export default function* appSaga() {
   yield all([
-    takeLeading(BOOT, boot)
+    takeEvery(BOOT, boot)
   ])
 }

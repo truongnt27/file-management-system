@@ -56,20 +56,25 @@ module.exports = {
         message: "Signed out"
       })
   },
+  facebook: (req, res, next) => {
 
-  // facebook: (req, res, next) => {
-  //   return res.status(200).json({
-  //     status: "SUCCESS",
-  //   });
-  // },
+    if (user) {
+      const payload = { id: user._id, name: user.fullname };
+      const token = jwt.sign(payload, config.jwtConfig.secret, config.jwtConfig.option);
+      console.log('user', user);
 
+      return res
+        .cookie('authToken', token, { httpOnly: true, samesite: true, signed: true, maxAge: 10 * 86400 * 1000 })
+        .redirect('http://localhost:3000');
+    }
+  },
   google: (req, res, next) => {
-    return res.redirect('http://localhost:3000/?email=' + req.user.email);
-    // return res.status(200).json({
-    //   status: "SUCCESS",
-    //   data: {
-    //     user: req.user
-    //   }
-    // }).re;
+    const user = req.user;
+    const payload = { id: user._id, name: user.fullname };
+    const token = jwt.sign(payload, config.jwtConfig.secret, config.jwtConfig.option);
+
+    return res
+      .cookie('authToken', token, { httpOnly: true, samesite: true, signed: true, maxAge: 10 * 86400 * 1000 })
+      .redirect('http://localhost:3000');
   },
 }

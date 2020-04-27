@@ -16,6 +16,7 @@ passport.use('google', new GoogleStrategy({
       const { id } = profile;
       const { name, picture, email } = profile._json;
       const existedUser = await UserStore.findOne({ googleId: id });
+
       if (existedUser) {
         done(null, existedUser);
       }

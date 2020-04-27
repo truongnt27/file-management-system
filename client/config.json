@@ -1,3 +1,4 @@
 {
-  "baseUrl": "http://localhost:3002/api/"
+  "baseUrl": "http://localhost:3002/api/",
+  "a": "123"
 }

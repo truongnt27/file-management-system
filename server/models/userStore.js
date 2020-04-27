@@ -14,6 +14,7 @@ var userSchema = new Schema({
   keyList: [{ type: Schema.Types.ObjectId, ref: 'KeyStore' }],
   avatarPicture: { type: String, required: false },
   googleId: { type: String, required: false },
+  facebookId: { type: String, required: false },
   lastActive: { type: Date }
 });
 

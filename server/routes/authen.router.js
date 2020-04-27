@@ -17,15 +17,15 @@ router
     '/sign-out',
     authenController.signout
   )
-  // .get(
-  //   '/facebook',
-  //   passport.authenticate('facebook', { scope: 'email' }),
-  // )
-  // .get(
-  //   '/facebook/callback',
-  //   passport.authenticate('facebook'),
-  //   authenController.facebook
-  // )
+  .get(
+    '/facebook',
+    passport.authenticate('facebook', { scope: 'email' }),
+  )
+  .get(
+    '/facebook/callback',
+    passport.authenticate('facebook'),
+    authenController.facebook
+  )
   .get(
     '/google',
     passport.authenticate('google', {
