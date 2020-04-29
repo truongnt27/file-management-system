@@ -14,6 +14,8 @@ import {
 } from '@material-ui/icons';
 
 import { Profile, SidebarNav } from './components';
+import { Selectors } from 'state/modules/auth';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   drawer: {
@@ -38,48 +40,56 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const allPages = [
+  {
+    title: 'Dashboard',
+    href: '/dashboard',
+    icon: <DashboardIcon />
+  },
+  {
+    title: 'Your data',
+    href: '/files',
+    icon: <FolderOpenIcon />
+  },
+  {
+    title: 'Manage keys',
+    href: '/keys',
+    icon: <VpnKeyIcon />
+  },
+  {
+    title: 'All users',
+    href: '/users',
+    icon: < UsersIcon />,
+    requireAccess: ['Admin', 'Manager']
+  },
+  {
+    title: 'Activity logs',
+    href: '/logs',
+    icon: <HistoryIcon />
+  },
+  {
+    title: 'Trash',
+    href: '/trash',
+    icon: <DeleteIcon />
+  },
+  // {
+  //   title: 'Settings',
+  //   href: '/settings',
+  //   icon: <SettingsIcon />
+  // },
+];
+
 const Sidebar = props => {
   const { open, variant, onClose, className, ...rest } = props;
+  const user = useSelector(Selectors.currentUser);
 
   const classes = useStyles();
-
-  const pages = [
-    {
-      title: 'Dashboard',
-      href: '/dashboard',
-      icon: <DashboardIcon />
-    },
-    {
-      title: 'Your data',
-      href: '/files',
-      icon: <FolderOpenIcon />
-    },
-    {
-      title: 'Manage keys',
-      href: '/keys',
-      icon: <VpnKeyIcon />
-    },
-    {
-      title: 'All users',
-      href: '/users',
-      icon: < UsersIcon />
-    },
-    {
-      title: 'Activity logs',
-      href: '/logs',
-      icon: <HistoryIcon />
-    },
-    {
-      title: 'Trash',
-      href: '/trash',
-      icon: <DeleteIcon />
-    },
-    // {
-    //   title: 'Settings',
-    //   href: '/settings',
-    //   icon: <SettingsIcon />
-    // },
-  ];
+  const pages = allPages.filter(page => {
+    if (page.requireAccess && page.requireAccess.indexOf(user.type) < 0) {
+      return false;
+    }
+    return true;
+  })
 
   return (
     <Drawer
