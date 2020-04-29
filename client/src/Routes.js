@@ -75,6 +75,7 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/users"
+        requireAccess={['Manager', 'Admin']}
         requireAuth
       />
       <RouteWithLayout
