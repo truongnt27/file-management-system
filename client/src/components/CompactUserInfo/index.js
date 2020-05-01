@@ -15,7 +15,8 @@ const useStyles = makeStyles(theme => ({
     display: 'flex'
   },
   badges: {
-    paddingLeft: theme.spacing(1)
+    paddingLeft: theme.spacing(1),
+    color: 'rgba(0,0,0,0.54)'
   },
   fullname: {
     fontSize: '14px'
