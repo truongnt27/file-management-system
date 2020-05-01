@@ -4,6 +4,11 @@ module.exports = {
     MANAGER: 'Manager',
     ADMIN: 'Admin'
   },
+  USER_LEVELS: {
+    User: 0,
+    Manager: 1,
+    Admin: 2
+  },
   USER_STATUS: {
     ACTIVE: 'ACTIVE',
     INACTIVE: 'INACTIVE',
