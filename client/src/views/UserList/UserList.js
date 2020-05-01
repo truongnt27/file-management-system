@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
-import { UsersToolbar, UsersTable, CreateUser } from './components';
-import { useDispatch, useSelector } from 'react-redux';
-import { FETCH_USERS, usersSelector, createUserSaga } from 'state/modules/app/users/actions';
+import { UsersToolbar, UsersTableSmartComponent as UsersTable, CreateUser } from './components';
+import { useDispatch } from 'react-redux';
+import { createUserSaga } from 'state/modules/app/users/actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UserList = ({ users, onCreate }) => {
+const UserList = ({ onCreate }) => {
   const classes = useStyles();
   const [openCreatingDialog, setOpenCreatingDialog] = useState(false);
 
@@ -25,15 +25,17 @@ const UserList = ({ users, onCreate }) => {
   const handleCloseDialog = () => {
     setOpenCreatingDialog(false);
   }
+
   const handleOnCreate = (userInfo) => {
     setOpenCreatingDialog(false);
     onCreate && onCreate(userInfo);
   }
+
   return (
     <div className={classes.root}>
       <UsersToolbar onOpenDialog={handleOpenDialog} />
       <div className={classes.content}>
-        <UsersTable users={users} />
+        <UsersTable />
       </div>
       <CreateUser
         onClose={handleCloseDialog}
@@ -45,15 +47,7 @@ const UserList = ({ users, onCreate }) => {
 };
 
 const UserListSmartComponent = () => {
-  const usersStore = useSelector(usersSelector);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    (usersStore.status !== 'LOADED') && dispatch({ type: FETCH_USERS });
-  }, [usersStore.status])
-
-  const usersById = usersStore.byId || {};
-  const users = Object.values(usersById);
 
   const createUser = (user) => {
     dispatch(createUserSaga(user));
@@ -62,7 +56,6 @@ const UserListSmartComponent = () => {
   return (
     <UserList
       onCreate={createUser}
-      users={users}
     />
   )
 }

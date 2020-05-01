@@ -32,15 +32,17 @@ module.exports = {
 
   update: async (req, res) => {
     const user = req.body.user;
-    const id = user.userId;
-    if (isEmpty(id)) {
-      return res.status(400).json({
-        status: "FAILED",
-        message: "Missing user info"
-      })
-    }
+    const id = req.params.userId;
+
     try {
-      const resultUser = await UserStore.findOneAndUpdate({ userId: id }, user);
+      const resultUser = await UserStore.findOneAndUpdate({ _id: id }, user, { new: true });
+
+      if (!resultUser) {
+        return res.status(400).json({
+          status: "FAILED",
+          message: "Missing user info"
+        })
+      }
       return res.status(200).json({
         status: "SUCCESS",
         data: {

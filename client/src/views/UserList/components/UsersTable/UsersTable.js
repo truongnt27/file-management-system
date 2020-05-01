@@ -20,16 +20,16 @@ import {
   TableSortLabel
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { Edit as EditIcon, Visibility as ViewIcon, ToggleOff, ToggleOn } from '@material-ui/icons';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import { DeleteConfirmDialog, CompactUserInfo } from 'components';
+import {
+  Edit as EditIcon,
+  AssignmentInd as ManagerIcon,
+  SupervisedUserCircle as AdminIcon,
+  FilterList as FilterListIcon
+} from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
-
-import { useDispatch } from 'react-redux';
-import { push } from 'connected-react-router';
+import { DeleteConfirmDialog, CompactUserInfo } from 'components';
 import moment from 'moment';
-
-import { deleteKeySaga, updateKeySaga } from 'state/modules/app/users';
+import { USER_TYPES } from 'helpers/constant';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -143,6 +143,8 @@ const EnhancedTableToolbar = props => {
     numSelected,
     onEditUser,
     onDeleteUser,
+    onAssignAdmin,
+    onAssignManager
   } = props;
 
   const handleClickEdit = (e) => {
@@ -155,6 +157,13 @@ const EnhancedTableToolbar = props => {
     onDeleteUser && onDeleteUser(e);
   }
 
+  const handleClickAssignAdmin = () => {
+    onAssignAdmin && onAssignAdmin();
+  }
+
+  const handleClickAssignManager = () => {
+    onAssignManager && onAssignManager();
+  }
 
   return (
     <Toolbar
@@ -188,6 +197,22 @@ const EnhancedTableToolbar = props => {
               numSelected === 1 &&
               (
                 <>
+                  <Tooltip title="Assign admin">
+                    <IconButton
+                      aria-label="Assign admin"
+                      onClick={handleClickAssignAdmin}
+                    >
+                      <AdminIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Assign manager">
+                    <IconButton
+                      aria-label="Assign manager"
+                      onClick={handleClickAssignManager}
+                    >
+                      <ManagerIcon />
+                    </IconButton>
+                  </Tooltip>
                   <Tooltip title="Edit">
                     <IconButton
                       aria-label="Edit"
@@ -223,8 +248,10 @@ const EnhancedTableToolbar = props => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  onAssignAdmin: func.isRequired,
+  onAssignManager: func.isRequired,
   onDeleteUser: func.isRequired,
-  onEditUser: func.isRequired,
+  onEditUser: func.isRequired
 };
 
 const useStyles = makeStyles(theme => ({
@@ -254,7 +281,12 @@ const useStyles = makeStyles(theme => ({
 export default function UsersTable(props) {
   const classes = useStyles();
 
-  const { users: rows, loading = false } = props;
+  const {
+    users: rows,
+    loading = false,
+    onAssignRole
+  } = props;
+
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -262,7 +294,7 @@ export default function UsersTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [openDelConfirm, setOpenDelConfirm] = React.useState(false);
 
-  const dispatch = useDispatch();
+  //hanlders
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -308,10 +340,6 @@ export default function UsersTable(props) {
     setPage(0);
   }
 
-  function handleEditUser() {
-
-  }
-
   function handleDeleteUser() {
     setOpenDelConfirm(true);
   }
@@ -320,8 +348,20 @@ export default function UsersTable(props) {
     setOpenDelConfirm(false);
   }
 
-  function DeleteUser() {
+  function deleteUser() {
 
+  }
+
+  function editUser(user) {
+
+  }
+
+  function hanldeAssignAdmin() {
+    onAssignRole({ _id: selected[0], type: USER_TYPES.ADMIN });
+  }
+
+  function hanldeAssignManager() {
+    onAssignRole({ _id: selected[0], type: USER_TYPES.MANAGER });
   }
 
   const isSelected = _id => selected.indexOf(_id) !== -1;
@@ -354,6 +394,7 @@ export default function UsersTable(props) {
             </TableCell>
             <TableCell align="left" >
               <CompactUserInfo
+                badges={row.type === 'Manager' ? [<ManagerIcon />] : (row.type === 'Admin' && [<AdminIcon />])}
                 fullname={row.fullname}
                 profileImage={row.avatarPicture}
                 subtitle={row.email}
@@ -378,8 +419,9 @@ export default function UsersTable(props) {
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
+          onAssignAdmin={hanldeAssignAdmin}
+          onAssignManager={hanldeAssignManager}
           onDeleteUser={handleDeleteUser}
-          onEditUser={handleEditUser}
         />
         <div className={classes.tableWrapper}>
           <Table
@@ -457,7 +499,7 @@ export default function UsersTable(props) {
       </Paper>
       <DeleteConfirmDialog
         onClose={handleCloseDelConfirm}
-        onDelete={DeleteUser}
+        onDelete={deleteUser}
         open={openDelConfirm}
       />
     </div>
@@ -466,5 +508,6 @@ export default function UsersTable(props) {
 UsersTable.propTypes = {
   className: PropTypes.string,
   loading: PropTypes.bool,
+  onAssignRole: PropTypes.func,
   users: PropTypes.array.isRequired
 };

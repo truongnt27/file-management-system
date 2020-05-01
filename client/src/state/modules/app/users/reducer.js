@@ -1,4 +1,4 @@
-import { Status, SET_USERS, CREATE_USER } from './actions';
+import { Status, SET_USERS, SET_USER } from './actions';
 
 const initialState = {
   status: Status.INIT,
@@ -9,7 +9,7 @@ const initialState = {
 export default function usersReducer(state = initialState, action) {
 
   switch (action.type) {
-    case CREATE_USER: {
+    case SET_USER: {
       const { user } = action.payload;
       return {
         ...state,

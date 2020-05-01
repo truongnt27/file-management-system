@@ -10,4 +10,8 @@ export const getCurrentUser = () => {
 
 export const createUserApi = (user) => {
   return apiCaller.post('/users', { user });
+}
+
+export const updateUserApi = (user) => {
+  return apiCaller.put(`/users/${user._id}`, { user });
 } 
