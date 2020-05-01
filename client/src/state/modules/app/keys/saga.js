@@ -28,6 +28,13 @@ function* createKey(action) {
     yield put(showToast(toast));
 
     yield put(push('/keys'));
+  } else {
+    const toast = {
+      message: 'Create key failed!',
+      type: TOAST_TYPE.FAILED
+    }
+    yield put(showToast(toast));
+    yield put(push('/keys'));
   }
 }
 
