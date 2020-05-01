@@ -19,7 +19,7 @@ module.exports = {
     DISABLE: 'DISABLE',
     ENABLE: 'ENABLE',
     DELETE: 'DELETE',
-    ALL_ACESS: 'ALL ACESS'
+    ALL_ACCESS: ['EDIT', 'ROTATE', 'DISABLE', 'ENABLE', 'DELETE']
   },
   STATUS: {
     ENABLE: 'ENABLE',

@@ -7,7 +7,6 @@ const Log = require('../models/eventLog');
 const { EVENT_TYPE, STATUS, PERMISSION_TYPES } = require('../helpers/constant');
 const { isEmpty } = require('lodash');
 const genCryptoKey = require('../helpers/keyGen');
-const { convertDateToMilis } = require('../helpers/keyHelper')
 
 module.exports = {
   get: async (req, res) => {
@@ -65,32 +64,34 @@ module.exports = {
   store: async (req, res) => {
     const key = req.body.key;
     const userId = req.user._id;
+
     if (!key) {
       return res.status(400).json({
         status: "FAILED",
         message: "Missing key info"
       })
     }
+
     try {
       const cryptoKey = new CryptoKey(genCryptoKey());
       const savedkey = await cryptoKey.save();
       const status = "ENABLE";
       const creationDate = Date.now();
       const lastRotation = Date.now();
-      const rotation = convertDateToMilis(key.rotation);
+
+      const { permissions } = key || null;
+      const updatedPemission = { [userId]: PERMISSION_TYPES.ALL_ACCESS, ...permissions };
       const keyStore = KeyStore({
         ...key,
+        permissions: updatedPemission,
         status,
         creationDate,
         lastRotation,
-        rotation,
         cryptoKeyId: savedkey._id
       });
 
       const resultKey = await keyStore.save();
 
-      const { permissions } = key || null;
-      const updatedPemission = { [userId]: [PERMISSION_TYPES.ALL_ACCESS], ...permissions };
       const usersArr = Object.keys(updatedPemission);
       await UserStore.updateMany({ _id: { $in: usersArr } }, { $push: { keyList: resultKey._id } })
 
