@@ -1,4 +1,5 @@
 const UserStore = require('../models/userStore');
+const Log = require('../models/eventLog');
 const { isEmpty } = require('lodash');
 const constant = require('../helpers/constant');
 
@@ -54,6 +55,13 @@ module.exports = {
           message: "Missing user info"
         })
       }
+      const log = new Log({
+        userId: currentUser._id,
+        time: Date.now(),
+        description: constant.EVENT_TYPE.UPDATE_USER
+      })
+      log.save();
+
       return res.status(200).json({
         status: "SUCCESS",
         data: {
@@ -76,6 +84,14 @@ module.exports = {
     }
     const userStore = new UserStore({ ...user });
     const resultUser = await userStore.save();
+
+    const log = new Log({
+      userId: currentUser._id,
+      time: Date.now(),
+      description: constant.EVENT_TYPE.CREATE_USER
+    })
+    log.save();
+
     return res.status(200).json({
       status: "SUCCESS",
       data: {
@@ -95,6 +111,12 @@ module.exports = {
 
     try {
       await UserStore.findOneAndUpdate({ _id: id }, { status: constant.USER_STATUS.INACTIVE });
+      const log = new Log({
+        userId: currentUser._id,
+        time: Date.now(),
+        description: constant.EVENT_TYPE.DEL_USER
+      })
+      log.save();
 
       return res.status(200).json({
         status: "SUCCESS",
