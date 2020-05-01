@@ -357,6 +357,7 @@ export default function KeysTable(props) {
 
   function DeleteKey() {
     setOpenDelConfirm(false);
+    setSelected([]);
     dispatch(deleteKeySaga(selected));
   }
 
