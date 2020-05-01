@@ -33,8 +33,19 @@ module.exports = {
   update: async (req, res) => {
     const user = req.body.user;
     const id = req.params.userId;
+    const currentUser = req.user;
+    const updateUserType = user.type || null;
 
     try {
+      if (
+        constant.USER_LEVELS[currentUser.type] < constant.USER_LEVELS[updateUserType] &&
+        currentUser._id !== id
+      ) {
+        return res.status(403).json({
+          status: "FAILED",
+          message: "Access denied"
+        })
+      }
       const resultUser = await UserStore.findOneAndUpdate({ _id: id }, user, { new: true });
 
       if (!resultUser) {
