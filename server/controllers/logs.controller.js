@@ -3,17 +3,29 @@ const { isEmpty } = require('lodash');
 module.exports = {
   get: async (req, res, next) => {
     try {
-      const initDate = Date.now();
-      const { fromDate = null, toDate = initDate } = req.query;
-      const logs = await Log
-        .find({
-          time: {
-            $gte: fromDate,
-            $lt: toDate
-          }
-        })
-        .sort({ time: -1 })
-        .populate('userId', 'fullname avatarPicture');
+      const { fromDate, toDate } = req.query;
+      let logs = [];
+
+      if (
+        isEmpty(fromDate) || isEmpty(toDate) ||
+        fromDate === 'undefined' || toDate === 'undefined'
+      ) {
+        logs = await Log
+          .find()
+          .sort({ time: -1 })
+          .populate('userId', 'fullname avatarPicture');
+      } else {
+        logs = await Log
+          .find({
+            time: {
+              $gte: fromDate,
+              $lt: toDate
+            }
+          })
+          .sort({ time: -1 })
+          .populate('userId', 'fullname avatarPicture');
+      }
+
       return res.status(200).json({
         status: 'SUCCESS',
         data: {

@@ -121,7 +121,7 @@ const LastActivitiesSmartComponent = () => {
   const logsStore = useSelector(Selectors.logsStore);
 
   useEffect(() => {
-    logsStore.status !== 'LOADED' && dispatch({ type: Actions.fetchLogs() });
+    logsStore.status !== 'LOADED' && dispatch(Actions.fetchLogs());
   }, [logsStore.status])
   const logs = Object.values(logsStore.byId).slice(0, 6);
 
