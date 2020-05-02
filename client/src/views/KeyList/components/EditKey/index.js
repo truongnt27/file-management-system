@@ -14,6 +14,8 @@ import { usersSelector, FETCH_USERS } from 'state/modules/app/users/actions';
 import { updateKeySaga } from 'state/modules/app/keys/actions';
 
 import { Selectors } from 'state/modules/app/keys';
+import { Redirect } from 'react-router-dom';
+import { isEmpty } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -44,16 +46,13 @@ export default function EditKey(props) {
   const allUsers = Object.values(usersStore.byId);
   console.log('status', usersStore.status);
   const { keyId } = props.match.params;
-  const edittingKey = useSelector(state => Selectors.getKeyById(state, keyId));
+  const edittingKey = useSelector(state => Selectors.getKeyById(state, keyId)) || {};
 
-  const { alias, description, rotation, permissions } = edittingKey;
+  const { alias = '', description = '', rotation = '', permissions = {} } = edittingKey;
   const selectedUserArr = Object.keys(permissions);
   const selectedUserIdx = selectedUserArr.map(userId => usersStore.allIds.indexOf(userId));
-  console.log('selectedUserIdx', selectedUserIdx);
-
   const [activeStep, setActiveStep] = useState(0);
   const [selectedUsers, setselectedUsers] = useState(selectedUserIdx);
-  console.log('selectedUsers', selectedUsers);
 
   const [keyInfo, setKeyInfo] = useState({
     alias,
@@ -66,8 +65,6 @@ export default function EditKey(props) {
 
   useEffect(() => {
     usersStore.status !== 'LOADED' && dispatch({ type: FETCH_USERS });
-    console.log('run effect');
-
     setselectedUsers(selectedUserIdx);
   }, [usersStore.status])
 
@@ -142,6 +139,11 @@ export default function EditKey(props) {
     setActiveStep(0);
     dispatch(updateKeySaga({ ...edittingKey, ...keyInfo }));
   }
+
+  if (isEmpty(edittingKey)) {
+    return <Redirect to="not-found" />
+  }
+
   return (
     <div className={classes.root}>
       <Stepper
