@@ -58,7 +58,7 @@ module.exports = {
       const log = new Log({
         userId: currentUser._id,
         time: Date.now(),
-        description: constant.EVENT_TYPE.UPDATE_USER
+        description: `${constant.EVENT_TYPE.UPDATE_USER} ${resultUser.email || ''}`
       })
       log.save();
 
