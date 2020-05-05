@@ -15,11 +15,8 @@ module.exports = {
   },
   PERMISSION_TYPES: {
     EDIT: 'EDIT',
-    ROTATE: 'ROTATE',
-    DISABLE: 'DISABLE',
-    ENABLE: 'ENABLE',
-    DELETE: 'DELETE',
-    ALL_ACCESS: ['EDIT', 'ROTATE', 'DISABLE', 'ENABLE', 'DELETE']
+    VIEW: 'VIEW',
+    ALL_ACCESS: ['EDIT', 'VIEW']
   },
   STATUS: {
     ENABLE: 'ENABLE',

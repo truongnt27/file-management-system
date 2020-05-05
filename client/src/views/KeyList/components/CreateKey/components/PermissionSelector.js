@@ -4,21 +4,14 @@ import GroupManagment from 'components/GroupManagment'
 const permissions = [
   {
     id: 'EDIT',
-    name: 'edit'
+    name: 'EDIT'
   },
   {
-    id: 'ENABLE',
-    name: 'enable'
-  },
-  {
-    id: 'DISABLE',
-    name: 'disable'
-  },
-  {
-    id: 'ROTATE',
-    name: 'rotate'
+    id: 'VIEW',
+    name: 'EDIT'
   }
 ]
+
 export default function PermissionSelector(props) {
   const { selectedPermission = [], userId, onChange } = props;
 
