@@ -1,11 +1,12 @@
 import { all, put, select, takeEvery } from 'redux-saga/effects';
 import * as Actions from './actions';
-import { API_STATUS_CODE } from 'helpers/constant';
+import { API_STATUS_CODE, TOAST_TYPE } from 'helpers/constant';
 import { getFilesApi, uploadFileApi, downloadFileApi } from 'helpers/filesApi';
 import { Selectors } from 'state/modules/auth';
 import { getFileById } from 'state/modules/app/files/selector';
 import { push } from 'connected-react-router';
 import { saveAs } from 'file-saver';
+import { showToast } from 'state/modules/notification';
 
 function* uploadFile(action) {
   const { file, keyId } = action.payload;
@@ -17,6 +18,17 @@ function* uploadFile(action) {
   if (res.status === API_STATUS_CODE.SUCCESS) {
     yield put(Actions.setFile(res.data.file));
     yield put(push('/files'));
+    const toast = {
+      message: 'File saved !',
+      type: TOAST_TYPE.SUCCESS
+    }
+    yield put(showToast(toast));
+  } else {
+    const toast = {
+      message: 'Upload file failed !',
+      type: TOAST_TYPE.FAILED
+    }
+    yield put(showToast(toast));
   }
 }
 
