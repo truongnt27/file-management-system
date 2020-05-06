@@ -99,6 +99,7 @@ module.exports = {
       const { cryptoKeyId } = key;
 
       encryptFile(`./public/uploads/${owner}/${req.file.originalname}`, cryptoKeyId.plaintext);
+      await FileStore.populate(result, { path: 'owner', select: 'fullname' })
       return res.status(200).json({
         status: 'SUCCESS',
         message: 'File saved',
