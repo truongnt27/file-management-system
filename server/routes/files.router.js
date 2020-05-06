@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const filesController = require('../controllers/files.controller');
-const upload = require('../helpers/fileSaver');
+const { saveFile } = require('../helpers/fileHelper');
 const { protectedRoute } = require('../helpers/authHelper');
 
 router
@@ -19,8 +19,13 @@ router
   .post(
     '/',
     protectedRoute,
-    upload.single('file'),
+    saveFile.single('file'),
     filesController.store
+  )
+  .delete(
+    '/:fileId',
+    protectedRoute,
+    filesController.delete
   )
 
 module.exports = router;

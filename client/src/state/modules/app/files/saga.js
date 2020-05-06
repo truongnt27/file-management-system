@@ -1,7 +1,12 @@
 import { all, put, select, takeEvery } from 'redux-saga/effects';
 import * as Actions from './actions';
 import { API_STATUS_CODE, TOAST_TYPE } from 'helpers/constant';
-import { getFilesApi, uploadFileApi, downloadFileApi } from 'helpers/filesApi';
+import {
+  getFilesApi,
+  uploadFileApi,
+  downloadFileApi,
+  deleteFilesApi
+} from 'helpers/filesApi';
 import { Selectors } from 'state/modules/auth';
 import { getFileById } from 'state/modules/app/files/selector';
 import { push } from 'connected-react-router';
@@ -46,7 +51,6 @@ function* downloadFile(action) {
 }
 
 function* fetchFiles() {
-  const currentUser = yield select(Selectors.currentUser);
   const res = yield getFilesApi();
 
   if (res.status === API_STATUS_CODE.SUCCESS) {
@@ -56,10 +60,30 @@ function* fetchFiles() {
   }
 }
 
+function* deleteFile(action) {
+  const { fileId } = action.payload;
+  yield put(Actions.deleteFile(fileId))
+  const res = yield deleteFilesApi(fileId);
+  if (res.status === API_STATUS_CODE.SUCCESS) {
+    const toast = {
+      message: 'Delete file succesfully !',
+      type: TOAST_TYPE.SUCCESS
+    }
+    yield put(showToast(toast));
+  } else {
+    const toast = {
+      message: 'Delete file failed !',
+      type: TOAST_TYPE.FAILED
+    }
+    yield put(showToast(toast));
+  }
+}
+
 export default function* filesSaga() {
   yield all([
     takeEvery(Actions.FETCH_FILES, fetchFiles),
     takeEvery(Actions.UPLOAD_FILE_SAGA, uploadFile),
     takeEvery(Actions.DOWNLOAD_FILE_SAGA, downloadFile),
+    takeEvery(Actions.DELETE_FILE_SAGA, deleteFile)
   ])
 }

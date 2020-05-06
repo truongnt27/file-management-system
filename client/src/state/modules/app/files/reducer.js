@@ -1,4 +1,9 @@
-import { Status, SET_FILES, SET_FILE } from './actions';
+import {
+  Status,
+  SET_FILES,
+  SET_FILE,
+  DELETE_FILE
+} from './actions';
 
 const initialState = {
   status: Status.INIT,
@@ -10,6 +15,16 @@ const initialState = {
 export default function filesReducer(state = initialState, action) {
 
   switch (action.type) {
+    case DELETE_FILE: {
+      const { fileId } = action.payload;
+      const updatedById = { ...state.byId };
+      delete updatedById[fileId];
+      return {
+        ...state,
+        byId: updatedById,
+        allIds: state.allIds.filter(id => id !== fileId)
+      }
+    }
     case SET_FILE: {
       const { file } = action.payload;
       return {

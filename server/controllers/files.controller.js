@@ -4,7 +4,7 @@ const UserStore = require('../models/userStore');
 const Log = require('../models/eventLog');
 const Encryptor = require('../helpers/encryptFile');
 const { encryptFile, decryptFile } = Encryptor;
-
+const { deleteFile } = require('../helpers/fileHelper')
 const { EVENT_TYPE } = require('../helpers/constant');
 
 const { isEmpty, unionBy } = require('lodash');
@@ -110,6 +110,45 @@ module.exports = {
     }
     catch (err) {
       next(err)
+    }
+  },
+  delete: async (req, res, next) => {
+    const { fileId } = req.params;
+    if (isEmpty(fileId)) {
+      return res.status(400).json({
+        status: "FAILED",
+        message: "Missing key info"
+      })
+    }
+
+    try {
+      const file = await FileStore.findOneAndDelete({ _id: fileId });
+
+      await KeyStore.findOneAndUpdate({ _id: file._id }, { $pull: { files: fileId } });
+
+      const log = new Log({
+        time: Date.now(),
+        userId: req.user._id,
+        description: `${EVENT_TYPE.DEL_FILE} ${file.name}`
+      });
+
+      await log.save();
+      deleteFile(`./public/uploads/${file.owner}/${file.name}.enc`);
+
+      return res.status(200).json({
+        status: "SUCCESS",
+        data: {
+          fileId
+        }
+      })
+
+    } catch (error) {
+      console.log(error);
+
+      return res.status(500).json({
+        status: "FAILED",
+        message: "Something's wrong"
+      })
     }
   }
 }

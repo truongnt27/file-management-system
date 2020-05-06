@@ -135,7 +135,7 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected, onViewDetail, onDownload } = props;
+  const { numSelected, onViewDetail, onDownload, onDetele } = props;
 
   const handleViewClick = (e) => {
     e.preventDefault();
@@ -145,6 +145,11 @@ const EnhancedTableToolbar = props => {
   const handleDownloadClick = (e) => {
     e.preventDefault();
     onDownload && onDownload();
+  }
+
+  const handleDeleteClick = (e) => {
+    e.preventDefault();
+    onDetele && onDetele();
   }
 
   return (
@@ -195,14 +200,17 @@ const EnhancedTableToolbar = props => {
                       <GetApp />
                     </IconButton>
                   </Tooltip>
+                  <Tooltip title="Delete">
+                    <IconButton
+                      aria-label="Delete"
+                      onClick={handleDeleteClick}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
                 </>
               )
             }
-            <Tooltip title="Delete">
-              <IconButton aria-label="Delete">
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
           </div>
         ) :
           (
@@ -219,6 +227,7 @@ const EnhancedTableToolbar = props => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  onDetele: PropTypes.func.isRequired,
   onDownload: PropTypes.func.isRequired,
   onViewDetail: PropTypes.func.isRequired,
 };
@@ -314,6 +323,12 @@ export default function FilesTable(props) {
   function downloadFile() {
     selected && dispatch(Actions.downloadFile(selected));
   }
+
+  function handleDeleleFile() {
+    selected && dispatch(Actions.deleteFileSaga(selected));
+    setSelected([]);
+  }
+
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
   return (
@@ -321,6 +336,7 @@ export default function FilesTable(props) {
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
+          onDetele={handleDeleleFile}
           onDownload={downloadFile}
           onViewDetail={hanleOpenFileDetail}
         />

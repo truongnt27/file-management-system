@@ -1,5 +1,6 @@
 const multer = require('multer');
-var fs = require('fs');
+const fs = require('fs');
+const path = require('path');
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -16,4 +17,15 @@ const storage = multer.diskStorage({
   }
 });
 
-module.exports = multer({ storage });
+const deleteFile = function (inputPath) {
+  const dir = path.resolve(inputPath);
+  fs.unlinkSync(dir, function (err) {
+    if (err) throw err;
+    console.log('File deleted!');
+  });
+};
+
+module.exports = {
+  saveFile: multer({ storage }),
+  deleteFile
+}

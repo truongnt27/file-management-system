@@ -19,5 +19,8 @@ export const downloadFileApi = async (fileId) => {
 
 export const getFilesApi = async () => {
   return apiCaller.get('/files');
+}
 
+export const deleteFilesApi = async (fileId) => {
+  return apiCaller.del(`/files/${fileId}`);
 }
