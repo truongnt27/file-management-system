@@ -37,7 +37,19 @@ function* editUser(action) {
 
   const res = yield updateUserApi(user);
   if (res.status === API_STATUS_CODE.SUCCESS) {
-    yield put(ActionTypes.setUser(res.data.user))
+    yield put(ActionTypes.setUser(res.data.user));
+    const toast = {
+      message: 'Update user succesfully !',
+      type: TOAST_TYPE.SUCCESS
+    }
+    yield put(showToast(toast));
+  }
+  else {
+    const toast = {
+      message: 'Update user failed !',
+      type: TOAST_TYPE.SUCCESS
+    }
+    yield put(showToast(toast));
   }
 }
 
