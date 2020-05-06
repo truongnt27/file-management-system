@@ -8,7 +8,7 @@ const permissions = [
   },
   {
     id: 'VIEW',
-    name: 'EDIT'
+    name: 'VIEW'
   }
 ]
 
