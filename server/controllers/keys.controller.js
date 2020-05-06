@@ -101,7 +101,7 @@ module.exports = {
         description: `${EVENT_TYPE.CREATE_KEY} ${key.alias}`
       });
       log.save();
-
+      await KeyStore.populate(resultKey, { path: 'owner', select: 'fullname' });
       return res.status(200).json({
         status: "SUCCESS",
         data: {
