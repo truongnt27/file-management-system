@@ -267,6 +267,7 @@ export default function FilesTable(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [openFileDetail, setOpenFileDetail] = React.useState(false);
+  const [openDelConfirm, setOpenDelConfirm] = React.useState(false);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -324,9 +325,17 @@ export default function FilesTable(props) {
     selected && dispatch(Actions.downloadFile(selected));
   }
 
-  function handleDeleleFile() {
+  function handleDeleteFile() {
     selected && dispatch(Actions.deleteFileSaga(selected));
     setSelected([]);
+  }
+
+  function handleCloseDelConfirm() {
+    setOpenDelConfirm(false);
+  }
+
+  function handleDeleteFileClick() {
+    setOpenDelConfirm(true);
   }
 
   const isSelected = _id => selected.indexOf(_id) !== -1;
@@ -336,7 +345,7 @@ export default function FilesTable(props) {
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
-          onDetele={handleDeleleFile}
+          onDetele={handleDeleteFileClick}
           onDownload={downloadFile}
           onViewDetail={hanleOpenFileDetail}
         />
@@ -426,7 +435,11 @@ export default function FilesTable(props) {
           rowsPerPageOptions={[10, 20, 50]}
         />
       </Paper>
-      <DeleteConfirmDialog />
+      <DeleteConfirmDialog
+        onClose={handleCloseDelConfirm}
+        onDelete={handleDeleteFile}
+        open={openDelConfirm}
+      />
       <FileViewer
         fileId={selected}
         onClose={handleCloseFileDetail}

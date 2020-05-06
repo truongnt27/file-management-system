@@ -38,12 +38,14 @@ function DeleteConfirmDialog(props) {
           <Button
             color="primary"
             onClick={handleClose}
+            size="small"
           >
             Cancel
           </Button>
           <Button
             color="primary"
             onClick={handleDelete}
+            size="small"
             variant="contained"
           >
             Delete
