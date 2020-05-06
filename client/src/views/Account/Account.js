@@ -13,12 +13,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Account = () => {
+export const Account = ({ user }) => {
   const classes = useStyles();
-  const user = useSelector(Selectors.currentUser);
-  if (!user.fullname) {
-    return null;
-  }
   return (
     <div className={classes.root}>
       <Grid
@@ -52,4 +48,15 @@ const Account = () => {
   );
 };
 
-export default Account;
+
+const AccountSmartComponent = () => {
+  const user = useSelector(Selectors.currentUser);
+  if (!user.fullname) {
+    return null;
+  }
+  return (
+    <Account user={user} />
+  )
+}
+
+export default AccountSmartComponent;
