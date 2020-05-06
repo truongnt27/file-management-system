@@ -6,16 +6,21 @@ const KeyStore = require('../models/keyStore');
 const CryptoKey = require('../models/cryptoKey');
 const FileStore = require('../models/fileStore');
 const UserStore = require('../models/userStore');
+const Log = require('../models/eventLog');
+const { EVENT_TYPE } = require('../helpers/constant');
+const { convertDateToMilis } = require('../helpers/keyHelper');
+
 const genKey = require('../helpers/keyGen');
 const Encryptor = require('../helpers/encryptFile');
 
 console.log('Start rotate keys');
 
-const job = new CronJob('00 00 00 * * *', function () {
+const job = new CronJob('00 00 00 * * *', async function () {
   const keys = await KeyStore.find();
   keys.forEach(key => {
     const { lastRotation, rotation } = key;
-    if (lastRotation < Date.now() - rotation) {
+    const rotationMiliSnd = convertDateToMilis(rotation);
+    if (lastRotation < Date.now() - rotationMiliSnd) {
       rotate(key._id);
     }
   })
@@ -41,6 +46,12 @@ async function rotate(keyId) {
     key.lastRotation = Date.now();
     await key.save();
 
+    const log = new Log({
+      time: Date.now(),
+      userId: key.owner,
+      description: `${EVENT_TYPE.ROTATE_KEY} ${key.alias}`
+    });
+    await log.save()
   }
   catch (err) {
     console.log(err);
