@@ -65,7 +65,8 @@ const allPages = [
   {
     title: 'Activity logs',
     href: '/logs',
-    icon: <HistoryIcon />
+    icon: <HistoryIcon />,
+    requireAccess: ['Admin', 'Manager']
   },
   {
     title: 'Trash',
