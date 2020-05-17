@@ -14,7 +14,17 @@ module.exports = {
     try {
       const { keyList } = req.user || [];
       let totalFiles = [];
-      const keys = await KeyStore.find({ _id: { $in: keyList } }).populate({ path: 'files', populate: { path: 'owner', select: 'fullname' } });
+      const keys = await KeyStore
+        .find({ _id: { $in: keyList } })
+        .populate({
+          path: 'files',
+          populate: [
+            { path: 'owner', select: 'fullname' },
+            { path: 'keyId', select: 'alias' },
+            { path: 'activities', populate: { path: 'userId', select: 'fullname avatarPicture' } }
+          ]
+        });
+
       keys.forEach(key => {
         totalFiles = unionBy(totalFiles, key.files, '_id')
       })

@@ -7,10 +7,17 @@ import {
   Grid,
   Chip,
   Avatar,
-  Tooltip
+  Tooltip,
+  Divider,
+  Tabs,
+  Tab,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText
 } from '@material-ui/core'
 
-import { Person, PersonAdd, VpnKey } from '@material-ui/icons'
+import { Person, VpnKey } from '@material-ui/icons'
 import { Actions, Selectors } from 'state/modules/app/keys';
 import { Selectors as keysSelector } from 'state/modules/app/files';
 import { FETCH_USERS, usersSelector } from 'state/modules/app/users/actions';
@@ -18,6 +25,7 @@ import { FETCH_USERS, usersSelector } from 'state/modules/app/users/actions';
 import { useSelector, useDispatch } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import genAvataImg from 'helpers/genAvataImg';
+import moment from 'moment';
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -40,30 +48,60 @@ export function FileViewer(props) {
   const classes = useStyle();
   const { owner } = file || '';
 
+  const [value, setValue] = React.useState(0);
+  function handleChange(event, newValue) {
+    setValue(newValue);
+  }
+
   const handleClose = () => {
     const { onClose } = props;
     onClose && onClose();
   }
-  return (
-    <Drawer
-      anchor="right"
-      className={classes.root}
-      onClose={handleClose}
-      open={open}
-    >
-      <Grid
-        className={classes.container}
-        container
-        direction="column"
-        spacing={3}
-      >
-        <Grid
-          item
-        >
-          <Typography variant="h3">
-            <strong>File:</strong> {file.name}
-          </Typography>
-        </Grid>
+
+  const generateActivities = () => {
+    const logs = file.activities;
+    return (
+      <List>
+        {logs.map((log) => (
+          <>
+            <ListItem
+              key={log._id}
+            >
+              <ListItemAvatar>
+                <Avatar
+                  alt="Remy Sharp"
+                  src={log.userId && log.userId.avatarPicture}
+                />
+              </ListItemAvatar>
+              <ListItemText
+                primary={log.userId ? log.userId.fullname : '_'}
+                secondary={
+                  <React.Fragment>
+                    <Typography
+                      color="textPrimary"
+                      component="span"
+                      variant="body2"
+                    >
+                      {log.description}
+                    </Typography>
+                    {`${moment(log.time).format('DD/MM/YYYY hh:mm:ss')}`}
+                  </React.Fragment>
+                }
+              />
+            </ListItem>
+            <Divider
+              component="li"
+              variant="inset"
+            />
+          </>
+        ))}
+      </List>
+    )
+  }
+
+  const generateDetail = () => {
+    return (
+      <>
         <Grid
           item
         >
@@ -92,7 +130,7 @@ export function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Link:</strong> <a >{`http://localhost:300/file/${file._id}`}</a>
+            <strong>Link:</strong> <a >{`http://localhost:3000/file/${file._id}`}</a>
           </Typography>
         </Grid>
         <Grid
@@ -102,7 +140,7 @@ export function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Last access:</strong> asdasd
+            <strong>Last access:</strong>
           </Typography>
         </Grid>
         <Grid
@@ -127,43 +165,68 @@ export function FileViewer(props) {
             variant="body1"
           >
             <strong>Shared with:</strong>
-            <PersonAdd className={classes.icons} />
           </Typography>
         </Grid>
         <Grid item>
-          <Grid container>
-            {
-              sharedUsers.map(user => {
-                const { displayName } = genAvataImg(user.fullname);
-                return (
-                  <Grid
-                    item
-                    lg={4}
-                    sm={12}
-                  >
-                    <Tooltip
-                      title={user.email}
-                    >
-                      <Chip
-                        avatar={(
-                          <Avatar
-                            src={user.avatarPicture}
-                          >
-                            {displayName}
-                          </Avatar>)}
+          {
+            sharedUsers.map(user => {
+              const { displayName } = genAvataImg(user.fullname);
+              return (
+                <Tooltip
+                  title={user.email}
+                >
+                  <Chip
+                    avatar={(
+                      <Avatar
+                        src={user.avatarPicture}
+                      >
+                        {displayName}
+                      </Avatar>)}
 
-                        className={classes.chips}
-                        color="primary"
-                        label={user.fullname}
-                        variant="outlined"
-                      />
-                    </Tooltip>
-                  </Grid>
-                )
-              })
-            }
-          </Grid>
+                    className={classes.chips}
+                    color="primary"
+                    label={user.fullname}
+                    variant="outlined"
+                  />
+                </Tooltip>
+              )
+            })
+          }
         </Grid>
+      </>
+    )
+  }
+
+  return (
+    <Drawer
+      anchor="right"
+      className={classes.root}
+      onClose={handleClose}
+      open={open}
+    >
+      <Grid
+        className={classes.container}
+        container
+        direction="column"
+        spacing={3}
+      >
+        <Grid
+          item
+        >
+          <Typography variant="h3">
+            {file.name}
+          </Typography>
+          <Tabs
+            onChange={handleChange}
+            textColor="primary"
+            value={value}
+          >
+            <Tab label="detail" />
+            <Tab label="activities" />
+          </Tabs>
+          <Divider />
+        </Grid>
+        {value === 0 ? generateDetail() : generateActivities()}
       </Grid>
     </Drawer>
   )
@@ -187,8 +250,8 @@ const FileViewerSmartComponent = (props) => {
 
   const { fileId, open = false, onClose } = props;
   const file = useSelector(state => keysSelector.getFileById(state)(fileId));
-
-  const keyData = useSelector(state => Selectors.getKeyById(state, file.keyId));
+  const keyId = get(file, 'keyId._id', '');
+  const keyData = useSelector(state => Selectors.getKeyById(state, keyId));
 
   if (isEmpty(file) || isEmpty(keyData)) {
     return null;
