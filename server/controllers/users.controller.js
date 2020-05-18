@@ -86,7 +86,7 @@ module.exports = {
     const resultUser = await userStore.save();
 
     const log = new Log({
-      userId: currentUser._id,
+      userId: req.user._id,
       time: Date.now(),
       description: constant.EVENT_TYPE.CREATE_USER
     })
