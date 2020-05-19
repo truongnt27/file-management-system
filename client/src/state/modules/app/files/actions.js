@@ -18,6 +18,8 @@ export const DELETE_FILE = `${namespace}/DELETE_FILE`;
 export const SET_FILE = `${namespace}/SET_FILE`;
 export const SET_FILES = `${namespace}/SET_FILES`;
 
+export const UPDATE_FILE_SAGA = `${namespace}/UPDATE_FILE_SAGA`;
+
 export const uploadFile = (file: File, keyId) => ({
   type: UPLOAD_FILE_SAGA,
   payload: {
@@ -55,5 +57,12 @@ export const deleteFile = (fileId) => ({
   type: DELETE_FILE,
   payload: {
     fileId
+  }
+})
+
+export const updateFileSaga = (file) => ({
+  type: UPDATE_FILE_SAGA,
+  payload: {
+    file
   }
 })

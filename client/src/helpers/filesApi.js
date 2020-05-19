@@ -24,3 +24,7 @@ export const getFilesApi = async () => {
 export const deleteFilesApi = async (fileId) => {
   return apiCaller.del(`/files/${fileId}`);
 }
+
+export const updateFileApi = async (file) => {
+  return apiCaller.put(`/files/${file._id}`, { file });
+}

@@ -8,6 +8,7 @@ const schema = new Schema({
   status: { type: String, required: true, default: constant.STATUS.ENABLE },
   keyId: { type: Schema.Types.ObjectId, ref: 'KeyStore', required: true },
   size: { type: String, required: true },
+  isFavorite: { type: Boolean, required: true, default: false },
   activities: [{ type: Schema.Types.ObjectId, ref: "EventLog", required: false }]
 });
 

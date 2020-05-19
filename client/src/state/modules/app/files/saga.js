@@ -5,7 +5,8 @@ import {
   getFilesApi,
   uploadFileApi,
   downloadFileApi,
-  deleteFilesApi
+  deleteFilesApi,
+  updateFileApi
 } from 'helpers/filesApi';
 import { Selectors } from 'state/modules/auth';
 import { getFileById } from 'state/modules/app/files/selector';
@@ -79,11 +80,32 @@ function* deleteFile(action) {
   }
 }
 
+function* updateFile(action) {
+  const { file } = action.payload;
+
+  yield put(Actions.setFile(file));
+  const res = yield updateFileApi(file);
+  if (res.status === API_STATUS_CODE.SUCCESS) {
+    const toast = {
+      message: 'Update file succesfully !',
+      type: TOAST_TYPE.SUCCESS
+    }
+    yield put(showToast(toast));
+  } else {
+    const toast = {
+      message: 'Update file failed !',
+      type: TOAST_TYPE.FAILED
+    }
+    yield put(showToast(toast));
+  }
+}
+
 export default function* filesSaga() {
   yield all([
     takeEvery(Actions.FETCH_FILES, fetchFiles),
     takeEvery(Actions.UPLOAD_FILE_SAGA, uploadFile),
     takeEvery(Actions.DOWNLOAD_FILE_SAGA, downloadFile),
-    takeEvery(Actions.DELETE_FILE_SAGA, deleteFile)
+    takeEvery(Actions.DELETE_FILE_SAGA, deleteFile),
+    takeEvery(Actions.UPDATE_FILE_SAGA, updateFile),
   ])
 }

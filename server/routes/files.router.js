@@ -27,5 +27,10 @@ router
     protectedRoute,
     filesController.delete
   )
+  .put(
+    '/:fileId',
+    protectedRoute,
+    filesController.update
+  )
 
 module.exports = router;

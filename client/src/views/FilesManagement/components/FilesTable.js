@@ -23,11 +23,16 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { GetApp, Visibility as ViewIcon } from '@material-ui/icons';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PeopleIcon from '@material-ui/icons/People';
+import StarIcon from '@material-ui/icons/StarBorder';
+import StarredIcon from '@material-ui/icons/Star';
 
 import { StatusBullet, DeleteConfirmDialog, FileViewer } from 'components';
 
 import { useDispatch } from 'react-redux';
 import { Actions } from 'state/modules/app/files'
+
+import { find } from 'lodash';
+
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -135,7 +140,12 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected, onViewDetail, onDownload, onDetele } = props;
+  const {
+    numSelected,
+    onViewDetail,
+    onDownload,
+    onDetele,
+  } = props;
 
   const handleViewClick = (e) => {
     e.preventDefault();
@@ -152,6 +162,10 @@ const EnhancedTableToolbar = props => {
     onDetele && onDetele();
   }
 
+  // const handleStarClick = (e) => {
+  //   e.preventDefault();
+  //   onStar && onStar();
+  // }
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -229,6 +243,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onDetele: PropTypes.func.isRequired,
   onDownload: PropTypes.func.isRequired,
+  // onStar: PropTypes.func.isRequired,
   onViewDetail: PropTypes.func.isRequired,
 };
 
@@ -261,6 +276,12 @@ const useStyles = makeStyles(theme => ({
   sharedIcon: {
     marginLeft: theme.spacing(1),
     color: 'rgba(0,0,0,0.54)'
+  },
+  starIcon: {
+    color: 'rgba(0,0,0,0.54)',
+  },
+  starredIcon: {
+    color: '#2979ff',
   }
 }));
 
@@ -346,6 +367,11 @@ export default function FilesTable(props) {
     setOpenDelConfirm(true);
   }
 
+  function handleStarFile(fileId) {
+    const file = find(rows, { _id: fileId });
+    selected && dispatch(Actions.updateFileSaga({ ...file, isFavorite: !file.isFavorite }));
+  }
+
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
   return (
@@ -392,11 +418,33 @@ export default function FilesTable(props) {
                         align="left"
                         padding="checkbox"
                       >
-                        <Checkbox
-                          checked={isItemSelected}
-                          color="primary"
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
+                        <div
+                          style={{ display: 'flex' }}
+                        >
+                          <Checkbox
+                            checked={isItemSelected}
+                            color="primary"
+                            inputProps={{ 'aria-labelledby': labelId }}
+                          />
+                          <IconButton
+                            onClick={
+                              (e) => {
+                                e.stopPropagation();
+                                return handleStarFile(row._id);
+                              }}
+                          >
+                            {
+                              row.isFavorite ?
+                                <StarredIcon
+                                  className={classes.starredIcon}
+                                  fontSize="small"
+                                /> :
+                                <StarIcon
+                                  fontSize="small"
+                                />
+                            }
+                          </IconButton>
+                        </div>
                       </TableCell>
                       <TableCell
                         component="th"
@@ -413,6 +461,7 @@ export default function FilesTable(props) {
                             >
                               <PeopleIcon
                                 className={classes.sharedIcon}
+                                fontSize="small"
                               />
                             </Tooltip>
                           }

@@ -40,6 +40,33 @@ module.exports = {
     }
   },
 
+  update: async (req, res, next) => {
+    const fileId = req.params.fileId || null;
+    const file = req.body.file;
+
+    try {
+      const resultFile = await FileStore.findOneAndUpdate({ _id: fileId }, file, { new: true });
+
+      const log = new Log({
+        time: Date.now(),
+        userId: req.user._id,
+        description: `${EVENT_TYPE.UPDATE_FILE} ${file.name}`
+      });
+      log.save();
+
+      return res.status(200).json({
+        status: "SUCCESS",
+        data: {
+          file: resultFile
+        }
+      })
+
+    }
+    catch (err) {
+      next(err)
+    }
+  },
+
   download: async (req, res, next) => {
     try {
       const { fileId } = req.params;
