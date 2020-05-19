@@ -20,7 +20,7 @@ import {
   TableSortLabel
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { Edit as EditIcon, Visibility as ViewIcon, ToggleOff, ToggleOn } from '@material-ui/icons';
+import { Edit as EditIcon, Visibility as ViewIcon, ToggleOff, ToggleOn, People as PeopleIcon } from '@material-ui/icons';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { StatusBullet, DeleteConfirmDialog } from 'components';
 import { Skeleton } from '@material-ui/lab';
@@ -284,12 +284,20 @@ const useStyles = makeStyles(theme => ({
   status: {
     marginRight: theme.spacing(1)
   },
+  nameContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  sharedIcon: {
+    marginLeft: theme.spacing(1),
+    color: 'rgba(0,0,0,0.54)'
+  }
 }));
 
 export default function KeysTable(props) {
   const classes = useStyles();
 
-  const { keys: rows, loading = false } = props;
+  const { keys: rows, loading = false, currentUser } = props;
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -411,7 +419,19 @@ export default function KeysTable(props) {
               padding="none"
               scope="row"
             >
-              {row.alias}
+              <div className={classes.nameContainer}>
+                {row.alias}
+                {
+                  !(currentUser._id === row.owner._id) &&
+                  <Tooltip
+                    title="shared"
+                  >
+                    <PeopleIcon
+                      className={classes.sharedIcon}
+                    />
+                  </Tooltip>
+                }
+              </div>
             </TableCell>
             <TableCell align="left">{row.owner.fullname || '_'}</TableCell>
             <TableCell align="left">{row.description || '_'}</TableCell>
@@ -527,6 +547,7 @@ export default function KeysTable(props) {
 }
 KeysTable.propTypes = {
   className: PropTypes.string,
+  currentUser: PropTypes.object,
   keys: PropTypes.array.isRequired,
   loading: PropTypes.bool
 };

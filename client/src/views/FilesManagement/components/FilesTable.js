@@ -22,9 +22,9 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import { GetApp, Visibility as ViewIcon } from '@material-ui/icons';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import PeopleIcon from '@material-ui/icons/People';
 
 import { StatusBullet, DeleteConfirmDialog, FileViewer } from 'components';
-import moment from 'moment';
 
 import { useDispatch } from 'react-redux';
 import { Actions } from 'state/modules/app/files'
@@ -254,13 +254,21 @@ const useStyles = makeStyles(theme => ({
   status: {
     marginRight: theme.spacing(1)
   },
+  nameContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  sharedIcon: {
+    marginLeft: theme.spacing(1),
+    color: 'rgba(0,0,0,0.54)'
+  }
 }));
 
 export default function FilesTable(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { files: rows } = props;
+  const { files: rows, currentUser } = props;
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -396,7 +404,19 @@ export default function FilesTable(props) {
                         padding="none"
                         scope="row"
                       >
-                        {row.name}
+                        <div className={classes.nameContainer}>
+                          {row.name}
+                          {
+                            !(currentUser._id === row.owner._id) &&
+                            <Tooltip
+                              title="shared"
+                            >
+                              <PeopleIcon
+                                className={classes.sharedIcon}
+                              />
+                            </Tooltip>
+                          }
+                        </div>
                       </TableCell>
                       <TableCell align="left">{row.owner.fullname}</TableCell>
                       <TableCell align="left">
@@ -450,5 +470,6 @@ export default function FilesTable(props) {
 }
 FilesTable.propTypes = {
   className: PropTypes.string,
+  currentUser: PropTypes.object,
   files: PropTypes.array.isRequired
 };

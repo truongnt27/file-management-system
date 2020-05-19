@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { FilesTable, FilesToolbar } from './components';
 import { makeStyles } from '@material-ui/core';
 import { Selectors, Actions } from 'state/modules/app/files';
+import { currentUser as currentUserSelector } from 'state/modules/auth/selector';
 import { Selectors as keySelectors, Actions as keyActions } from 'state/modules/app/keys';
 import { FETCH_USERS, usersSelector } from 'state/modules/app/users/actions';
 
@@ -24,6 +25,8 @@ function FilesManagement() {
   const filesStore = useSelector(Selectors.filesStore);
   const usersStore = useSelector(usersSelector);
   const keysStore = useSelector(keySelectors.keysStore);
+  const currentUser = useSelector(currentUserSelector);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -52,6 +55,7 @@ function FilesManagement() {
     <div className={classes.root} >
       <FilesToolbar onUpload={handleUploadFile} />
       <FilesTable
+        currentUser={currentUser}
         files={files}
       />
     </div>
