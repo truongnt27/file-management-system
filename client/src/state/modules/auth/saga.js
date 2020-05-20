@@ -2,8 +2,8 @@ import { all, put, takeEvery } from 'redux-saga/effects';
 import * as ActionTypes from './actions';
 import { AUTH_PROVIDER, API_STATUS_CODE, TOAST_TYPE } from 'helpers/constant';
 import { authUserSocial, authUserLocal, signOutApi } from 'helpers/authApi';
-import { showToast } from 'state/modules/notification'
-
+import { showToast } from 'state/modules/notification';
+import { RESET } from '../app/index';
 import { push } from 'connected-react-router';
 
 const toast = {
@@ -35,6 +35,7 @@ function* authUser(action) {
 
 function* signout(action) {
   const res = yield signOutApi();
+  yield put({ type: RESET });
   yield put(push('/sign-in'))
 }
 

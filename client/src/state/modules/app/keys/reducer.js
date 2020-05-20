@@ -1,4 +1,5 @@
 import { Status, CREATE_KEY, DELETE_KEY, SET_KEYS, SET_LOADING_KEYS } from './actions';
+import { RESET } from '../../app/index';
 
 const initialState = {
   status: Status.INIT,
@@ -51,6 +52,9 @@ export default function keysReducer(state = initialState, action) {
         ...state,
         status: Status.LOADING,
       }
+    }
+    case RESET: {
+      return initialState;
     }
     default:
       return state;

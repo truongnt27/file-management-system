@@ -2,6 +2,7 @@ export const namespace = 'app';
 
 export const BOOT = 'boot all the stuff needed to start the app';
 export const BOOT_FINISHED = 'boot saga finished';
+export const RESET = 'reset state';
 
 const initialState = {
   isBooting: false,

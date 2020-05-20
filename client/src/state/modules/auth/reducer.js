@@ -1,4 +1,5 @@
 import { Status, AUTH_USER_SUCCESS } from './actions';
+import { RESET } from '../app/index';
 
 const initialState = {
   status: Status.INIT,
@@ -21,6 +22,9 @@ export default function authReducer(state = initialState, action) {
         status: Status.AUTH_SUCCESS,
         user
       }
+    }
+    case RESET: {
+      return initialState;
     }
     default:
       return state;

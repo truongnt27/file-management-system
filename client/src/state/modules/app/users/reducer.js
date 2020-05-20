@@ -1,4 +1,5 @@
 import { Status, SET_USERS, SET_USER } from './actions';
+import { RESET } from '../../app/index';
 
 const initialState = {
   status: Status.INIT,
@@ -35,6 +36,9 @@ export default function usersReducer(state = initialState, action) {
         byId: userObj,
         allIds: Object.keys(userObj)
       }
+    }
+    case RESET: {
+      return initialState;
     }
     default:
       return state;

@@ -4,6 +4,7 @@ import {
   SET_FILE,
   DELETE_FILE
 } from './actions';
+import { RESET } from '../../app/index';
 
 const initialState = {
   status: Status.INIT,
@@ -51,6 +52,9 @@ export default function filesReducer(state = initialState, action) {
         byId: filesObj,
         allIds: Object.keys(filesObj)
       }
+    }
+    case RESET: {
+      return initialState;
     }
     default:
       return state;

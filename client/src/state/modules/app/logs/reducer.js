@@ -1,4 +1,5 @@
 import { Status, SET_LOGS } from './actions';
+import { RESET } from '../../app/index';
 
 const initialState = {
   status: Status.INIT,
@@ -23,6 +24,9 @@ export default function logsReducer(state = initialState, action) {
         byId: logsObj,
         allIds: Object.keys(logsObj)
       }
+    }
+    case RESET: {
+      return initialState;
     }
     default:
       return state;
