@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
+import PropTypes, { oneOfType } from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import PeopleIcon from '@material-ui/icons/PeopleOutlined';
 
-import { useSelector } from 'react-redux';
-import { allIds } from 'state/modules/app/users/actions'
+import { useSelector, useDispatch } from 'react-redux';
+import { usersSelector, FETCH_USERS } from 'state/modules/app/users/actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,10 +43,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TotalUsers = props => {
-  const { className, ...rest } = props;
+export const TotalUsers = props => {
+  const { className, totalUsers, ...rest } = props;
   const classes = useStyles();
-  const totalUsers = useSelector(allIds).length;
 
   return (
     <Card
@@ -96,7 +95,25 @@ const TotalUsers = props => {
 };
 
 TotalUsers.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  totalUsers: oneOfType[PropTypes.string, PropTypes.number]
 };
 
-export default TotalUsers;
+const TotalUsersSmartComponent = () => {
+  const usersStore = useSelector(usersSelector);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    usersStore.status === 'INIT' &&
+      dispatch({ type: FETCH_USERS });
+  }, [usersStore.status])
+
+  const totalUsers = usersStore.allIds.length;
+  return (
+    <TotalUsers
+      totalUsers={totalUsers}
+    />
+  )
+}
+
+export default TotalUsersSmartComponent;

@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
 import { Folder } from '@material-ui/icons';
-import { useSelector } from 'react-redux';
-import { allIds } from 'state/modules/app/files/selector';
+import { useSelector, useDispatch } from 'react-redux';
+import { filesStore as store } from 'state/modules/app/files/selector';
+import { FETCH_FILES } from 'state/modules/app/files/actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,11 +33,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TotalProfit = props => {
-  const { className, ...rest } = props;
+export const TotalFiles = props => {
+  const { className, totalFiles, ...rest } = props;
 
   const classes = useStyles();
-  const totalFiles = useSelector(allIds).length;
 
   return (
     <Card
@@ -75,8 +75,25 @@ const TotalProfit = props => {
   );
 };
 
-TotalProfit.propTypes = {
-  className: PropTypes.string
+TotalFiles.propTypes = {
+  className: PropTypes.string,
+  totalFiles: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
-export default TotalProfit;
+const TotalFilesSmartComponent = () => {
+  const filesStore = useSelector(store);
+
+  const totalFiles = filesStore.allIds.length;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    filesStore.status === 'INIT' && dispatch({ type: FETCH_FILES })
+  }, [filesStore.status])
+
+  return (
+    <TotalFiles
+      totalFiles={totalFiles}
+    />
+  )
+}
+export default TotalFilesSmartComponent;

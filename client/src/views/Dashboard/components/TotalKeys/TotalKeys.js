@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
@@ -6,8 +6,9 @@ import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import VpnKey from '@material-ui/icons/VpnKey';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Selectors } from 'state/modules/app/keys';
+import { FETCH_KEYS } from 'state/modules/app/keys/actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,7 +44,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TotalKeys = props => {
+export const TotalKeys = props => {
   const { className, ...rest } = props;
   const classes = useStyles();
   const totalKeys = useSelector(Selectors.allIds).length;
@@ -99,4 +100,20 @@ TotalKeys.propTypes = {
   className: PropTypes.string
 };
 
-export default TotalKeys;
+const TotalKeysSmartComponent = () => {
+  const keysStore = useSelector(Selectors.keysStore);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    keysStore.status === 'INIT' &&
+      dispatch({ type: FETCH_KEYS });
+  }, [keysStore.status])
+  const totalKeys = keysStore.allIds.length;
+  return (
+    <TotalKeys
+      totalKeys={totalKeys}
+    />
+  )
+}
+
+export default TotalKeysSmartComponent;
