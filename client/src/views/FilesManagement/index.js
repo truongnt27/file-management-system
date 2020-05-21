@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { func, array, object } from 'prop-types';
 import { FilesTable, FilesToolbar } from './components';
 import { makeStyles } from '@material-ui/core';
 import { Selectors, Actions } from 'state/modules/app/files';
@@ -19,9 +19,32 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function FilesManagement() {
+function FilesManagement(props) {
 
   const classes = useStyles();
+  const { files, currentUser, onUploadFile } = props;
+  const handleUploadFile = () => {
+    onUploadFile && onUploadFile();
+  }
+
+  return (
+    <div className={classes.root} >
+      <FilesToolbar onUpload={handleUploadFile} />
+      <FilesTable
+        currentUser={currentUser}
+        files={files}
+      />
+    </div>
+  )
+}
+
+FilesManagement.propTypes = {
+  currentUser: object,
+  files: array.isRequired,
+  onUploadFile: func
+}
+
+const FilesManagementSmartComponent = () => {
   const filesStore = useSelector(Selectors.filesStore);
   const usersStore = useSelector(usersSelector);
   const keysStore = useSelector(keySelectors.keysStore);
@@ -51,20 +74,15 @@ function FilesManagement() {
     }
 
   }
+
   return (
-    <div className={classes.root} >
-      <FilesToolbar onUpload={handleUploadFile} />
-      <FilesTable
-        currentUser={currentUser}
-        files={files}
-      />
-    </div>
+    <FilesManagement
+      currentUser={currentUser}
+      files={files}
+      onUploadFile={handleUploadFile}
+    />
   )
 }
 
-FilesManagement.propTypes = {
-
-}
-
-export default FilesManagement
+export default FilesManagementSmartComponent;
 
