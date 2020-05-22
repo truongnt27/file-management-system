@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
@@ -29,13 +29,20 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FilesToolbar = props => {
-  const { className, onUpload, ...rest } = props;
-
+  const { className, onUpload, onSearch, ...rest } = props;
+  const [searchString, setSearchString] = useState('');
   const classes = useStyles();
 
   const handleClickUpload = () => {
     onUpload && onUpload();
   }
+
+  const handleChange = (e) => {
+    e.persist();
+    onSearch && onSearch(e.target.value);
+    setSearchString(e.target.value);
+  }
+
   return (
     <div
       {...rest}
@@ -54,7 +61,9 @@ const FilesToolbar = props => {
       <div className={classes.row}>
         <SearchInput
           className={classes.searchInput}
+          onChange={handleChange}
           placeholder="Search file"
+          value={searchString}
         />
       </div>
     </div>
@@ -63,6 +72,7 @@ const FilesToolbar = props => {
 
 FilesToolbar.propTypes = {
   className: PropTypes.string,
+  onSearch: PropTypes.func,
   onUpload: PropTypes.func
 };
 

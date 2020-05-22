@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { func, array, object } from 'prop-types';
 import { FilesTable, FilesToolbar } from './components';
 import { makeStyles } from '@material-ui/core';
@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
 import { showToast } from 'state/modules/notification';
 import { TOAST_TYPE } from 'helpers/constant';
+import { searchStringFromArr } from 'helpers/utils';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,16 +24,30 @@ function FilesManagement(props) {
 
   const classes = useStyles();
   const { files, currentUser, onUploadFile } = props;
+  const [filetoDisplay, setFiletoDisplay] = useState(files);
+
   const handleUploadFile = () => {
     onUploadFile && onUploadFile();
   }
 
+  const handleSearch = (searchString) => {
+    const filesDisplay = searchStringFromArr(files, ['name', 'owner.fullname'], searchString);
+    setFiletoDisplay(filesDisplay);
+  }
+
+  useEffect(() => {
+    setFiletoDisplay(files);
+  }, [files])
+
   return (
     <div className={classes.root} >
-      <FilesToolbar onUpload={handleUploadFile} />
+      <FilesToolbar
+        onSearch={handleSearch}
+        onUpload={handleUploadFile}
+      />
       <FilesTable
         currentUser={currentUser}
-        files={files}
+        files={filetoDisplay}
       />
     </div>
   )
@@ -76,6 +91,7 @@ const FilesManagementSmartComponent = () => {
   }
 
   return (
+    keysStore.status === 'LOADED' &&
     <FilesManagement
       currentUser={currentUser}
       files={files}
