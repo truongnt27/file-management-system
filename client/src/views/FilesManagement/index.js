@@ -8,10 +8,8 @@ import { Selectors as keySelectors, Actions as keyActions } from 'state/modules/
 import { FETCH_USERS, usersSelector } from 'state/modules/app/users/actions';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { push } from 'connected-react-router';
-import { showToast } from 'state/modules/notification';
-import { TOAST_TYPE } from 'helpers/constant';
 import { searchStringFromArr } from 'helpers/utils';
+import { uploadFile } from 'state/modules/app/files/actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,8 +24,8 @@ function FilesManagement(props) {
   const { files, currentUser, onUploadFile } = props;
   const [filetoDisplay, setFiletoDisplay] = useState(files);
 
-  const handleUploadFile = () => {
-    onUploadFile && onUploadFile();
+  const handleUploadFile = (file) => {
+    onUploadFile && onUploadFile(file);
   }
 
   const handleSearch = (searchString) => {
@@ -75,19 +73,8 @@ const FilesManagementSmartComponent = () => {
 
   const files = Object.values(filesStore.byId);
 
-  const handleUploadFile = () => {
-    const allKey = keysStore.allIds || [];
-    if (allKey.length > 0) {
-      dispatch(push('/files/upload'))
-    }
-    else {
-      const toast = {
-        message: 'You need create a key',
-        type: TOAST_TYPE.WARNING
-      }
-      dispatch(showToast(toast))
-    }
-
+  const handleUploadFile = (file) => {
+    dispatch(uploadFile(file));
   }
 
   return (

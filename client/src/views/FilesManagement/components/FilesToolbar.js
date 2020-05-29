@@ -25,6 +25,9 @@ const useStyles = makeStyles(theme => ({
   },
   searchInput: {
     marginRight: theme.spacing(1)
+  },
+  inputFile: {
+    display: 'none'
   }
 }));
 
@@ -33,14 +36,14 @@ const FilesToolbar = props => {
   const [searchString, setSearchString] = useState('');
   const classes = useStyles();
 
-  const handleClickUpload = () => {
-    onUpload && onUpload();
-  }
-
   const handleChange = (e) => {
     e.persist();
     onSearch && onSearch(e.target.value);
     setSearchString(e.target.value);
+  }
+
+  const handleInputChange = (e) => {
+    onUpload && onUpload(e.target.files[0]);
   }
 
   return (
@@ -50,13 +53,23 @@ const FilesToolbar = props => {
     >
       <div className={classes.row}>
         <span className={classes.spacer} />
-        <Button
-          color="primary"
-          onClick={handleClickUpload}
-          variant="contained"
-        >
-          Upload file
-        </Button>
+        <input
+          className={classes.inputFile}
+          id="contained-button-file"
+          multiple
+          name="file"
+          onChange={handleInputChange}
+          type="file"
+        />
+        <label htmlFor="contained-button-file">
+          <Button
+            color="primary"
+            component="span"
+            variant="contained"
+          >
+            Upload file
+          </Button>
+        </label>
       </div>
       <div className={classes.row}>
         <SearchInput

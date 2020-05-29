@@ -20,11 +20,10 @@ export const SET_FILES = `${namespace}/SET_FILES`;
 
 export const UPDATE_FILE_SAGA = `${namespace}/UPDATE_FILE_SAGA`;
 
-export const uploadFile = (file: File, keyId) => ({
+export const uploadFile = (file: File) => ({
   type: UPLOAD_FILE_SAGA,
   payload: {
-    file,
-    keyId
+    file
   }
 })
 

@@ -8,18 +8,15 @@ import {
   deleteFilesApi,
   updateFileApi
 } from 'helpers/filesApi';
-import { Selectors } from 'state/modules/auth';
+
 import { getFileById } from 'state/modules/app/files/selector';
 import { push } from 'connected-react-router';
 import { saveAs } from 'file-saver';
 import { showToast } from 'state/modules/notification';
 
 function* uploadFile(action) {
-  const { file, keyId } = action.payload;
-  const currentUser = yield select(Selectors.currentUser);
-  const userId = currentUser._id;
-
-  const res = yield uploadFileApi(file, keyId, userId);
+  const { file } = action.payload;
+  const res = yield uploadFileApi(file);
 
   if (res.status === API_STATUS_CODE.SUCCESS) {
     yield put(Actions.setFile(res.data.file));

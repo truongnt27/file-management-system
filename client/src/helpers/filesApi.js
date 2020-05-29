@@ -1,9 +1,7 @@
 import apiCaller from './apiCaller';
 
-export const uploadFileApi = (file, keyId, userId) => {
+export const uploadFileApi = (file) => {
   const formData = new FormData();
-  formData.append('keyId', keyId);
-  formData.append('owner', userId);
   formData.append('file', file);
 
   return apiCaller.post('/files', formData, {
