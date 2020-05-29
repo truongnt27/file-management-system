@@ -34,7 +34,6 @@ module.exports = {
     ROTATE_KEY: 'ROTATE KEY',
     UPLOAD_FILE: 'UPLOAD FILE',
     DOWNLOAD_FILE: 'DOWNLOAD FILE',
-    ENCRYPT_FILE: 'ENCRYPT FILE',
     DEL_FILE: 'DEL FILE',
     UPDATE_FILE: 'UPDATE_FILE'
   },
@@ -55,4 +54,15 @@ module.exports = {
       second: 1000 * 60 * 60 * 24 * 365
     }
   ],
+  FILE_TYPES: {
+    mp3: "Audio",
+    mp4: "Video",
+    png: "Image",
+    jpg: "Image",
+    jpeg: "Image",
+    gif: "Image",
+    doc: "Word",
+    docx: "Word",
+    xlsx: "Excel",
+  }
 }
