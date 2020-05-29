@@ -4,30 +4,17 @@ const UserStore = require('../models/userStore');
 const Log = require('../models/eventLog');
 const Encryptor = require('../helpers/encryptFile');
 const { encryptFile, decryptFile } = Encryptor;
-const { deleteFile } = require('../helpers/fileHelper')
-const { EVENT_TYPE } = require('../helpers/constant');
+const { deleteFile } = require('../helpers/fileHelper');
+const { generateKey } = require('../helpers/keyHelper');
+const { EVENT_TYPE, FILE_TYPES } = require('../helpers/constant');
 
 const { isEmpty, unionBy } = require('lodash');
 
 module.exports = {
   get: async (req, res, next) => {
     try {
-      const { keyList } = req.user || [];
-      let totalFiles = [];
-      const keys = await KeyStore
-        .find({ _id: { $in: keyList } })
-        .populate({
-          path: 'files',
-          populate: [
-            { path: 'owner', select: 'fullname' },
-            { path: 'keyId', select: 'alias' },
-            { path: 'activities', populate: { path: 'userId', select: 'fullname avatarPicture' } }
-          ]
-        });
-
-      keys.forEach(key => {
-        totalFiles = unionBy(totalFiles, key.files, '_id')
-      })
+      const { files } = req.user || [];
+      const totalFiles = FileStore.find();
       return res.status(200).json({
         status: "SUCCESS",
         data: {
@@ -105,38 +92,47 @@ module.exports = {
   store: async (req, res, next) => {
     try {
       const owner = req.user._id;
-      const { keyId } = req.body || null;
       const file = req.file || null;
 
-      if (isEmpty(keyId) || isEmpty(file)) {
+      if (isEmpty(file)) {
         return res.status(400).json({
           status: "FAILED",
           message: "Missing files info"
         })
       }
-
+      const now = Date.now();
       const log1 = new Log({
-        time: Date.now(),
+        time: now,
         userId: req.user._id,
         description: `${EVENT_TYPE.UPLOAD_FILE} ${file.originalname}`
       });
 
       const logged = await log1.save();
+      const { createdDate, plaintext } = generateKey();
+
+      const key = new KeyStore({
+        createdDate,
+        plaintext,
+        lastRotation: now
+      })
+      const savedKey = await key.save();
+
+      const extend = file.originalname.split('.').pop();
+      const type = FILE_TYPES[extend] || extend;
 
       const fileStore = new FileStore({
         name: file.originalname,
         owner,
-        keyId,
+        keyId: savedKey._id,
         size: file.size,
-        activities: [logged._id]
+        activities: [logged._id],
+        type
       })
 
       const result = await fileStore.save();
-      const key = await KeyStore.findOneAndUpdate({ _id: keyId }, { $push: { files: result._id } }).populate('cryptoKeyId');
-      const { cryptoKeyId } = key;
 
-      encryptFile(`./public/uploads/${owner}/${req.file.originalname}`, cryptoKeyId.plaintext);
-      await FileStore.populate(result, { path: 'owner', select: 'fullname' })
+      encryptFile(`./public/uploads/${owner}/${req.file.originalname}`, plaintext);
+      await FileStore.populate(result, { path: 'owner', select: 'fullname' });
       return res.status(200).json({
         status: 'SUCCESS',
         message: 'File saved',
