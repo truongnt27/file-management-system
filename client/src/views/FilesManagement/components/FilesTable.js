@@ -186,7 +186,7 @@ const EnhancedTableToolbar = props => {
               id="tableTitle"
               variant="h6"
             >
-              All keys
+              All files
             </Typography>
           )}
       </div>
