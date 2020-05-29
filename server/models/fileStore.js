@@ -9,7 +9,11 @@ const schema = new Schema({
   keyId: { type: Schema.Types.ObjectId, ref: 'KeyStore', required: true },
   size: { type: String, required: true },
   isFavorite: { type: Boolean, required: true, default: false },
-  activities: [{ type: Schema.Types.ObjectId, ref: "EventLog", required: false }]
+  activities: [{ type: Schema.Types.ObjectId, ref: "EventLog", required: false }],
+  type: { type: String, required: true },
+  description: { type: String, required: false },
+  viewers: { type: Array, required: true, default: [] },
+  editors: { type: Array, required: true, default: [] }
 });
 
 module.exports = mongoose.model("FileStore", schema);
