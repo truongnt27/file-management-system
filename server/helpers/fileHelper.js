@@ -4,9 +4,11 @@ const path = require('path');
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    const { owner = null } = req.body;
+    const owner = req.user._id;
     const dir = `./public/uploads/${owner}`;
-
+    if (!owner) {
+      callback(new Error('Owner field is required'), dir)
+    }
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
