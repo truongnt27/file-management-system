@@ -14,7 +14,7 @@ module.exports = {
   get: async (req, res, next) => {
     try {
       const { files } = req.user || [];
-      const totalFiles = FileStore.find();
+      const totalFiles = await FileStore.find().populate({ path: 'owner', select: 'fullname' });
       return res.status(200).json({
         status: "SUCCESS",
         data: {
