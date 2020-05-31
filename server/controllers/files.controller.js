@@ -16,6 +16,7 @@ module.exports = {
       const { files } = req.user || [];
       const totalFiles = await FileStore.find()
         .populate({ path: 'owner', select: 'fullname email avatarPicture' })
+        .populate({ path: 'activities', populate: { path: 'userId', select: 'fullname avatarPicture' } })
         .populate({ path: 'viewers', select: 'fullname email avatarPicture' })
         .populate({ path: 'editors', select: 'fullname email avatarPicture' });
       return res.status(200).json({
@@ -37,6 +38,7 @@ module.exports = {
     try {
       const resultFile = await FileStore.findOneAndUpdate({ _id: fileId }, file, { new: true })
         .populate({ path: 'owner', select: 'fullname email avatarPicture' })
+        .populate({ path: 'activities', populate: { path: 'userId', select: 'fullname avatarPicture' } })
         .populate({ path: 'viewers', select: 'fullname email avatarPicture' })
         .populate({ path: 'editors', select: 'fullname email avatarPicture' });
 
