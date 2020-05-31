@@ -26,30 +26,34 @@ const Dashboard = () => {
       >
         <Grid
           item
-          lg={4}
-          sm={6}
-          xl={3}
-          xs={12}
-        >
-          <TotalUsers />
-        </Grid>
-        <Grid
-          item
-          lg={4}
-          sm={6}
-          xl={3}
-          xs={12}
-        >
-          <TotalFiles />
-        </Grid>
-        <Grid
-          item
           lg={8}
-          md={6}
-          xl={6}
-          xs={12}
         >
-          <LatestFiles />
+          <Grid
+            container
+            spacing={4}
+          >
+            <Grid
+              item
+              lg={6}
+              xs={12}
+            >
+              <TotalUsers />
+            </Grid>
+            <Grid
+              item
+              lg={6}
+              xs={12}
+            >
+              <TotalFiles />
+            </Grid>
+            <Grid
+              item
+              lg={12}
+              xs={12}
+            >
+              <LatestFiles />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid
           item
