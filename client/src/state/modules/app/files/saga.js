@@ -80,9 +80,9 @@ function* deleteFile(action) {
 function* updateFile(action) {
   const { file } = action.payload;
 
-  yield put(Actions.setFile(file));
   const res = yield updateFileApi(file);
   if (res.status === API_STATUS_CODE.SUCCESS) {
+    yield put(Actions.setFile(res.data.file));
     const toast = {
       message: 'Update file succesfully !',
       type: TOAST_TYPE.SUCCESS

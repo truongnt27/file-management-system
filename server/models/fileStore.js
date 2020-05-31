@@ -12,8 +12,8 @@ const schema = new Schema({
   activities: [{ type: Schema.Types.ObjectId, ref: "EventLog", required: false }],
   type: { type: String, required: true },
   description: { type: String, required: false },
-  viewers: { type: Array, required: true, default: [] },
-  editors: { type: Array, required: true, default: [] }
+  viewers: [{ type: Schema.Types.ObjectId, ref: 'UserStore' }],
+  editors: [{ type: Schema.Types.ObjectId, ref: 'UserStore' }]
 });
 
 module.exports = mongoose.model("FileStore", schema);

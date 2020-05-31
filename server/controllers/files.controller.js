@@ -14,7 +14,10 @@ module.exports = {
   get: async (req, res, next) => {
     try {
       const { files } = req.user || [];
-      const totalFiles = await FileStore.find().populate({ path: 'owner', select: 'fullname' });
+      const totalFiles = await FileStore.find()
+        .populate({ path: 'owner', select: 'fullname email avatarPicture' })
+        .populate({ path: 'viewers', select: 'fullname email avatarPicture' })
+        .populate({ path: 'editors', select: 'fullname email avatarPicture' });
       return res.status(200).json({
         status: "SUCCESS",
         data: {
@@ -32,7 +35,10 @@ module.exports = {
     const file = req.body.file;
 
     try {
-      const resultFile = await FileStore.findOneAndUpdate({ _id: fileId }, file, { new: true });
+      const resultFile = await FileStore.findOneAndUpdate({ _id: fileId }, file, { new: true })
+        .populate({ path: 'owner', select: 'fullname email avatarPicture' })
+        .populate({ path: 'viewers', select: 'fullname email avatarPicture' })
+        .populate({ path: 'editors', select: 'fullname email avatarPicture' });
 
       const log = new Log({
         time: Date.now(),

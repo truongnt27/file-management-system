@@ -20,13 +20,13 @@ import {
   TableSortLabel
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { GetApp, Visibility as ViewIcon } from '@material-ui/icons';
+import { GetApp, Visibility as ViewIcon, PersonAdd } from '@material-ui/icons';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PeopleIcon from '@material-ui/icons/People';
 import StarIcon from '@material-ui/icons/StarBorder';
 import StarredIcon from '@material-ui/icons/Star';
 
-import { StatusBullet, DeleteConfirmDialog, FileViewer } from 'components';
+import { StatusBullet, DeleteConfirmDialog, FileViewer, SharingDialog } from 'components';
 
 import { useDispatch } from 'react-redux';
 import { Actions } from 'state/modules/app/files'
@@ -145,6 +145,7 @@ const EnhancedTableToolbar = props => {
     onViewDetail,
     onDownload,
     onDetele,
+    onShare
   } = props;
 
   const handleViewClick = (e) => {
@@ -160,6 +161,11 @@ const EnhancedTableToolbar = props => {
   const handleDeleteClick = (e) => {
     e.preventDefault();
     onDetele && onDetele();
+  }
+
+  const handleShareClick = (e) => {
+    e.preventDefault();
+    onShare && onShare();
   }
 
   // const handleStarClick = (e) => {
@@ -198,6 +204,14 @@ const EnhancedTableToolbar = props => {
               numSelected === 1 &&
               (
                 <>
+                  <Tooltip title="Share file">
+                    <IconButton
+                      aria-label="Share file"
+                      onClick={handleShareClick}
+                    >
+                      <PersonAdd />
+                    </IconButton>
+                  </Tooltip>
                   <Tooltip title="View detail">
                     <IconButton
                       aria-label="View detail"
@@ -244,6 +258,7 @@ EnhancedTableToolbar.propTypes = {
   onDetele: PropTypes.func.isRequired,
   onDownload: PropTypes.func.isRequired,
   // onStar: PropTypes.func.isRequired,
+  onShare: PropTypes.func.isRequired,
   onViewDetail: PropTypes.func.isRequired,
 };
 
@@ -297,6 +312,7 @@ export default function FilesTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [openFileDetail, setOpenFileDetail] = React.useState(false);
   const [openDelConfirm, setOpenDelConfirm] = React.useState(false);
+  const [openSharingDialog, setOpenSharingDialog] = React.useState(false);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -372,6 +388,14 @@ export default function FilesTable(props) {
     selected && dispatch(Actions.updateFileSaga({ ...file, isFavorite: !file.isFavorite }));
   }
 
+  function hanldeCloseSharingDialog() {
+    setOpenSharingDialog(false);
+  }
+
+  function hanldeOpenSharingDialog() {
+    setOpenSharingDialog(true);
+  }
+
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
   return (
@@ -381,6 +405,7 @@ export default function FilesTable(props) {
           numSelected={selected.length}
           onDetele={handleDeleteFileClick}
           onDownload={downloadFile}
+          onShare={hanldeOpenSharingDialog}
           onViewDetail={hanleOpenFileDetail}
         />
         <div className={classes.tableWrapper}>
@@ -467,7 +492,7 @@ export default function FilesTable(props) {
                           }
                         </div>
                       </TableCell>
-                      <TableCell align="left">{row.owner.fullname}</TableCell>
+                      <TableCell align="left">{(currentUser._id === row.owner._id) ? 'You' : row.owner.fullname}</TableCell>
                       <TableCell align="left">
                         <div className={classes.statusContainer}>
                           <StatusBullet
@@ -508,6 +533,11 @@ export default function FilesTable(props) {
         onClose={handleCloseDelConfirm}
         onDelete={handleDeleteFile}
         open={openDelConfirm}
+      />
+      <SharingDialog
+        fileId={selected}
+        onClose={hanldeCloseSharingDialog}
+        open={openSharingDialog}
       />
       <FileViewer
         fileId={selected}
