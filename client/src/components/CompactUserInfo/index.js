@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 const CompactUserInfo = (props) => {
   const classes = useStyles();
   const { fullname, profileImage, avatarSize, avatarFontSize } = props;
-  const { displayName, backgroundColor } = useMemo(() => genAvataImg(fullname), fullname);
+  const { displayName, backgroundColor } = useMemo(() => genAvataImg(fullname), [fullname]);
 
   const avatarStyle = {
     width: avatarSize,
