@@ -5,7 +5,6 @@ import {
   Typography,
   makeStyles,
   Grid,
-  Chip,
   Avatar,
   Tooltip,
   Divider,
@@ -17,13 +16,11 @@ import {
   ListItemText
 } from '@material-ui/core'
 
-import { Person, VpnKey } from '@material-ui/icons'
-import { Actions, Selectors } from 'state/modules/app/keys';
-import { Selectors as keysSelector } from 'state/modules/app/files';
-import { FETCH_USERS, usersSelector } from 'state/modules/app/users/actions';
+import { getFileById } from 'state/modules/app/files/selector';
+// import { FETCH_USERS, usersSelector } from 'state/modules/app/users/actions';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { isEmpty, get } from 'lodash';
+import { isEmpty } from 'lodash';
 import genAvataImg from 'helpers/genAvataImg';
 import moment from 'moment';
 
@@ -35,18 +32,26 @@ const useStyle = makeStyles(theme => ({
     padding: theme.spacing(2),
     minWidth: '450px'
   },
-  icons: {
-    verticalAlign: 'middle'
-  },
-  chips: {
+  avatarItem: {
     marginRight: theme.spacing(1)
+  },
+  userAccess: {
+    display: 'flex'
+  },
+  verticalDivider: {
+    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+    width: '1px',
+    margin: '0 4px 0 4px'
   }
 }))
 
 export function FileViewer(props) {
-  const { file, sharedUsers, open } = props;
+  const { file, open } = props;
   const classes = useStyle();
-  const { owner } = file || '';
+  const { owner, viewers, editors } = file;
+  const updateViewers = viewers.map(user => ({ ...user, role: 'viewers' }));
+  const updateEditors = editors.map(user => ({ ...user, role: 'editors' }));
+  const accessUsers = [...updateEditors, ...updateViewers];
 
   const [value, setValue] = React.useState(0);
   function handleChange(event, newValue) {
@@ -105,13 +110,54 @@ export function FileViewer(props) {
         <Grid
           item
         >
+          <div className={classes.userAccess}>
+            <Tooltip
+              title={`${owner.fullname} is owner`}
+            >
+              <Avatar
+                src={owner.avatarPicture}
+              >
+                {genAvataImg(owner.fullname).displayName}
+              </Avatar>
+            </Tooltip>
+            <hr className={classes.verticalDivider} />
+            {accessUsers.map(user => {
+              const { displayName } = genAvataImg(user.fullname);
+              const title = `${user.fullname} can ${user.role === 'editors' ? 'edit' : 'view'}`
+              return (
+                <Tooltip
+                  title={title}
+                >
+                  <Avatar
+                    className={classes.avatarItem}
+                    src={user.avatarPicture}
+                  >
+                    {displayName}
+                  </Avatar>
+                </Tooltip>
+              )
+            })}
+          </div>
+        </Grid>
+        <Grid
+          item
+        >
           <Typography
             component="span"
             variant="body1"
           >
             <strong>Owner:</strong> {owner.fullname}
           </Typography>
-          <Person className={classes.icons} />
+        </Grid>
+        <Grid
+          item
+        >
+          <Typography
+            component="span"
+            variant="body1"
+          >
+            <strong>Type:</strong> {file.type}
+          </Typography>
         </Grid>
         <Grid
           item
@@ -140,7 +186,7 @@ export function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Last access:</strong>
+            <strong>Last modified:</strong>
           </Typography>
         </Grid>
         <Grid
@@ -150,12 +196,8 @@ export function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Protected by:</strong> {file.keyId.alias}
+            <strong>Creation date:</strong> {file.creationDate}
           </Typography>
-          <VpnKey
-            className={classes.icons}
-            style={{ color: 'green' }}
-          />
         </Grid>
         <Grid
           item
@@ -164,34 +206,8 @@ export function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Shared with:</strong>
+            <strong>Description:</strong> {file.creationDate ? file.creationDate : ' No description'}
           </Typography>
-        </Grid>
-        <Grid item>
-          {
-            sharedUsers.map(user => {
-              const { displayName } = genAvataImg(user.fullname);
-              return (
-                <Tooltip
-                  title={user.email}
-                >
-                  <Chip
-                    avatar={(
-                      <Avatar
-                        src={user.avatarPicture}
-                      >
-                        {displayName}
-                      </Avatar>)}
-
-                    className={classes.chips}
-                    color="primary"
-                    label={user.fullname}
-                    variant="outlined"
-                  />
-                </Tooltip>
-              )
-            })
-          }
         </Grid>
       </>
     )
@@ -235,43 +251,24 @@ export function FileViewer(props) {
 FileViewer.propTypes = {
   file: PropTypes.object.isRequired,
   onClose: PropTypes.func,
+  open: PropTypes.bool,
   sharedUsers: PropTypes.array.isRequired
 }
 
 const FileViewerSmartComponent = (props) => {
-  const keysStore = useSelector(Selectors.keysStore);
-  const usersStore = useSelector(usersSelector);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    (keysStore.status !== 'LOADED') && dispatch({ type: Actions.FETCH_KEYS });
-    (usersStore.status !== 'LOADED') && dispatch({ type: FETCH_USERS });
-  }, [keysStore.status, usersStore.status])
-
+  //const dispatch = useDispatch();
   const { fileId, open = false, onClose } = props;
-  const file = useSelector(state => keysSelector.getFileById(state)(fileId));
-  const keyId = get(file, 'keyId._id', '');
-  const keyData = useSelector(state => Selectors.getKeyById(state, keyId));
-
-  if (isEmpty(file) || isEmpty(keyData)) {
-    return null;
-  }
-
-  const { permissions = {} } = keyData;
-
-  const selectedUsers = Object.keys(permissions).map(userId => get(usersStore, ['byId', userId], ''));
-  const sharedUsers = selectedUsers.filter(user => user._id !== file.owner._id);
-
+  const file = useSelector(state => getFileById(state)(fileId));
   const handleClose = () => {
     onClose && onClose();
   }
 
   return (
+    !isEmpty(file) &&
     <FileViewer
       file={file}
       onClose={handleClose}
       open={open}
-      sharedUsers={sharedUsers}
     />
   )
 }
