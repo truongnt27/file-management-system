@@ -371,6 +371,7 @@ export default function FilesTable(props) {
   }
 
   function handleDeleteFile() {
+    setOpenDelConfirm(false);
     selected && dispatch(Actions.deleteFileSaga(selected));
     setSelected([]);
   }
