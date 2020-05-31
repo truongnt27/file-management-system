@@ -9,16 +9,12 @@ import {
   Logs as LogsView,
   SignIn as SignInView,
   SignUp as SignUpView,
-  KeyList as KeyListView,
   Account as AccountView,
   FilesManagement as FilesManagementView,
   UserList as UserListView,
   Dashboard as DashboardView
 } from './views';
 
-import { CreateKey as CreateKeyView } from './views/KeyList/components';
-import { EditKey as EditKeyView } from './views/KeyList/components';
-import { FileUpload as FilesUploadView } from './views/FilesManagement/components';
 import { boot } from 'state/modules/app';
 
 const Routes = () => {
@@ -57,13 +53,6 @@ const Routes = () => {
         requireAuth
       />
       <RouteWithLayout
-        component={FilesUploadView}
-        exact
-        layout={MainLayout}
-        path="/files/upload"
-        requireAuth
-      />
-      <RouteWithLayout
         component={LogsView}
         exact
         layout={MainLayout}
@@ -77,27 +66,6 @@ const Routes = () => {
         layout={MainLayout}
         path="/users"
         requireAccess={['Manager', 'Admin']}
-        requireAuth
-      />
-      <RouteWithLayout
-        component={KeyListView}
-        exact
-        layout={MainLayout}
-        path="/keys"
-        requireAuth
-      />
-      <RouteWithLayout
-        component={EditKeyView}
-        exact
-        layout={MainLayout}
-        path="/keys/:keyId/edit"
-        requireAuth
-      />
-      <RouteWithLayout
-        component={CreateKeyView}
-        exact
-        layout={MainLayout}
-        path="/keys/create"
         requireAuth
       />
       <RouteWithLayout

@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 
 import {
-  TotalKeys,
   TotalUsers,
   TotalFiles,
   LatestActivities,
@@ -25,15 +24,6 @@ const Dashboard = () => {
         container
         spacing={4}
       >
-        <Grid
-          item
-          lg={4}
-          sm={6}
-          xl={3}
-          xs={12}
-        >
-          <TotalKeys />
-        </Grid>
         <Grid
           item
           lg={4}

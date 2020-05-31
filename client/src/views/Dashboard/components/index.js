@@ -1,4 +1,3 @@
-export { default as TotalKeys } from './TotalKeys';
 export { default as LatestFiles } from './LatestFiles';
 export { default as LatestActivities } from './LatestActivities';
 export { default as TasksProgress } from './TasksProgress';

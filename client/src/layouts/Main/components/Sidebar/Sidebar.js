@@ -52,11 +52,6 @@ const allPages = [
     icon: <FolderOpenIcon />
   },
   {
-    title: 'Manage keys',
-    href: '/keys',
-    icon: <VpnKeyIcon />
-  },
-  {
     title: 'All users',
     href: '/users',
     icon: < UsersIcon />,
