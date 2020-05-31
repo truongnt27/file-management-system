@@ -13,9 +13,7 @@ mongoose.connect("mongodb://localhost:27017/keymanagementsys");
 
 const authRouter = require("./routes/authen.router");
 const usersRouter = require("./routes/users.router");
-const keysRouter = require("./routes/keys.router");
 const filesRouter = require("./routes/files.router");
-const cryptoRouter = require("./routes/crypto.router");
 const logsRouter = require("./routes/logs.router");
 const app = express();
 
@@ -52,12 +50,9 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/users", usersRouter);
-
-app.use("/api/keys", keysRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/files", filesRouter);
 app.use("/api/logs", logsRouter);
-// app.use("/api/crypto", cryptoRouter);
 
 
 // catch 404 and forward to error handler
