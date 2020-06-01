@@ -65,10 +65,23 @@ module.exports = {
   download: async (req, res, next) => {
     try {
       const { fileId } = req.params;
-      const file = await FileStore.findOne({ _id: fileId }).populate({ path: 'keyId', select: 'status', populate: { path: 'cryptoKeyId' } });
-      const { owner, name, keyId } = file;
+      const { currentUserId } = req.user._id;
+
+      const file = await FileStore.findOne({ _id: fileId }).populate('keyId');
+      const { status, owner, editors = [], viewers = [], name, keyId } = file;
+      if (
+        owner !== currentUserId &&
+        editors.indexOf(currentUserId) !== -1 &&
+        viewers.indexOf(currentUserId) !== -1
+      ) {
+        return res.status(403).json({
+          status: "FAILED",
+          message: "Access denied"
+        })
+      }
+
       const dir = `${owner}/${name}.enc`;
-      const { status, cryptoKeyId } = keyId;
+      const { plaintext } = keyId;
 
       if (status !== "ENABLE") {
         return res.status(400).json({
@@ -76,8 +89,7 @@ module.exports = {
           message: "File is unavailable"
         })
       }
-      const key = cryptoKeyId.plaintext;
-      const fileStream = decryptFile(`./public/uploads/${dir}`, key);
+      const fileStream = decryptFile(`./public/uploads/${dir}`, plaintext);
 
       fileStream.on('error', err => {
         return next(err);
