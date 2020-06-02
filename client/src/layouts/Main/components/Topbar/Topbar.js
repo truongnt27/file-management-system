@@ -3,13 +3,20 @@ import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { AppBar, Toolbar, Badge, Hidden, IconButton } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Badge,
+  Hidden,
+  IconButton,
+  Popover
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
+import { BaseList } from 'components';
 
-import { useDispatch } from 'react-redux';
-import { SIGN_OUT } from 'state/modules/auth/actions';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,16 +31,37 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Topbar = props => {
-  const { className, onSidebarOpen, ...rest } = props;
-
+  const { className, onSidebarOpen, notifications, onSignout, ...rest } = props;
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const [notifications] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleSignOut = () => {
-    dispatch({ type: SIGN_OUT });
+    onSignout && onSignout();
   }
-
+  const { displayNotifications, totalUnread } = notifications.reduce((acc, item) => {
+    const { sender = {}, message = '', isRead, creationDate } = item;
+    const avatarPicture = sender.avatarPicture || '';
+    const primary = `${sender.fullname || ''} ${message}`;
+    const secondary = moment(creationDate).fromNow();
+    if (!isRead) acc.totalUnread++;
+    acc.displayNotifications.push({
+      avatarPicture,
+      primary,
+      secondary
+    })
+    return acc;
+  }, {
+    totalUnread: 0,
+    displayNotifications: []
+  })
   return (
     <AppBar
       {...rest}
@@ -48,11 +76,13 @@ const Topbar = props => {
         </RouterLink>
         <div className={classes.flexGrow} />
         <Hidden mdDown>
-          <IconButton color="inherit">
+          <IconButton
+            color="inherit"
+            onClick={handlePopoverOpen}
+          >
             <Badge
-              badgeContent={notifications.length}
-              color="primary"
-              variant="dot"
+              badgeContent={totalUnread}
+              color="error"
             >
               <NotificationsIcon />
             </Badge>
@@ -72,6 +102,26 @@ const Topbar = props => {
             <MenuIcon />
           </IconButton>
         </Hidden>
+        {
+          notifications.length > 0 &&
+          <Popover
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            onClose={handlePopoverClose}
+            open={Boolean(anchorEl)}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <BaseList
+              list={displayNotifications}
+            />
+          </Popover>
+        }
       </Toolbar>
     </AppBar>
   );
@@ -79,7 +129,9 @@ const Topbar = props => {
 
 Topbar.propTypes = {
   className: PropTypes.string,
-  onSidebarOpen: PropTypes.func
+  notifications: PropTypes.array,
+  onSidebarOpen: PropTypes.func,
+  onSignout: PropTypes.func
 };
 
 export default Topbar;

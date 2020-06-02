@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { cloneDeep, isEmpty } from 'lodash';
+import { createNotificationSaga } from 'state/modules/notification';
 
 const useStyles = makeStyles((theme) => ({
   userAccessItem: {
@@ -83,7 +84,7 @@ export function SharingDialog(props) {
     const userIds = newFile[selectedRole].map(user => user._id);
     newFile[selectedRole] = [...userIds, ...selectedUsers];
 
-    onChange && onChange(newFile);
+    onChange && onChange(newFile, { type: 'sharing', userIds: selectedUsers });
     onClose && onClose();
   }
 
@@ -185,8 +186,16 @@ const SharingDialogSmartComponent = ({ fileId, open, onClose }) => {
   const usersStore = useSelector(usersSelector);
   const dispatch = useDispatch();
 
-  const handleChange = (newFile) => {
+  const handleChange = (newFile, extend = {}) => {
     dispatch(updateFileSaga(newFile));
+    const { type = '', userIds = [] } = extend;
+    if (type === 'sharing') {
+      const notification = {
+        message: `shared ${file.name} to you`,
+        receiver: userIds
+      }
+      dispatch(createNotificationSaga(notification));
+    }
   }
   const users = Object.values(usersStore.byId);
   return (

@@ -15,6 +15,7 @@ const authRouter = require("./routes/authen.router");
 const usersRouter = require("./routes/users.router");
 const filesRouter = require("./routes/files.router");
 const logsRouter = require("./routes/logs.router");
+const notifiRouter = require("./routes/notification.router");
 const app = express();
 
 const config = require('./config.json');
@@ -53,6 +54,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/files", filesRouter);
 app.use("/api/logs", logsRouter);
+app.use("/api/noti", notifiRouter);
 
 
 // catch 404 and forward to error handler

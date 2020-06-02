@@ -1,5 +1,7 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:3002/api';
+import config from '../config.json';
+const baseUrl = config.baseUrl;
+
 
 const defaultConfig = {
   withCredentials: true
