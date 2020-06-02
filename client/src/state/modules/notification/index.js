@@ -1,3 +1,6 @@
+import { cloneDeep } from 'lodash';
+import { RESET } from '../app/index';
+
 export const namespace = 'notification';
 
 export const Status = {
@@ -153,6 +156,26 @@ export const notificationReducer = (state = initialState, action) => {
           allIds: [...state.allIds, notification._id]
         }
       }
+    }
+    case MARK_AS_READ: {
+      const { ids } = action.payload;
+      const newById = cloneDeep(state.topbarNotifi.byId);
+      ids.forEach(id => {
+        newById[id] = {
+          ...newById[id],
+          isRead: true
+        }
+      })
+      return {
+        ...state,
+        topbarNotifi: {
+          ...state.topbarNotifi,
+          byId: newById
+        }
+      }
+    }
+    case RESET: {
+      return initialState;
     }
     default:
       return state;

@@ -60,7 +60,6 @@ const Topbar = props => {
     displayNotifications: []
   });
   const totalUnread = unread.length;
-  console.log('unread out', unread);
 
   const handleNotifiOpen = (event) => {
     setAnchorEl(event.currentTarget);
