@@ -5,3 +5,4 @@ export { default as DeleteConfirmDialog } from './DeleteConfirmDialog';
 export { default as FileViewer } from './FileViewer';
 export { default as CompactUserInfo } from './CompactUserInfo';
 export { default as SharingDialog } from './SharingDialog';
+export { default as BaseList } from './BaseList';

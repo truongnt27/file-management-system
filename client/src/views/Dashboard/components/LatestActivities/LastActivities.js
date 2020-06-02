@@ -17,6 +17,7 @@ import {
   Avatar
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import { BaseList } from 'components';
 
 import { Selectors, Actions } from 'state/modules/app/logs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,6 +46,19 @@ const LastActivities = props => {
   const classes = useStyles();
 
   const logs = props.logs || [];
+  const convertedList = logs.map(log => {
+
+    const { _id: id, userId = {}, description = '', time = '' } = log;
+    const avatarPicture = userId.avatarPicture || '';
+    const primary = `${userId.fullname || ''} ${description}`;
+    const secondary = moment(time).fromNow();
+    return ({
+      id,
+      primary,
+      secondary,
+      avatarPicture
+    })
+  });
   const handleViewAll = () => {
     onViewAll && onViewAll();
   }
@@ -59,41 +73,9 @@ const LastActivities = props => {
       />
       <Divider />
       <CardContent className={classes.content}>
-        <List>
-          {logs.map((log) => (
-            <>
-              <ListItem
-                key={log._id}
-              >
-                <ListItemAvatar>
-                  <Avatar
-                    alt="Remy Sharp"
-                    src={log.userId && log.userId.avatarPicture}
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={log.userId ? log.userId.fullname : '_'}
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        color="textPrimary"
-                        component="span"
-                        variant="body2"
-                      >
-                        {log.description}
-                      </Typography>
-                      {` - at ${moment(log.time).format('DD/MM/YYYY hh:mm:ss')}`}
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
-              <Divider
-                component="li"
-                variant="inset"
-              />
-            </>
-          ))}
-        </List>
+        <BaseList
+          list={convertedList}
+        />
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
