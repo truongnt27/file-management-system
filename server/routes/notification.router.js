@@ -15,5 +15,10 @@ router
     protectedRoute,
     notificationController.store
   )
+  .put(
+    '/:id',
+    protectedRoute,
+    notificationController.update
+  )
 
 module.exports = router;

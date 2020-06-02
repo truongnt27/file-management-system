@@ -15,6 +15,22 @@ export const FETCH_NOTIFIS = `${namespace}/FETCH_NOTIFIS`;
 export const CREATE_NOTIFI_SAGA = `${namespace}/CREATE_NOTIFI_SAGA`;
 export const CREATE_NOTIFI = `${namespace}/CREATE_NOTIFI`;
 export const SET_NOTIFIS = `${namespace}/SET_NOTIFIS`;
+export const MARK_AS_READ = `${namespace}/MARK_AS_READ`;
+export const MARK_AS_READ_SAGA = `${namespace}/MARK_AS_READ_SAGA`;
+
+export const markAsRead = (ids = []) => ({
+  type: MARK_AS_READ,
+  payload: {
+    ids
+  }
+})
+
+export const markAsReadSaga = (ids = []) => ({
+  type: MARK_AS_READ_SAGA,
+  payload: {
+    ids
+  }
+})
 
 export const createNotification = (notification = {}) => ({
   type: CREATE_NOTIFI,
@@ -59,7 +75,8 @@ const initialState = {
   },
   topbarNotifi: {
     status: Status.INIT,
-    data: []
+    byId: {},
+    allIds: []
   }
 };
 
@@ -104,11 +121,20 @@ export const notificationReducer = (state = initialState, action) => {
     }
     case SET_NOTIFIS: {
       const { notifications = [] } = action.payload;
+      const { byId, allIds } = notifications.reduce((acc, item) => {
+        acc.byId[item._id] = { ...item };
+        acc.allIds.push(item._id);
+        return acc;
+      }, {
+        byId: {},
+        allIds: []
+      })
       return {
         ...state,
         topbarNotifi: {
           status: Status.LOADED,
-          data: notifications
+          byId,
+          allIds
         }
       }
     }
@@ -118,7 +144,13 @@ export const notificationReducer = (state = initialState, action) => {
         ...state,
         topbarNotifi: {
           ...state.topbarNotifi,
-          data: [...state.topbarNotifi.data, notification]
+          byId: {
+            ...state.byId,
+            [notification._id]: {
+              ...notification
+            }
+          },
+          allIds: [...state.allIds, notification._id]
         }
       }
     }

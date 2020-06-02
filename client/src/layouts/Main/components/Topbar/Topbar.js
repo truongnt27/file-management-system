@@ -31,12 +31,40 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Topbar = props => {
-  const { className, onSidebarOpen, notifications, onSignout, ...rest } = props;
   const classes = useStyles();
+  const {
+    className,
+    onSidebarOpen,
+    onNotifiClick,
+    notifications,
+    onSignout,
+    ...rest } = props;
+
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handlePopoverOpen = (event) => {
+  const { displayNotifications, unread } = notifications.reduce((acc, item) => {
+    const { sender = {}, message = '', isRead, creationDate, _id } = item;
+    const avatarPicture = sender.avatarPicture || '';
+    const primary = `${sender.fullname || ''} ${message}`;
+    const secondary = moment(creationDate).fromNow();
+
+    if (!isRead) acc.unread.push(_id);
+    acc.displayNotifications.push({
+      avatarPicture,
+      primary,
+      secondary
+    })
+    return acc;
+  }, {
+    unread: [],
+    displayNotifications: []
+  });
+  const totalUnread = unread.length;
+  console.log('unread out', unread);
+
+  const handleNotifiOpen = (event) => {
     setAnchorEl(event.currentTarget);
+    onNotifiClick && unread.length > 0 && onNotifiClick(unread);
   };
 
   const handlePopoverClose = () => {
@@ -46,22 +74,7 @@ const Topbar = props => {
   const handleSignOut = () => {
     onSignout && onSignout();
   }
-  const { displayNotifications, totalUnread } = notifications.reduce((acc, item) => {
-    const { sender = {}, message = '', isRead, creationDate } = item;
-    const avatarPicture = sender.avatarPicture || '';
-    const primary = `${sender.fullname || ''} ${message}`;
-    const secondary = moment(creationDate).fromNow();
-    if (!isRead) acc.totalUnread++;
-    acc.displayNotifications.push({
-      avatarPicture,
-      primary,
-      secondary
-    })
-    return acc;
-  }, {
-    totalUnread: 0,
-    displayNotifications: []
-  })
+
   return (
     <AppBar
       {...rest}
@@ -78,7 +91,7 @@ const Topbar = props => {
         <Hidden mdDown>
           <IconButton
             color="inherit"
-            onClick={handlePopoverOpen}
+            onClick={handleNotifiOpen}
           >
             <Badge
               badgeContent={totalUnread}
@@ -130,6 +143,7 @@ const Topbar = props => {
 Topbar.propTypes = {
   className: PropTypes.string,
   notifications: PropTypes.array,
+  onNotifiClick: PropTypes.func,
   onSidebarOpen: PropTypes.func,
   onSignout: PropTypes.func
 };

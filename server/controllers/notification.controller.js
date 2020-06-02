@@ -24,6 +24,35 @@ module.exports = {
       next(err);
     }
   },
+  // update notification: mark as read
+  update: async (req, res, next) => {
+    console.log('req.params', req.params);
+
+    const notifiId = req.params.id;
+    console.log('notifiId', notifiId);
+
+    const userId = req.user._id;
+    try {
+      const noti = await Notification.findOneAndUpdate({ _id: notifiId }, { $push: { readBy: userId } });
+      const { readBy, sender, message, creationDate, _id } = noti;
+
+      const notification = {
+        _id,
+        message,
+        sender,
+        creationDate,
+        isRead: true
+      }
+      return res.status(200).json({
+        status: 'SUCCESS',
+        data: {
+          notification
+        }
+      })
+    } catch (err) {
+      next(err);
+    }
+  },
 
   getByCurrentUser: async (req, res, next) => {
     const userId = req.user._id;
@@ -32,13 +61,13 @@ module.exports = {
       const notifications = await Notification.find({ receiver: userId })
         .populate({ path: 'sender', select: 'fullname avatarPicture' })
         .limit(200);
-      console.log('notifications', notifications);
 
       const convertedNotifis = notifications.map(noti => {
-        const { readBy = [], sender, message, creationDate } = noti;
+        const { readBy = [], sender, message, creationDate, _id } = noti;
         const isRead = readBy.indexOf(userId) === -1 ? false : true;
 
         return ({
+          _id,
           message,
           sender,
           creationDate,

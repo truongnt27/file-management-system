@@ -7,3 +7,7 @@ export const getNotificationsApi = () => {
 export const createNotificationApi = (noti) => {
   return apiCaller.post('/noti', { notification: noti });
 }
+
+export const markNotificationAsReadApi = (id) => {
+  return apiCaller.put(`/noti/${id}`);
+}
