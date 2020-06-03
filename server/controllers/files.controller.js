@@ -152,7 +152,10 @@ module.exports = {
       const result = await fileStore.save();
 
       encryptFile(`./public/uploads/${owner}/${req.file.originalname}`, plaintext);
-      await FileStore.populate(result, { path: 'owner', select: 'fullname avatarPicture' });
+      await result
+        .populate({ path: 'owner', select: 'fullname avatarPicture' })
+        .populate({ path: 'activities', populate: { path: 'userId', select: 'fullname avatarPicture' } })
+        .execPopulate();
       return res.status(200).json({
         status: 'SUCCESS',
         message: 'File saved',
