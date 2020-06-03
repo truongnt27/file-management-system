@@ -137,7 +137,7 @@ module.exports = {
       })
       const savedKey = await key.save();
 
-      const extend = file.originalname.split('.').pop();
+      const extend = file.originalname.split('.').pop().toLowerCase();
       const type = FILE_TYPES[extend] || extend;
 
       const fileStore = new FileStore({
@@ -152,7 +152,7 @@ module.exports = {
       const result = await fileStore.save();
 
       encryptFile(`./public/uploads/${owner}/${req.file.originalname}`, plaintext);
-      await FileStore.populate(result, { path: 'owner', select: 'fullname' });
+      await FileStore.populate(result, { path: 'owner', select: 'fullname avatarPicture' });
       return res.status(200).json({
         status: 'SUCCESS',
         message: 'File saved',
