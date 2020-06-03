@@ -3,14 +3,13 @@ mongoose.connect("mongodb://localhost:27017/keymanagementsys");
 
 const CronJob = require('cron').CronJob;
 const KeyStore = require('../models/keyStore');
-const CryptoKey = require('../models/cryptoKey');
 const FileStore = require('../models/fileStore');
 const UserStore = require('../models/userStore');
 const Log = require('../models/eventLog');
 const { EVENT_TYPE } = require('../helpers/constant');
 const { convertDateToMilis } = require('../helpers/keyHelper');
 
-const genKey = require('../helpers/keyGen');
+const { generateKey } = require('../helpers/keyHelper');
 const Encryptor = require('../helpers/encryptFile');
 
 console.log('Start rotate keys');
@@ -27,29 +26,22 @@ const job = new CronJob('00 00 00 * * *', async function () {
 }, null, true);
 module.exports = job;
 
-
 async function rotate(keyId) {
   try {
-    const cryptoKey = new CryptoKey(genKey());
-    const savedkey = await cryptoKey.save();
-    const key = await KeyStore.findOne({ _id: keyId }).populate({ path: 'files', select: 'name owner' }).populate('cryptoKeyId');
-    const files = key.files;
+    const { createdDate, plaintext } = generateKey();
+    const key = await KeyStore.findOne({ _id: keyId });
+    const file = await FileStore.findOne({ keyId: keyId }).populate({ path: 'files', select: 'name owner' });
 
-    if (!files || !key.cryptoKeyId.plaintext) {
-      return;
-    }
+    Encryptor.rotateFile(`../public/uploads/${file.owner}/${file.name}`, key.plaintext, plaintext);
 
-    files.forEach(file => {
-      Encryptor.rotateFile(`../public/uploads/${file.owner}/${file.name}`, key.cryptoKeyId.plaintext, savedkey.plaintext);
-    });
-    key.cryptoKeyId = savedkey._id;
-    key.lastRotation = Date.now();
+    key.plaintext = plaintext;
+    key.lastRotation = createdDate;
     await key.save();
 
     const log = new Log({
       time: Date.now(),
-      userId: key.owner,
-      description: `${EVENT_TYPE.ROTATE_KEY} ${key.alias}`
+      userId: file.owner,
+      description: `${EVENT_TYPE.ROTATE_KEY} for ${file.name}`
     });
     await log.save()
   }
