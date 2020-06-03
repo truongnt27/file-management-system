@@ -8,13 +8,13 @@ const { deleteFile } = require('../helpers/fileHelper');
 const { generateKey } = require('../helpers/keyHelper');
 const { EVENT_TYPE, FILE_TYPES } = require('../helpers/constant');
 
-const { isEmpty, unionBy } = require('lodash');
+const { isEmpty, difference } = require('lodash');
 
 module.exports = {
   get: async (req, res, next) => {
     try {
       const { files } = req.user || [];
-      const totalFiles = await FileStore.find()
+      const totalFiles = await FileStore.find({ _id: { $in: files } })
         .populate({ path: 'owner', select: 'fullname email avatarPicture' })
         .populate({ path: 'activities', populate: { path: 'userId', select: 'fullname avatarPicture' } })
         .populate({ path: 'viewers', select: 'fullname email avatarPicture' })
@@ -34,8 +34,18 @@ module.exports = {
   update: async (req, res, next) => {
     const fileId = req.params.fileId || null;
     const file = req.body.file;
-
+    const { viewers, editors } = file;
+    const updateFileUsers = [...viewers, ...editors];
     try {
+      const fileStore = await FileStore.findOne({ _id: fileId });
+      const { viewers: originalViewers, editors: originalEditors } = fileStore;
+      const originalFileUsers = [...originalViewers, ...originalEditors];
+      const addFileUsers = difference(updateFileUsers, originalFileUsers);   // users need to add file from file list
+      const removeFileUsers = difference(originalFileUsers, updateFileUsers);  // users need to remove file from file list
+
+      await UserStore.updateMany({ _id: { $in: addFileUsers } }, { $push: { files: fileId } });
+      await UserStore.updateMany({ _id: { $in: removeFileUsers } }, { $pull: { files: fileId } });
+
       const resultFile = await FileStore.findOneAndUpdate({ _id: fileId }, file, { new: true })
         .populate({ path: 'owner', select: 'fullname email avatarPicture' })
         .populate({ path: 'activities', populate: { path: 'userId', select: 'fullname avatarPicture' } })
