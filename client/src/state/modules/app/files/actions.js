@@ -14,11 +14,19 @@ export const UPLOAD_FILE_SAGA = `${namespace}/UPLOAD_FILE_SAGA`;
 export const DOWNLOAD_FILE_SAGA = `${namespace}/DOWNLOAD_FILE_SAGA`;
 export const DELETE_FILE_SAGA = `${namespace}/DELETE_FILE_SAGA`;
 export const DELETE_FILE = `${namespace}/DELETE_FILE`;
+export const MOVE_FILES_TO_TRASH_SAGA = `${namespace}/DELETE_FILE`;
 
 export const SET_FILE = `${namespace}/SET_FILE`;
 export const SET_FILES = `${namespace}/SET_FILES`;
 
 export const UPDATE_FILE_SAGA = `${namespace}/UPDATE_FILE_SAGA`;
+
+export const moveFilesToTrash = (fileIds = []) => ({
+  type: MOVE_FILES_TO_TRASH_SAGA,
+  payload: {
+    fileIds
+  }
+})
 
 export const uploadFile = (file: File) => ({
   type: UPLOAD_FILE_SAGA,

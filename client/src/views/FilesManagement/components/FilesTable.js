@@ -228,17 +228,16 @@ const EnhancedTableToolbar = props => {
                       <GetApp />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Delete">
-                    <IconButton
-                      aria-label="Delete"
-                      onClick={handleDeleteClick}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
                 </>
-              )
-            }
+              )}
+            <Tooltip title="Move to trash">
+              <IconButton
+                aria-label="Move to trash"
+                onClick={handleDeleteClick}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
           </div>
         ) :
           (
@@ -311,7 +310,6 @@ export default function FilesTable(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [openFileDetail, setOpenFileDetail] = React.useState(false);
-  const [openDelConfirm, setOpenDelConfirm] = React.useState(false);
   const [openSharingDialog, setOpenSharingDialog] = React.useState(false);
 
   function handleRequestSort(event, property) {
@@ -370,18 +368,8 @@ export default function FilesTable(props) {
     selected && dispatch(Actions.downloadFile(selected));
   }
 
-  function handleDeleteFile() {
-    setOpenDelConfirm(false);
-    selected && dispatch(Actions.deleteFileSaga(selected));
-    setSelected([]);
-  }
-
-  function handleCloseDelConfirm() {
-    setOpenDelConfirm(false);
-  }
-
-  function handleDeleteFileClick() {
-    setOpenDelConfirm(true);
+  function handleMoveToTrashFile() {
+    selected && dispatch(Actions.moveFilesToTrash(selected));
   }
 
   function handleStarFile(fileId) {
@@ -404,7 +392,7 @@ export default function FilesTable(props) {
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
-          onDetele={handleDeleteFileClick}
+          onDetele={handleMoveToTrashFile}
           onDownload={downloadFile}
           onShare={hanldeOpenSharingDialog}
           onViewDetail={hanleOpenFileDetail}
@@ -530,11 +518,6 @@ export default function FilesTable(props) {
           rowsPerPageOptions={[10, 20, 50]}
         />
       </Paper>
-      <DeleteConfirmDialog
-        onClose={handleCloseDelConfirm}
-        onDelete={handleDeleteFile}
-        open={openDelConfirm}
-      />
       <SharingDialog
         fileId={selected}
         onClose={hanldeCloseSharingDialog}

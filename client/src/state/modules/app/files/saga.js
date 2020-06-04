@@ -1,6 +1,6 @@
 import { all, put, select, takeEvery } from 'redux-saga/effects';
 import * as Actions from './actions';
-import { API_STATUS_CODE, TOAST_TYPE } from 'helpers/constant';
+import { API_STATUS_CODE, TOAST_TYPE, STATUS } from 'helpers/constant';
 import {
   getFilesApi,
   uploadFileApi,
@@ -97,6 +97,15 @@ function* updateFile(action) {
   }
 }
 
+function* moveFilesToTrash(action) {
+  const { fileIds } = action.payload;
+  const files = fileIds.map(id => ({
+    _id: id,
+    status: STATUS.PENDING
+  }));
+  yield all(files.map(file => updateFileApi(file)));
+}
+
 export default function* filesSaga() {
   yield all([
     takeEvery(Actions.FETCH_FILES, fetchFiles),
@@ -104,5 +113,6 @@ export default function* filesSaga() {
     takeEvery(Actions.DOWNLOAD_FILE_SAGA, downloadFile),
     takeEvery(Actions.DELETE_FILE_SAGA, deleteFile),
     takeEvery(Actions.UPDATE_FILE_SAGA, updateFile),
+    takeEvery(Actions.MOVE_FILES_TO_TRASH_SAGA, moveFilesToTrash),
   ])
 }
