@@ -7,3 +7,4 @@ export { default as FilesManagement } from './FilesManagement';
 export { default as UserList } from './UserList';
 export { default as Dashboard } from './Dashboard';
 export { default as Starred } from './Starred';
+export { default as Trash } from './Trash';

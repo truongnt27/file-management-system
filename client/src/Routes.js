@@ -13,7 +13,8 @@ import {
   FilesManagement as FilesManagementView,
   UserList as UserListView,
   Dashboard as DashboardView,
-  Starred as StarredView
+  Starred as StarredView,
+  Trash as TrashView
 } from './views';
 
 import { boot } from 'state/modules/app';
@@ -75,6 +76,13 @@ const Routes = () => {
         layout={MainLayout}
         path="/users"
         requireAccess={['Manager', 'Admin']}
+        requireAuth
+      />
+      <RouteWithLayout
+        component={TrashView}
+        exact
+        layout={MainLayout}
+        path="/trash"
         requireAuth
       />
       <RouteWithLayout
