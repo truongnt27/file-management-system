@@ -36,12 +36,21 @@ const useStyle = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   userAccess: {
-    display: 'flex'
+    display: 'flex',
+    marginBottom: theme.spacing(1)
   },
   verticalDivider: {
     backgroundColor: 'rgba(0, 0, 0, 0.12)',
     width: '1px',
     margin: '0 4px 0 4px'
+  },
+  imageContainer: {
+    maxHeight: '300px',
+    width: 'auto'
+  },
+  previewImage: {
+    maxHeight: '240px',
+    width: 'auto'
   }
 }))
 
@@ -107,6 +116,17 @@ export function FileViewer(props) {
   const generateDetail = () => {
     return (
       <>
+        <Grid item>
+          <div className={classes.imageContainer}>
+            {
+              file.type === 'Image' &&
+              <img
+                className={classes.previewImage}
+                src={`http://localhost:3002/api/files/${file._id}/download`}
+              />
+            }
+          </div>
+        </Grid>
         <Grid
           item
         >
