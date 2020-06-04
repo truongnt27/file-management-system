@@ -32,6 +32,7 @@ import { useDispatch } from 'react-redux';
 import { Actions } from 'state/modules/app/files'
 
 import { find } from 'lodash';
+import { STATUS } from 'helpers/constant';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -368,7 +369,7 @@ export default function FilesTable(props) {
   }
 
   function handleMoveToTrashFile() {
-    selected && dispatch(Actions.moveFilesToTrashSaga(selected));
+    selected && dispatch(Actions.updateFilesStatusSaga(selected, STATUS.PENDING));
   }
 
   function handleStarFile(fileId) {

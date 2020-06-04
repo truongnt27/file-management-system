@@ -28,6 +28,7 @@ import { StatusBullet, DeleteConfirmDialog, FileViewer } from 'components';
 
 import { useDispatch } from 'react-redux';
 import { Actions } from 'state/modules/app/files'
+import { STATUS } from 'helpers/constant';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -356,7 +357,8 @@ export default function FilesTable(props) {
   }
 
   function handleRestore() {
-
+    selected && dispatch(Actions.updateFilesStatusSaga(selected, STATUS.ENABLE));
+    setSelected([]);
   }
 
   const isSelected = _id => selected.indexOf(_id) !== -1;

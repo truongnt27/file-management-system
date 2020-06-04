@@ -14,25 +14,27 @@ export const UPLOAD_FILE_SAGA = `${namespace}/UPLOAD_FILE_SAGA`;
 export const DOWNLOAD_FILE_SAGA = `${namespace}/DOWNLOAD_FILE_SAGA`;
 export const DELETE_FILE_SAGA = `${namespace}/DELETE_FILE_SAGA`;
 export const DELETE_FILE = `${namespace}/DELETE_FILE`;
-export const MOVE_FILES_TO_TRASH_SAGA = `${namespace}/MOVE_FILES_TO_TRASH_SAGA`;
-export const MOVE_FILES_TO_TRASH = `${namespace}/MOVE_FILES_TO_TRASH`;
+export const UPDATE_FILES_STATUS_SAGA = `${namespace}/UPDATE_FILES_STATUS_SAGA`;
+export const UPDATE_FILES_STATUS = `${namespace}/UPDATE_FILES_STATUS`;
 
 export const SET_FILE = `${namespace}/SET_FILE`;
 export const SET_FILES = `${namespace}/SET_FILES`;
 
 export const UPDATE_FILE_SAGA = `${namespace}/UPDATE_FILE_SAGA`;
 
-export const moveFilesToTrashSaga = (fileIds = []) => ({
-  type: MOVE_FILES_TO_TRASH_SAGA,
+export const updateFilesStatusSaga = (fileIds = [], status) => ({
+  type: UPDATE_FILES_STATUS_SAGA,
   payload: {
-    fileIds
+    fileIds,
+    status
   }
 })
 
-export const moveFilesToTrash = (fileIds = []) => ({
-  type: MOVE_FILES_TO_TRASH,
+export const updateFilesStatus = (fileIds = [], status) => ({
+  type: UPDATE_FILES_STATUS,
   payload: {
-    fileIds
+    fileIds,
+    status
   }
 })
 
