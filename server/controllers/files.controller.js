@@ -35,16 +35,18 @@ module.exports = {
     const fileId = req.params.fileId || null;
     const file = req.body.file;
     const { viewers, editors } = file;
-    const updateFileUsers = [...viewers, ...editors];
     try {
-      const fileStore = await FileStore.findOne({ _id: fileId });
-      const { viewers: originalViewers, editors: originalEditors } = fileStore;
-      const originalFileUsers = [...originalViewers, ...originalEditors];
-      const addFileUsers = difference(updateFileUsers, originalFileUsers);   // users need to add file from file list
-      const removeFileUsers = difference(originalFileUsers, updateFileUsers);  // users need to remove file from file list
+      if (file.viewers && file.editors) {
+        const updateFileUsers = [...viewers, ...editors];
+        const fileStore = await FileStore.findOne({ _id: fileId });
+        const { viewers: originalViewers, editors: originalEditors } = fileStore;
+        const originalFileUsers = [...originalViewers, ...originalEditors];
+        const addFileUsers = difference(updateFileUsers, originalFileUsers);   // users need to add file from file list
+        const removeFileUsers = difference(originalFileUsers, updateFileUsers);  // users need to remove file from file list
 
-      await UserStore.updateMany({ _id: { $in: addFileUsers } }, { $push: { files: fileId } });
-      await UserStore.updateMany({ _id: { $in: removeFileUsers } }, { $pull: { files: fileId } });
+        await UserStore.updateMany({ _id: { $in: addFileUsers } }, { $push: { files: fileId } });
+        await UserStore.updateMany({ _id: { $in: removeFileUsers } }, { $pull: { files: fileId } });
+      }
 
       const resultFile = await FileStore.findOneAndUpdate({ _id: fileId }, file, { new: true })
         .populate({ path: 'owner', select: 'fullname email avatarPicture' })
