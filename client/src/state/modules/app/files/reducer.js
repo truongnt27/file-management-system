@@ -2,9 +2,12 @@ import {
   Status,
   SET_FILES,
   SET_FILE,
-  DELETE_FILE
+  DELETE_FILE,
+  MOVE_FILES_TO_TRASH
 } from './actions';
 import { RESET } from '../../app/index';
+import { STATUS } from 'helpers/constant';
+import { cloneDeep } from 'lodash';
 
 const initialState = {
   status: Status.INIT,
@@ -51,6 +54,21 @@ export default function filesReducer(state = initialState, action) {
         status: Status.LOADED,
         byId: filesObj,
         allIds: Object.keys(filesObj)
+      }
+    }
+
+    case MOVE_FILES_TO_TRASH: {
+      const { fileIds } = action.payload;
+      const newById = cloneDeep(state.byId);
+      fileIds.forEach(id => {
+        newById[id] = {
+          ...newById[id],
+          status: STATUS.PENDING
+        }
+      })
+      return {
+        ...state,
+        byId: newById
       }
     }
     case RESET: {

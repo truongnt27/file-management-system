@@ -9,6 +9,7 @@ import { FETCH_USERS, usersSelector } from 'state/modules/app/users/actions';
 import { useSelector, useDispatch } from 'react-redux';
 import { searchStringFromArr } from 'helpers/utils';
 import { uploadFile } from 'state/modules/app/files/actions';
+import { STATUS } from 'helpers/constant';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -69,7 +70,7 @@ const FilesManagementSmartComponent = () => {
   }, [filesStore.status, usersStore.status])
 
   const files = Object.values(filesStore.byId);
-
+  const displayFiles = files.filter(file => file.status !== STATUS.PENDING);
   const handleUploadFile = (file) => {
     dispatch(uploadFile(file));
   }
@@ -78,7 +79,7 @@ const FilesManagementSmartComponent = () => {
     filesStore.status === 'LOADED' &&
     <FilesManagement
       currentUser={currentUser}
-      files={files}
+      files={displayFiles}
       onUploadFile={handleUploadFile}
     />
   )

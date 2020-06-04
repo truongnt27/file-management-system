@@ -10,6 +10,7 @@ import {
 } from 'helpers/filesApi';
 
 import { getFileById } from 'state/modules/app/files/selector';
+import { moveFilesToTrash } from 'state/modules/app/files/actions';
 import { push } from 'connected-react-router';
 import { saveAs } from 'file-saver';
 import { showToast } from 'state/modules/notification';
@@ -97,8 +98,9 @@ function* updateFile(action) {
   }
 }
 
-function* moveFilesToTrash(action) {
+function* moveToTrash(action) {
   const { fileIds } = action.payload;
+  yield put(moveFilesToTrash(fileIds));
   const files = fileIds.map(id => ({
     _id: id,
     status: STATUS.PENDING
@@ -113,6 +115,6 @@ export default function* filesSaga() {
     takeEvery(Actions.DOWNLOAD_FILE_SAGA, downloadFile),
     takeEvery(Actions.DELETE_FILE_SAGA, deleteFile),
     takeEvery(Actions.UPDATE_FILE_SAGA, updateFile),
-    takeEvery(Actions.MOVE_FILES_TO_TRASH_SAGA, moveFilesToTrash),
+    takeEvery(Actions.MOVE_FILES_TO_TRASH_SAGA, moveToTrash),
   ])
 }

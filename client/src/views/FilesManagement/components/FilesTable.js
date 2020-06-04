@@ -26,7 +26,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import StarIcon from '@material-ui/icons/StarBorder';
 import StarredIcon from '@material-ui/icons/Star';
 
-import { StatusBullet, DeleteConfirmDialog, FileViewer, SharingDialog } from 'components';
+import { StatusBullet, FileViewer, SharingDialog } from 'components';
 
 import { useDispatch } from 'react-redux';
 import { Actions } from 'state/modules/app/files'
@@ -256,7 +256,6 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onDetele: PropTypes.func.isRequired,
   onDownload: PropTypes.func.isRequired,
-  // onStar: PropTypes.func.isRequired,
   onShare: PropTypes.func.isRequired,
   onViewDetail: PropTypes.func.isRequired,
 };
@@ -369,7 +368,7 @@ export default function FilesTable(props) {
   }
 
   function handleMoveToTrashFile() {
-    selected && dispatch(Actions.moveFilesToTrash(selected));
+    selected && dispatch(Actions.moveFilesToTrashSaga(selected));
   }
 
   function handleStarFile(fileId) {
