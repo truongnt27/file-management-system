@@ -21,8 +21,7 @@ module.exports = {
   STATUS: {
     ENABLE: 'ENABLE',
     DISABLE: 'DISABLE',
-    PENDING: 'PENDING',
-    DEL_FILE: 'DELETE FILE'
+    PENDING: 'PENDING'
   },
   EVENT_TYPE: {
     CREATE_USER: 'CREATE USER',

@@ -1,4 +1,4 @@
-export const STATUS_COLOR = {
+export const STATUS = {
   ENABLE: 'ENABLE',
   DISABLE: 'DISABLE',
   PENDING: 'PENDING'
