@@ -5,8 +5,8 @@ import { makeStyles } from '@material-ui/styles';
 import { Divider, Drawer } from '@material-ui/core';
 import {
   Dashboard as DashboardIcon,
-  VpnKey as VpnKeyIcon,
-  FolderOpen as FolderOpenIcon,
+  Star as StarIcon,
+  Folder as FolderIcon,
   History as HistoryIcon,
   Delete as DeleteIcon,
   Settings as SettingsIcon,
@@ -50,7 +50,12 @@ const allPages = [
   {
     title: 'Your data',
     href: '/files',
-    icon: <FolderOpenIcon />
+    icon: <FolderIcon />
+  },
+  {
+    title: 'Mark starred',
+    href: '/starred',
+    icon: <StarIcon />
   },
   {
     title: 'All users',

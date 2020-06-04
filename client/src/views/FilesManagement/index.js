@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function FilesManagement(props) {
+export function FilesManagement(props) {
 
   const classes = useStyles();
   const { files, currentUser, onUploadFile } = props;

@@ -12,7 +12,8 @@ import {
   Account as AccountView,
   FilesManagement as FilesManagementView,
   UserList as UserListView,
-  Dashboard as DashboardView
+  Dashboard as DashboardView,
+  Starred as StarredView
 } from './views';
 
 import { boot } from 'state/modules/app';
@@ -51,6 +52,13 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/files"
+        requireAuth
+      />
+      <RouteWithLayout
+        component={StarredView}
+        exact
+        layout={MainLayout}
+        path="/starred"
         requireAuth
       />
       <RouteWithLayout
