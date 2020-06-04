@@ -6,6 +6,7 @@ import { Selectors, Actions } from 'state/modules/app/files';
 import { currentUser as currentUserSelector } from 'state/modules/auth/selector';
 import { FETCH_USERS, usersSelector, Status } from 'state/modules/app/users/actions';
 import { uploadFile } from 'state/modules/app/files/actions';
+import { STATUS } from 'helpers/constant';
 
 const FilesManagementSmartComponent = () => {
   const filesStore = useSelector(Selectors.filesStore);
@@ -20,7 +21,7 @@ const FilesManagementSmartComponent = () => {
   }, [filesStore.status, usersStore.status])
 
   const files = Object.values(filesStore.byId);
-  const starredFiles = files.filter(file => file.isFavorite);
+  const starredFiles = files.filter(file => (file.isFavorite && file.status !== STATUS.PENDING));
   const handleUploadFile = (file) => {
     dispatch(uploadFile(file));
   }
