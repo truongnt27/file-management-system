@@ -216,7 +216,7 @@ export function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Creation date:</strong> {file.creationDate}
+            <strong>Creation date:</strong> {file.creationDate ? moment(file.creationDate).format('DD/MM/YYYY hh:mm:ss') : ''}
           </Typography>
         </Grid>
         <Grid
@@ -226,7 +226,7 @@ export function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Description:</strong> {file.creationDate ? file.creationDate : ' No description'}
+            <strong>Description:</strong> {file.description ? file.description : ' No description'}
           </Typography>
         </Grid>
       </>
