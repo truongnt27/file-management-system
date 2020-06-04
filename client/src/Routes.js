@@ -29,13 +29,14 @@ const Routes = () => {
       <Redirect
         exact
         from="/"
-        to="/dashboard"
+        to="/files"
       />
       <RouteWithLayout
         component={DashboardView}
         exact
         layout={MainLayout}
         path="/dashboard"
+        requireAccess={['Manager', 'Admin']}
         requireAuth
       />
       <RouteWithLayout

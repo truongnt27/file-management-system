@@ -44,7 +44,8 @@ const allPages = [
   {
     title: 'Dashboard',
     href: '/dashboard',
-    icon: <DashboardIcon />
+    icon: <DashboardIcon />,
+    requireAccess: ['Admin', 'Manager']
   },
   {
     title: 'Your data',
