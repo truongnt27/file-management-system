@@ -160,9 +160,11 @@ module.exports = {
       })
 
       const result = await fileStore.save();
-
+      const user = await UserStore.findOne({ _id: owner });
+      user.files.push(result._id);
+      user.save();
       encryptFile(`./public/uploads/${owner}/${req.file.originalname}`, plaintext);
-      await result
+      result
         .populate({ path: 'owner', select: 'fullname avatarPicture' })
         .populate({ path: 'activities', populate: { path: 'userId', select: 'fullname avatarPicture' } })
         .execPopulate();
