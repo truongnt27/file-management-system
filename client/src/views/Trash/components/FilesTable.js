@@ -187,6 +187,14 @@ const EnhancedTableToolbar = props => {
       <div className={classes.actions}>
         {numSelected > 0 ? (
           <div style={{ display: 'flex' }}>
+            <Tooltip title="Restore file">
+              <IconButton
+                aria-label="Restore file"
+                onClick={handleRestoreClick}
+              >
+                <RestoreIcon />
+              </IconButton>
+            </Tooltip>
             {
               numSelected === 1 &&
               (
@@ -197,14 +205,6 @@ const EnhancedTableToolbar = props => {
                       onClick={handleViewClick}
                     >
                       <ViewIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Restore file">
-                    <IconButton
-                      aria-label="Restore file"
-                      onClick={handleRestoreClick}
-                    >
-                      <RestoreIcon />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Delete">
