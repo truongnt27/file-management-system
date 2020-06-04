@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 
-import { STATUS_COLOR } from 'helpers/constant'
+import { STATUS } from 'helpers/constant'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,9 +59,9 @@ StatusBullet.propTypes = {
   className: PropTypes.string,
   size: PropTypes.oneOf(['sm', 'md', 'lg']),
   type: PropTypes.oneOf([
-    STATUS_COLOR.ENABLE,
-    STATUS_COLOR.DISABLE,
-    STATUS_COLOR.PENDING,
+    STATUS.ENABLE,
+    STATUS.DISABLE,
+    STATUS.PENDING,
   ])
 };
 
