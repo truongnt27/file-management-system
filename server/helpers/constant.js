@@ -24,17 +24,14 @@ module.exports = {
     PENDING: 'PENDING'
   },
   EVENT_TYPE: {
-    CREATE_USER: 'CREATE USER',
-    UPDATE_USER: 'UPDATE USER',
-    DEL_USER: 'DEL USER',
-    CREATE_KEY: 'CREATE KEY',
-    UPDATE_KEY: 'UPDATE KEY',
-    DEL_KEY: 'DELETE KEY',
-    ROTATE_KEY: 'ROTATE KEY',
-    UPLOAD_FILE: 'UPLOAD FILE',
-    DOWNLOAD_FILE: 'DOWNLOAD FILE',
-    DEL_FILE: 'DEL FILE',
-    UPDATE_FILE: 'UPDATE_FILE'
+    CREATE_USER: 'created user',
+    UPDATE_USER: 'updated user',
+    DEL_USER: 'deleted user',
+    ROTATE_KEY: 'rotated key',
+    UPLOAD_FILE: 'uploaded file',
+    DOWNLOAD_FILE: 'downloaded file',
+    DEL_FILE: 'deleted file',
+    UPDATE_FILE: 'updated file'
   },
   ROTATE_PERIOD: [
     {
