@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Drawer,
@@ -13,11 +13,14 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  ListItemText
-} from '@material-ui/core'
+  ListItemText,
+
+} from '@material-ui/core';
+import { Edit as EditIcon } from '@material-ui/icons';
 
 import { getFileById } from 'state/modules/app/files/selector';
-// import { FETCH_USERS, usersSelector } from 'state/modules/app/users/actions';
+import { updateFileSaga } from 'state/modules/app/files/actions';
+import { currentUser } from 'state/modules/auth/selector';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { isEmpty } from 'lodash';
@@ -55,15 +58,39 @@ const useStyle = makeStyles(theme => ({
 }))
 
 export function FileViewer(props) {
-  const { file, open } = props;
+  const { file, open, currentUserId, onChange } = props;
   const classes = useStyle();
   const { owner, viewers, editors } = file;
   const updateViewers = viewers.map(user => ({ ...user, role: 'viewers' }));
   const updateEditors = editors.map(user => ({ ...user, role: 'editors' }));
   const accessUsers = [...updateEditors, ...updateViewers];
+  const isEditAccess = currentUserId === owner._id || editors.indexOf(currentUserId);
 
-  const [value, setValue] = React.useState(0);
-  function handleChange(event, newValue) {
+  const [isEdit, setIsEdit] = useState(false);
+  const [description, setDescription] = useState(file.description);
+  const [value, setValue] = useState(0);
+
+  const handleOpenEdit = () => {
+    setIsEdit(true);
+  }
+
+  const handleChangeDescription = (e) => {
+    setDescription(e.target.value);
+  }
+
+  const handleSubmitDescription = (e) => {
+    const newDescription = e.target.value.trim();
+    if (newDescription !== file.description) {
+      const updateFile = {
+        _id: file._id,
+        description: newDescription
+      }
+      onChange && onChange(updateFile);
+      setIsEdit(false);
+    }
+  }
+
+  const handleChange = (event, newValue) => {
     setValue(newValue);
   }
 
@@ -222,12 +249,26 @@ export function FileViewer(props) {
         <Grid
           item
         >
-          <Typography
-            component="span"
-            variant="body1"
-          >
-            <strong>Description:</strong> {file.description ? file.description : ' No description'}
-          </Typography>
+          {
+            isEdit &&
+            <textarea
+              autoFocus
+              name="description"
+              onBlur={handleSubmitDescription}
+              onChange={handleChangeDescription}
+              value={description}
+            />
+          }
+          {
+            !isEdit &&
+            <Typography
+              component="span"
+              variant="body1"
+            >
+              {file.description ? file.description : ' No description'}
+            </Typography>
+          }
+          {isEditAccess && <EditIcon onClick={handleOpenEdit} />}
         </Grid>
       </>
     )
@@ -269,24 +310,32 @@ export function FileViewer(props) {
 }
 
 FileViewer.propTypes = {
+  currentUserId: PropTypes.string,
   file: PropTypes.object.isRequired,
+  onChange: PropTypes.func,
   onClose: PropTypes.func,
-  open: PropTypes.bool,
-  sharedUsers: PropTypes.array.isRequired
+  open: PropTypes.bool
 }
 
 const FileViewerSmartComponent = (props) => {
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { fileId, open = false, onClose } = props;
   const file = useSelector(state => getFileById(state)(fileId));
+  const currentUserStore = useSelector(currentUser);
+  const currentUserId = currentUserStore._id || '';
   const handleClose = () => {
     onClose && onClose();
+  }
+  const handleChangeFile = (file) => {
+    dispatch(updateFileSaga(file));
   }
 
   return (
     !isEmpty(file) &&
     <FileViewer
+      currentUserId={currentUserId}
       file={file}
+      onChange={handleChangeFile}
       onClose={handleClose}
       open={open}
     />
