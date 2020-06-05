@@ -14,7 +14,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-
+  IconButton
 } from '@material-ui/core';
 import { Edit as EditIcon } from '@material-ui/icons';
 
@@ -233,7 +233,7 @@ export function FileViewer(props) {
             component="span"
             variant="body1"
           >
-            <strong>Last modified:</strong>
+            <strong>Last modified:</strong> {file.lastModified ? moment(file.lastModified).format('DD/MM/YYYY hh:mm:ss') : '_'}
           </Typography>
         </Grid>
         <Grid
@@ -268,7 +268,12 @@ export function FileViewer(props) {
               {file.description ? file.description : ' No description'}
             </Typography>
           }
-          {isEditAccess && <EditIcon onClick={handleOpenEdit} />}
+          {isEditAccess &&
+            <IconButton
+              onClick={handleOpenEdit}
+            >
+              <EditIcon />
+            </IconButton>}
         </Grid>
       </>
     )

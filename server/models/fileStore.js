@@ -14,7 +14,8 @@ const schema = new Schema({
   description: { type: String, required: false },
   viewers: [{ type: Schema.Types.ObjectId, ref: 'UserStore' }],
   editors: [{ type: Schema.Types.ObjectId, ref: 'UserStore' }],
-  creationDate: { type: Date, required: true }
+  creationDate: { type: Date, required: true },
+  lastModified: { type: Date, required: true }
 });
 
 module.exports = mongoose.model("FileStore", schema);

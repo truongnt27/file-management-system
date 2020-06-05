@@ -51,7 +51,7 @@ module.exports = {
         }
       }
 
-      const resultFile = await FileStore.findOneAndUpdate({ _id: fileId }, file, { new: true })
+      const resultFile = await FileStore.findOneAndUpdate({ _id: fileId }, { ...file, lastModified: Date.now() }, { new: true })
         .populate({ path: 'owner', select: 'fullname email avatarPicture' })
         .populate({ path: 'activities', populate: { path: 'userId', select: 'fullname avatarPicture' } })
         .populate({ path: 'viewers', select: 'fullname email avatarPicture' })
@@ -162,7 +162,8 @@ module.exports = {
         size: file.size,
         activities: [logged._id],
         type,
-        creationDate: now
+        creationDate: now,
+        lastModified: now
       })
 
       const result = await fileStore.save();
