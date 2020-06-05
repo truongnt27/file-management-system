@@ -43,9 +43,12 @@ module.exports = {
         const originalFileUsers = [...originalViewers, ...originalEditors];
         const addFileUsers = difference(updateFileUsers, originalFileUsers);   // users need to add file from file list
         const removeFileUsers = difference(originalFileUsers, updateFileUsers);  // users need to remove file from file list
-
-        await UserStore.updateMany({ _id: { $in: addFileUsers } }, { $push: { files: fileId } });
-        await UserStore.updateMany({ _id: { $in: removeFileUsers } }, { $pull: { files: fileId } });
+        if (addFileUsers.length > 0) {
+          await UserStore.updateMany({ _id: { $in: addFileUsers } }, { $push: { files: fileId } });
+        }
+        if (removeFileUsers.length > 0) {
+          await UserStore.updateMany({ _id: { $in: removeFileUsers } }, { $pull: { files: fileId } });
+        }
       }
 
       const resultFile = await FileStore.findOneAndUpdate({ _id: fileId }, file, { new: true })
