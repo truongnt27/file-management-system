@@ -53,6 +53,7 @@ const useStyle = makeStyles(theme => ({
   },
   previewImage: {
     maxHeight: '240px',
+    maxWidth: '400px',
     width: 'auto'
   }
 }))
