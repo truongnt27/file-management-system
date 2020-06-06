@@ -29,31 +29,27 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersToolbar = props => {
-  const { className, onOpenDialog, ...rest } = props;
+  const { className, onOpenDialog, onSearch, ...rest } = props;
+  const [searchString, setSearchString] = React.useState('');
 
   const classes = useStyles();
+
+  const handleChange = (e) => {
+    e.persist();
+    onSearch && onSearch(e.target.value);
+    setSearchString(e.target.value);
+  }
+
   const handlClickCreateUser = () => {
     onOpenDialog && onOpenDialog();
   }
+
   return (
     <div
       {...rest}
       className={clsx(classes.root, className)}
     >
-      {/* <div className={classes.row}>
-        <span className={classes.spacer} />        
-        <Button
-          color="primary"
-          variant="contained"
-        >
-          Add user
-        </Button>
-      </div> */}
       <div className={classes.row}>
-        <SearchInput
-          className={classes.searchInput}
-          placeholder="Search user"
-        />
         <span className={classes.spacer} />
         <Button
           color="primary"
@@ -63,13 +59,22 @@ const UsersToolbar = props => {
           Add user
         </Button>
       </div>
+      <div className={classes.row}>
+        <SearchInput
+          className={classes.searchInput}
+          onChange={handleChange}
+          placeholder="Search user"
+          value={searchString}
+        />
+      </div>
     </div>
   );
 };
 
 UsersToolbar.propTypes = {
   className: PropTypes.string,
-  onOpenDialog: PropTypes.func
+  onOpenDialog: PropTypes.func,
+  onSearch: PropTypes.func
 };
 
 export default UsersToolbar;

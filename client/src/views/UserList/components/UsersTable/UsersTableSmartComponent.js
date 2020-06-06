@@ -1,18 +1,11 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { FETCH_USERS, usersSelector, editUserSaga } from 'state/modules/app/users/actions';
+import React from 'react';
+import { array } from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { editUserSaga } from 'state/modules/app/users/actions';
 import UsersTable from './UsersTable';
 
-export const UsersTableSmartComponent = () => {
-  const usersStore = useSelector(usersSelector);
+export const UsersTableSmartComponent = ({ users }) => {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    (usersStore.status !== 'LOADED') && dispatch({ type: FETCH_USERS });
-  }, [usersStore.status])
-
-  const usersById = usersStore.byId || {};
-  const users = Object.values(usersById);
 
   const handleAssignRole = (user) => {
     dispatch(editUserSaga(user));
@@ -25,5 +18,7 @@ export const UsersTableSmartComponent = () => {
     />
   )
 }
-
+UsersTableSmartComponent.propTypes = {
+  users: array.isRequired
+}
 export default UsersTableSmartComponent;
