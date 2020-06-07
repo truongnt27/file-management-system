@@ -1,4 +1,3 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -26,7 +25,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import StarIcon from '@material-ui/icons/StarBorder';
 import StarredIcon from '@material-ui/icons/Star';
 
-import { StatusBullet, FileViewer, SharingDialog } from 'components';
+import { StatusBullet, FileViewer, ImageViewer, SharingDialog } from 'components';
 
 import { useDispatch } from 'react-redux';
 import { Actions } from 'state/modules/app/files'
@@ -169,10 +168,6 @@ const EnhancedTableToolbar = props => {
     onShare && onShare();
   }
 
-  // const handleStarClick = (e) => {
-  //   e.preventDefault();
-  //   onStar && onStar();
-  // }
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -311,6 +306,8 @@ export default function FilesTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [openFileDetail, setOpenFileDetail] = React.useState(false);
   const [openSharingDialog, setOpenSharingDialog] = React.useState(false);
+  const [openImageViewer, setOpenImageViewer] = React.useState(false);
+  const [fileIdToImage, setFileIdToImage] = React.useState(null);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -346,6 +343,12 @@ export default function FilesTable(props) {
 
     setSelected(newSelected);
   }
+
+  function handleDoubleClick(event, id) {
+    setFileIdToImage(id);
+    setOpenImageViewer(true);
+  }
+
 
   function handleChangePage(event, newPage) {
     setPage(newPage);
@@ -384,6 +387,16 @@ export default function FilesTable(props) {
   function hanldeOpenSharingDialog() {
     setOpenSharingDialog(true);
   }
+
+  function handleCloseImageViewer() {
+    setOpenImageViewer(false);
+  }
+
+  function handleOpenImageViewer() {
+    setFileIdToImage(selected);
+    setOpenImageViewer(true);
+  }
+
 
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
@@ -424,6 +437,7 @@ export default function FilesTable(props) {
                       hover
                       key={row._id}
                       onClick={event => handleClick(event, row._id)}
+                      onDoubleClick={event => handleDoubleClick(event, row._id)}
                       role="checkbox"
                       selected={isItemSelected}
                       tabIndex={-1}
@@ -526,7 +540,13 @@ export default function FilesTable(props) {
       <FileViewer
         fileId={selected}
         onClose={handleCloseFileDetail}
+        onViewImage={handleOpenImageViewer}
         open={openFileDetail}
+      />
+      <ImageViewer
+        fileId={fileIdToImage}
+        onClose={handleCloseImageViewer}
+        open={openImageViewer}
       />
     </div>
   );

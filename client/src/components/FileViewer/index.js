@@ -54,12 +54,15 @@ const useStyle = makeStyles(theme => ({
   previewImage: {
     maxHeight: '240px',
     maxWidth: '400px',
-    width: 'auto'
+    width: 'auto',
+    '&:hover': {
+      cursor: 'pointer'
+    }
   }
 }))
 
 export function FileViewer(props) {
-  const { file, open, currentUserId, onChange } = props;
+  const { file, open, currentUserId, onChange, onViewImage } = props;
   const classes = useStyle();
   const { owner, viewers, editors } = file;
   const updateViewers = viewers.map(user => ({ ...user, role: 'viewers' }));
@@ -150,6 +153,7 @@ export function FileViewer(props) {
               file.type === 'Image' &&
               <img
                 className={classes.previewImage}
+                onClick={onViewImage}
                 src={`http://localhost:3002/api/files/${file._id}/download`}
               />
             }
@@ -325,13 +329,11 @@ FileViewer.propTypes = {
 
 const FileViewerSmartComponent = (props) => {
   const dispatch = useDispatch();
-  const { fileId, open = false, onClose } = props;
+  const { fileId, open = false, onClose, onViewImage } = props;
   const file = useSelector(state => getFileById(state)(fileId));
   const currentUserStore = useSelector(currentUser);
   const currentUserId = currentUserStore._id || '';
-  const handleClose = () => {
-    onClose && onClose();
-  }
+
   const handleChangeFile = (file) => {
     dispatch(updateFileSaga(file));
   }
@@ -342,7 +344,8 @@ const FileViewerSmartComponent = (props) => {
       currentUserId={currentUserId}
       file={file}
       onChange={handleChangeFile}
-      onClose={handleClose}
+      onClose={onClose}
+      onViewImage={onViewImage}
       open={open}
     />
   )
