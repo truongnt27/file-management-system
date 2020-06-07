@@ -57,11 +57,10 @@ module.exports = {
       })
   },
   facebook: (req, res, next) => {
-
+    const user = req.user;
     if (user) {
       const payload = { id: user._id, name: user.fullname };
       const token = jwt.sign(payload, config.jwtConfig.secret, config.jwtConfig.option);
-      console.log('user', user);
 
       return res
         .cookie('authToken', token, { httpOnly: true, samesite: true, signed: true, maxAge: 10 * 86400 * 1000 })
