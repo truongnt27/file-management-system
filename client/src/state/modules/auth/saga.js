@@ -27,7 +27,7 @@ function* authUser(action) {
 
     if (result.status === API_STATUS_CODE.SUCCESS) {
       yield put(ActionTypes.authSuccess(result.data.user));
-      yield put(push('/dashboard'));
+      yield put(push('/'));
     }
     else yield put(showToast(toast));
   }
