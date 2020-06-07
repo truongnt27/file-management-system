@@ -23,7 +23,7 @@ import { updateFileSaga } from 'state/modules/app/files/actions';
 import { currentUser } from 'state/modules/auth/selector';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { isEmpty } from 'lodash';
+import { isEmpty, findIndex } from 'lodash';
 import genAvataImg from 'helpers/genAvataImg';
 import moment from 'moment';
 
@@ -68,7 +68,7 @@ export function FileViewer(props) {
   const updateViewers = viewers.map(user => ({ ...user, role: 'viewers' }));
   const updateEditors = editors.map(user => ({ ...user, role: 'editors' }));
   const accessUsers = [...updateEditors, ...updateViewers];
-  const isEditAccess = currentUserId === owner._id || editors.indexOf(currentUserId);
+  const isEditAccess = currentUserId === owner._id || findIndex(editors, { _id: currentUserId }) !== -1;
 
   const [isEdit, setIsEdit] = useState(false);
   const [description, setDescription] = useState(file.description);

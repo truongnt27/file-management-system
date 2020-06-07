@@ -30,7 +30,7 @@ import { StatusBullet, FileViewer, ImageViewer, SharingDialog } from 'components
 import { useDispatch } from 'react-redux';
 import { Actions } from 'state/modules/app/files'
 
-import { find } from 'lodash';
+import { find, get, findIndex } from 'lodash';
 import { STATUS } from 'helpers/constant';
 
 function desc(a, b, orderBy) {
@@ -145,9 +145,20 @@ const EnhancedTableToolbar = props => {
     onViewDetail,
     onDownload,
     onDetele,
-    onShare
+    onShare,
+    files,
+    currentUserId
   } = props;
+  let haveEditAccess = false;
+  console.log(files);
+  console.log(currentUserId);
 
+  haveEditAccess = files && files.every(file => {
+    return (
+      get(file, 'owner._id', '') === currentUserId ||
+      findIndex(file.editors, { _id: currentUserId }) !== -1
+    )
+  })
   const handleViewClick = (e) => {
     e.preventDefault();
     onViewDetail && onViewDetail();
@@ -203,6 +214,7 @@ const EnhancedTableToolbar = props => {
                   <Tooltip title="Share file">
                     <IconButton
                       aria-label="Share file"
+                      disabled={!haveEditAccess}
                       onClick={handleShareClick}
                     >
                       <PersonAdd />
@@ -229,6 +241,7 @@ const EnhancedTableToolbar = props => {
             <Tooltip title="Move to trash">
               <IconButton
                 aria-label="Move to trash"
+                disabled={!haveEditAccess}
                 onClick={handleDeleteClick}
               >
                 <DeleteIcon />
@@ -309,6 +322,7 @@ export default function FilesTable(props) {
   const [openImageViewer, setOpenImageViewer] = React.useState(false);
   const [fileIdToImage, setFileIdToImage] = React.useState(null);
 
+  const selectedFiles = rows.filter(file => selected.indexOf(file._id) !== -1);
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
     setOrder(isDesc ? 'asc' : 'desc');
@@ -404,6 +418,8 @@ export default function FilesTable(props) {
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
+          currentUserId={currentUser._id}
+          files={selectedFiles}
           numSelected={selected.length}
           onDetele={handleMoveToTrashFile}
           onDownload={downloadFile}
