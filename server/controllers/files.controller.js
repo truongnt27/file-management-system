@@ -143,10 +143,10 @@ module.exports = {
       });
 
       const logged = await log1.save();
-      const { createdDate, plaintext } = generateKey();
+      const { creationDate, plaintext } = generateKey();
 
       const key = new KeyStore({
-        createdDate,
+        creationDate,
         plaintext,
         lastRotation: now
       })

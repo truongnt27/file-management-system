@@ -13,7 +13,7 @@ const generateKey = () => {
 
   return {
     plaintext: textSecret,
-    createdDate: Date.now()
+    creationDate: Date.now()
   }
 }
 

@@ -28,14 +28,14 @@ module.exports = job;
 
 async function rotate(keyId) {
   try {
-    const { createdDate, plaintext } = generateKey();
+    const { creationDate, plaintext } = generateKey();
     const key = await KeyStore.findOne({ _id: keyId });
     const file = await FileStore.findOne({ keyId: keyId }).populate({ path: 'files', select: 'name owner' });
 
     Encryptor.rotateFile(`../public/uploads/${file.owner}/${file.name}`, key.plaintext, plaintext);
 
     key.plaintext = plaintext;
-    key.lastRotation = createdDate;
+    key.lastRotation = creationDate;
     await key.save();
 
     const log = new Log({

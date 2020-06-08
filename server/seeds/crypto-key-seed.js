@@ -17,7 +17,7 @@ const keys = [
         rotation: 'YEAR',
         alias: 'key_default',
         description: 'protect data',
-        createdDate: Date.now(),
+        creationDate: Date.now(),
         userPermision: {}
     }),
 ];
